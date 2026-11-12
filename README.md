@@ -9,6 +9,8 @@ How every toy was made (live 3D viewers, joint sliders, full task log): **https:
 
 [![Doodle Sumo gameplay](assets/video/poster.jpg)](https://automationbot24x7.github.io/doodle-sumo/assets/video/doodle-sumo-demo.mp4)
 
+Project report (PDF): **[report/doodle-sumo-report.pdf](report/doodle-sumo-report.pdf)**
+
 Built for the **Manycore Aholo Global 3D AI Hackathon** (#Manycorehackathon).
 
 ## The game
@@ -53,6 +55,8 @@ python -m http.server 8000
 ```
 
 Then open http://localhost:8000. Add `?demo` to the URL to let bots play every slot.
+
+The demo video was recorded from the real game in Chrome (`tools/capture.mjs`); for the recording, Player 1 was driven through the normal keyboard controls by `tools/autopilot.js`.
 
 Regenerating assets needs your own Aholo API key (from labs.aholo.ai/api-keys) in `Credentials/aholo-key.txt` or the `AHOLO_KEY` environment variable. Then run `pipeline/batch-fighters.sh` and `pipeline/batch-props.sh`, followed by `node tools/build-data.mjs`.
 

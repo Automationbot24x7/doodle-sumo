@@ -9,6 +9,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { loadURDF } from '../src/urdf.js';
+import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 const q = new URLSearchParams(location.search);
 const r = new THREE.WebGLRenderer({ canvas: c, antialias: true, preserveDrawingBuffer: true, alpha: true });
 r.setPixelRatio(1); r.setSize(innerWidth, innerHeight, false); r.toneMapping = THREE.ACESFilmicToneMapping;
@@ -17,7 +18,8 @@ s.environment = new THREE.PMREMGenerator(r).fromScene(new RoomEnvironment(), 0.0
 s.add(new THREE.HemisphereLight('#fff', '#999', 1.1)); const d = new THREE.DirectionalLight('#fff', 2); d.position.set(2, 4, 3); s.add(d);
 const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
 const src = q.get('src'); let obj, gl;
-if (src.endsWith('/')) { const u = await loadURDF(src, loader); obj = u.root; const jv = q.get('joint'); if (jv) Object.values(u.joints).forEach((j) => j.set(+jv * (isFinite(j.upper) ? j.upper : 1))); }
+if (src.endsWith('.stl')) { const geo = await new STLLoader().loadAsync(src); geo.computeVertexNormals(); obj = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: '#d8d4cc', roughness: 0.55 })); obj.rotation.x = q.has('zup') ? -Math.PI / 2 : 0; }
+else if (src.endsWith('/')) { const u = await loadURDF(src, loader); obj = u.root; const jv = q.get('joint'); if (jv) Object.values(u.joints).forEach((j) => j.set(+jv * (isFinite(j.upper) ? j.upper : 1))); }
 else { gl = await loader.loadAsync(src); obj = gl.scene; }
 s.add(obj);
 if (gl?.animations?.length && q.get('anim')) { const m = new THREE.AnimationMixer(obj); m.clipAction(gl.animations[+q.get('anim')]).play(); m.update(+(q.get('t') || 0.4)); }
@@ -26,7 +28,7 @@ const mode = q.get('mode') || 'tex';
 if (mode !== 'tex') obj.traverse((o) => { if (o.isMesh) o.material = mode === 'wire' ? new THREE.MeshBasicMaterial({ color: '#3d7be0', wireframe: true, transparent: true, opacity: 0.45 }) : new THREE.MeshBasicMaterial({ color: '#c9daf2', transparent: true, opacity: 0.3, depthWrite: false }); });
 if (mode === 'skel' || mode === 'ghostskel') { const sk = new THREE.SkeletonHelper(obj); sk.material.depthTest = false; sk.material.color = new THREE.Color('#e2453c'); sk.material.linewidth = 3; s.add(sk); }
 const b = new THREE.Box3().setFromObject(obj); const size = b.getSize(new THREE.Vector3()); const ctr = b.getCenter(new THREE.Vector3());
-const cam = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, 0.001, 100);
+const cam = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, 0.001, 100000);
 const yaw = +(q.get('yaw') || 0.55), dist = Math.max(size.x, size.y, size.z) * +(q.get('k') || 2.3);
 cam.position.set(ctr.x + Math.sin(yaw) * dist, ctr.y + size.y * 0.25, ctr.z + Math.cos(yaw) * dist); cam.lookAt(ctr);
 r.render(s, cam); window.done = true;
