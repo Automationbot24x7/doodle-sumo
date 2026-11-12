@@ -76,5 +76,29 @@
     "tasks": {
       "model": 6926478
     }
+  },
+  {
+    "id": "books",
+    "title": "Book stack",
+    "prompt": "A small stack of three chunky hardcover school books lying flat, bright red, blue and yellow covers, cartoon style, single object",
+    "motion": null,
+    "role": "decor",
+    "urdf": false,
+    "joints": [],
+    "tasks": {
+      "model": 6927385
+    }
+  },
+  {
+    "id": "clock",
+    "title": "Alarm clock",
+    "prompt": "A round red twin-bell alarm clock with little feet, cartoon toy style, single object",
+    "motion": null,
+    "role": "decor",
+    "urdf": false,
+    "joints": [],
+    "tasks": {
+      "model": 6928067
+    }
   }
 ]

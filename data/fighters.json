@@ -50,5 +50,59 @@
       "rig": 6925604,
       "anims": 6925778
     }
+  },
+  {
+    "id": "mug",
+    "title": "Mugsy",
+    "blurb": "Fuelled by cold coffee and spite.",
+    "mass": 1.25,
+    "speed": 0.95,
+    "power": 1.1,
+    "toyPrompt": "Turn this crayon doodle into a cute collectible 3D vinyl toy figure of the same blue coffee-mug character with the same face. Make it clearly humanoid: the mug is the body and head, with two separate arms sticking straight out to the sides from the upper body and two legs with feet. Put the small mug handle on the BACK of the mug so it does not touch the arms. No steam. Full body, standing in a T-pose, front view, plain white background, soft studio light.",
+    "v1note": "v1 rig rejected (RIG_ELIGIBILITY_FAILED): handle overlapped the right arm, steam on the head",
+    "anims": [
+      "Idle_Loop",
+      "Crouch_Idle_Loop",
+      "Jog_Fwd_Loop",
+      "Sprint_Loop",
+      "Punch_Cross",
+      "Punch_Jab",
+      "Roll",
+      "Swim_Fwd_Loop",
+      "Dance_Loop",
+      "Yes"
+    ],
+    "tasks": {
+      "toy": 6927678,
+      "model": 6927759,
+      "rig": 6928484,
+      "anims": 6928555
+    }
+  },
+  {
+    "id": "battery",
+    "title": "Volt",
+    "blurb": "Fully charged. Mostly.",
+    "mass": 1,
+    "speed": 1.15,
+    "power": 1,
+    "anims": [
+      "Idle_Loop",
+      "Crouch_Idle_Loop",
+      "Jog_Fwd_Loop",
+      "Sprint_Loop",
+      "Punch_Cross",
+      "Punch_Jab",
+      "Roll",
+      "Swim_Fwd_Loop",
+      "Dance_Loop",
+      "Yes"
+    ],
+    "tasks": {
+      "toy": 6927056,
+      "model": 6927114,
+      "rig": 6927717,
+      "anims": 6928259
+    }
   }
 ]

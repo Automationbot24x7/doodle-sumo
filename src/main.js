@@ -443,7 +443,7 @@ function frame() {
   try { await Promise.all([loadAll(), loadRoom()]); } catch (e) { $('#loadTxt').textContent = 'Could not load the toys: ' + e.message; throw e; }
   ({ colliders, hazards } = placeProps(PROPS, propGltfs, world, blobTex)); makeThumbs(); buildRoster();
   // a few fighters idling on the desk behind the menu
-  state.fighters = FIGHTERS.slice(0, 4).map((def, i) => { const f = new Fighter(def, gltfs[def.id], { slot: i, marker: false }); const [x, z] = SPAWNS[i]; f.reset(new THREE.Vector3(x * 1.1, 0, z * 1.4), Math.atan2(-x, -z)); f.play(i % 2 ? 'dance' : 'stance'); world.add(f.group); return f; });
+  state.fighters = FIGHTERS.slice(0, 4).map((def, i) => { const f = new Fighter(def, gltfs[def.id], { slot: i, marker: false }); const [x, z] = SPAWNS[i]; f.reset(new THREE.Vector3(x * 1.1, 0, z * 1.4), Math.atan2(-x, -z)); f.play(i % 2 ? 'dance' : 'idle'); world.add(f.group); return f; });
   $('#loading').classList.remove('show');
   renderer.setAnimationLoop(frame);
   window.__doodle = { state, scene, camera, FIGHTERS, PROPS, hazards };

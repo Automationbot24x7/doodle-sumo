@@ -7,8 +7,8 @@ import { loadURDF } from './urdf.js';
 const $ = (s, el = document) => el.querySelector(s);
 const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
 const NICE = { Idle_Loop: 'Idle', Crouch_Idle_Loop: 'Sumo stance', Jog_Fwd_Loop: 'Run', Sprint_Loop: 'Sprint', Punch_Cross: 'Shove', Punch_Jab: 'Jab', Roll: 'Dash roll', Swim_Fwd_Loop: 'Falling flail', Dance_Loop: 'Victory dance', Yes: 'Cheer' };
-const STEP = { 'multimodal-to-image': 'Toy concept image', 'img-to-3d': 'Image → 3D model', 'text-to-3d': 'Text → 3D model', rig: 'Humanoid auto-rig', retarget: 'Animation retarget', articulate: 'Articulation (joints)', export: 'Export 3MF / STL', 'material-transfer': 'Material transfer' };
-const CREDITS = { 'multimodal-to-image': 12, 'img-to-3d': 20, 'text-to-3d': 20, rig: 15, retarget: 6, articulate: 28, export: 1, 'material-transfer': 7 };
+const STEP = { 'multimodal-to-image': 'Toy concept image', 'img-to-3d': 'Image → 3D model', 'text-to-3d': 'Text → 3D model', rig: 'Humanoid auto-rig', retarget: 'Animation retarget', articulate: 'Articulation (joints)', export: 'Export 3MF / STL', 'material-transfer': 'Material transfer', 'world-gen': 'SpatialGen world' };
+const CREDITS = { 'multimodal-to-image': 12, 'img-to-3d': 20, 'text-to-3d': 20, rig: 15, retarget: 6, articulate: 28, export: 1, 'material-transfer': 7, 'world-gen': 10 };
 
 // One WebGL renderer draws every viewer; each frame is copied into that viewer's 2D canvas.
 const gl = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -116,7 +116,7 @@ async function propCard(p) {
   const credits = ok.reduce((s, t) => s + (CREDITS[t.kind] || 0), 0);
   const secs = ok.reduce((s, t) => s + (t.secs || 0), 0);
   $('#stats').innerHTML = `<div><b>${fighters.length}</b>fighters</div><div><b>${props.length}</b>props &amp; traps</div><div><b>${ok.length}</b>Lux3D tasks</div><div><b>${Math.round(secs / 60)}</b>minutes of Lux3D time</div><div><b>~${credits}</b>credits used</div>`;
-  $('#tasks tbody').innerHTML = pipe.tasks.slice().reverse().map((t) => `<tr><td>${t.t.slice(0, 16).replace('T', ' ')}</td><td>${STEP[t.kind] || t.kind}</td><td>${t.label}</td><td>${t.taskId}</td><td>${t.secs ?? ''}</td><td class="${t.ok ? 'ok' : 'bad'}">${t.ok ? 'done' : 'failed'}</td></tr>`).join('');
+  $('#tasks tbody').innerHTML = pipe.tasks.slice().reverse().map((t) => `<tr><td>${t.t.slice(0, 16).replace('T', ' ')}</td><td>${STEP[t.kind] || t.kind}</td><td>${t.label}</td><td>${t.taskId ?? t.worldId ?? ''}</td><td>${t.secs ?? ''}</td><td class="${t.ok ? 'ok' : 'bad'}">${t.ok ? 'done' : 'failed'}</td></tr>`).join('');
   requestAnimationFrame(loop);
   for (const f of fighters) await fighterRow(f);
   for (const p of props.filter((p) => p.urdf)) await trapCard(p);

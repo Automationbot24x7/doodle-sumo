@@ -1,5 +1,5 @@
 {
-  "built": "2026-11-12T21:04:40.992Z",
+  "built": "2026-11-12T21:16:40.649Z",
   "tasks": [
     {
       "t": "2026-11-12T20:12:41.870Z",
@@ -165,6 +165,7 @@
       "t": "2026-11-12T20:59:44.062Z",
       "kind": "world-gen",
       "label": "bedroom:world",
+      "taskId": "3FO4K4V8HQ2C",
       "ok": true,
       "secs": 700
     },
@@ -183,6 +184,110 @@
       "taskId": 6926478,
       "ok": true,
       "secs": 439
+    },
+    {
+      "t": "2026-11-12T21:05:32.647Z",
+      "kind": "img-to-3d",
+      "label": "battery:model",
+      "taskId": 6927114,
+      "ok": true,
+      "secs": 323
+    },
+    {
+      "t": "2026-11-12T21:05:48.842Z",
+      "kind": "multimodal-to-image",
+      "label": "mug:toy",
+      "taskId": 6927678,
+      "ok": true,
+      "secs": 36
+    },
+    {
+      "t": "2026-11-12T21:07:28.855Z",
+      "kind": "text-to-3d",
+      "label": "books:model",
+      "taskId": 6927385,
+      "ok": true,
+      "secs": 311
+    },
+    {
+      "t": "2026-11-12T21:09:34.407Z",
+      "kind": "rig",
+      "label": "battery:rig",
+      "taskId": 6927717,
+      "ok": true,
+      "secs": 233
+    },
+    {
+      "t": "2026-11-12T21:10:04.493Z",
+      "kind": "retarget",
+      "label": "battery:anims",
+      "taskId": 6928259,
+      "ok": true,
+      "secs": 18
+    },
+    {
+      "t": "2026-11-12T21:11:08.908Z",
+      "kind": "multimodal-to-image",
+      "label": "pencil:toy",
+      "taskId": 6928337,
+      "ok": true,
+      "secs": 35
+    },
+    {
+      "t": "2026-11-12T21:11:40.526Z",
+      "kind": "img-to-3d",
+      "label": "mug:model",
+      "taskId": 6927759,
+      "ok": true,
+      "secs": 350
+    },
+    {
+      "t": "2026-11-12T21:12:51.200Z",
+      "kind": "rig",
+      "label": "mug:rig",
+      "taskId": 6928484,
+      "ok": true,
+      "secs": 63
+    },
+    {
+      "t": "2026-11-12T21:13:20.491Z",
+      "kind": "retarget",
+      "label": "mug:anims",
+      "taskId": 6928555,
+      "ok": true,
+      "secs": 18
+    },
+    {
+      "t": "2026-11-12T21:13:59.869Z",
+      "kind": "text-to-3d",
+      "label": "clock:model",
+      "taskId": 6928067,
+      "ok": true,
+      "secs": 370
+    },
+    {
+      "t": "2026-11-12T21:14:27.964Z",
+      "kind": "export",
+      "label": "mug:print",
+      "taskId": 6928690,
+      "ok": true,
+      "secs": 35
+    },
+    {
+      "t": "2026-11-12T21:16:16.445Z",
+      "kind": "export",
+      "label": "eraser:print",
+      "taskId": 6928888,
+      "ok": true,
+      "secs": 35
+    },
+    {
+      "t": "2026-11-12T21:16:21.619Z",
+      "kind": "img-to-3d",
+      "label": "pencil:model",
+      "taskId": 6928410,
+      "ok": true,
+      "secs": 310
     }
   ],
   "prompts": [
@@ -318,6 +423,80 @@
       "taskId": 6927385,
       "prompt": "A small stack of three chunky hardcover school books lying flat, bright red, blue and yellow covers, cartoon style, single object",
       "version": "G1"
+    },
+    {
+      "taskId": 6927678,
+      "prompt": "Turn this crayon doodle into a cute collectible 3D vinyl toy figure of the same blue coffee-mug character with the same face. Make it clearly humanoid: the mug is the body and head, with two separate arms sticking straight out to the sides from the upper body and two legs with feet. Put the small mug handle on the BACK of the mug so it does not touch the arms. No steam. Full body, standing in a T-pose, front view, plain white background, soft studio light."
+    },
+    {
+      "taskId": 6927717
+    },
+    {
+      "taskId": 6927759,
+      "version": "G1"
+    },
+    {
+      "taskId": 6928067,
+      "prompt": "A round red twin-bell alarm clock with little feet, cartoon toy style, single object",
+      "version": "G1"
+    },
+    {
+      "taskId": 6928259,
+      "anims": [
+        "Idle_Loop",
+        "Crouch_Idle_Loop",
+        "Jog_Fwd_Loop",
+        "Sprint_Loop",
+        "Punch_Cross",
+        "Punch_Jab",
+        "Roll",
+        "Swim_Fwd_Loop",
+        "Dance_Loop",
+        "Yes"
+      ]
+    },
+    {
+      "taskId": 6928337,
+      "prompt": "Turn this crayon doodle into a cute collectible 3D vinyl toy figure with the same character, colours and proportions. Full body, standing in a T-pose with both arms straight out to the sides, legs apart, front view, plain white background, soft studio light."
+    },
+    {
+      "taskId": 6928410,
+      "version": "G1"
+    },
+    {
+      "taskId": 6928484
+    },
+    {
+      "taskId": 6928555,
+      "anims": [
+        "Idle_Loop",
+        "Crouch_Idle_Loop",
+        "Jog_Fwd_Loop",
+        "Sprint_Loop",
+        "Punch_Cross",
+        "Punch_Jab",
+        "Roll",
+        "Swim_Fwd_Loop",
+        "Dance_Loop",
+        "Yes"
+      ]
+    },
+    {
+      "taskId": 6928690
+    },
+    {
+      "taskId": 6928728,
+      "prompt": "A classic yellow rubber duck bath toy with an orange beak, single object",
+      "version": "G1"
+    },
+    {
+      "taskId": 6928888
+    },
+    {
+      "taskId": 6928938
+    },
+    {
+      "taskId": 6928943
     }
   ]
 }

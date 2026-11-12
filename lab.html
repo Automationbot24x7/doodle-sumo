@@ -34,11 +34,24 @@
 <main>
   <h2>Fighters</h2>
   <div id="fighters"></div>
+  <h2>Iterations <small>(what didn't work first time)</small></h2>
+  <div class="iters">
+    <div class="iter"><h3>Doodle straight to 3D vs. toy concept first</h3>
+      <div class="pair"><figure><img src="assets/iterations/tofu-direct-front.jpg" alt=""><img src="assets/iterations/tofu-direct-side.jpg" alt=""><figcaption>Raw doodle → Lux3D image-to-3D: a flat cardboard cut-out (side view on the right).</figcaption></figure>
+      <figure><img src="assets/iterations/tofu-toyfirst-front.jpg" alt=""><img src="assets/iterations/tofu-toyfirst-side.jpg" alt=""><figcaption>Doodle → Lux3D toy concept image → image-to-3D: a round toy that rigs cleanly.</figcaption></figure></div>
+      <p>A flat crayon sketch has no depth cues, so every fighter now goes through a Lux3D "turn this doodle into a vinyl toy in a T-pose" image step first.</p></div>
+    <div class="iter"><h3>Mugsy v1 was rejected by the auto-rig</h3>
+      <div class="pair"><figure><img src="assets/iterations/mug-v1-toy.png" alt=""><figcaption>v1: Lux3D rig returned <code>RIG_ELIGIBILITY_FAILED</code>. The handle overlapped the right arm.</figcaption></figure>
+      <figure><img src="assets/iterations/mug-v2-toy.png" alt=""><figcaption>v2: prompt asks for clearly separate arms and the handle clear of them. Rig and all 10 moves succeeded.</figcaption></figure></div>
+      <p>Other changes: move set v2 swapped walk/jump for a sumo stance, a sprint and a swimming "flail" for falling off the desk; textures went from 4K PNG to 1024 px WebP with meshopt compression (about 15 MB to 0.8 MB per fighter).</p></div>
+  </div>
   <h2>Desk traps <small>(articulated by Lux3D: drag the slider to move the joint)</small></h2>
   <div id="traps" class="traps"></div>
   <h2>Desk props</h2>
   <div id="props" class="propgrid"></div>
-  <h2>Every Lux3D task behind this game</h2>
+  <h2>The room <small>(Aholo SpatialGen world generation)</small></h2>
+  <div class="room"><img src="assets/world/pano.jpg" alt="SpatialGen 360-degree bedroom panorama"><p><b>Prompt:</b> "A cozy, colourful child's bedroom in warm afternoon light: wooden floor with a striped rug, a bed with a patchwork quilt, shelves full of toys and books, crayon drawings taped to pastel walls, a big window with sunlight, a beanbag and a toy box." SpatialGen returned this 360° panorama plus a 3D Gaussian-splat version of the room; the game wraps the panorama around the desk so the toys feel toy-sized.</p></div>
+  <h2>Every Aholo task behind this game</h2>
   <p class="note">Logged by the build pipeline (<code>pipeline/lux3d.mjs</code>) as each task ran. Result links expire after 2 hours, so only IDs and timings are shown.</p>
   <div class="tablewrap"><table id="tasks"><thead><tr><th>When (UTC)</th><th>Step</th><th>Asset</th><th>Task ID</th><th>Seconds</th><th>Result</th></tr></thead><tbody></tbody></table></div>
 </main>
