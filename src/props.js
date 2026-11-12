@@ -3,16 +3,16 @@ import { loadURDF } from './urdf.js';
 
 // Where each Lux3D prop sits on the desk: position, yaw, height (world units), collider radius.
 export const LAYOUT = {
-  pencilcup: { x: -6.1, z: -3.6, yaw: 0.3, h: 1.9, r: 0.62 },
-  books: { x: 5.8, z: 3.55, yaw: -0.4, h: 1.0, r: 0.95 },
-  clock: { x: 5.9, z: -3.7, yaw: -0.6, h: 1.15, r: 0.6 },
-  duck: { x: -6.1, z: 3.6, yaw: 0.9, h: 0.95, r: 0.55 },
-  crayons: { x: -2.6, z: -4.0, yaw: 0.12, h: 0.55, r: 0.75 },
+  pencilcup: { x: -6.1, z: -4.0, yaw: 0.3, h: 1.9, r: 0.62 },
+  books: { x: 5.8, z: 3.95, yaw: -0.4, h: 1.0, r: 0.95 },
+  clock: { x: 5.9, z: -4.1, yaw: -0.6, h: 1.15, r: 0.6 },
+  duck: { x: -6.1, z: 4.0, yaw: 0.9, h: 0.95, r: 0.55 },
+  crayons: { x: -2.6, z: -4.4, yaw: 0.12, h: 0.55, r: 0.75 },
   lamp: { x: 7.9, z: -5.6, yaw: -2.3, h: 6.0, r: 0, off: true },
   // traps, driven through the joints Lux3D articulation produced (URDF)
   stapler: { x: -6.25, z: 0.2, yaw: Math.PI, h: 0.85, r: 0, hazard: { kind: 'staple', zone: { x: -5.1, z: 0.2, hw: 1.3, hd: 0.6 }, period: [7, 11], warn: 1.5 } },
   fan: { x: 6.55, z: 0.5, yaw: -Math.PI / 2, h: 1.7, r: 0.55, hazard: { kind: 'wind', zone: { x: 0.6, z: 0.5, hw: 5.8, hd: 1.6 }, period: [9, 13], warn: 1.3, dur: 2.6 } },
-  jack: { x: 1.6, z: -3.75, yaw: 0, h: 1.1, r: 0.7, hazard: { kind: 'pop', zone: { x: 1.6, z: -3.0, hw: 2.0, hd: 1.6 }, period: [10, 15], warn: 2.0, dur: 0.25 } },
+  jack: { x: 1.6, z: -4.15, yaw: 0, h: 1.1, r: 0.7, hazard: { kind: 'pop', zone: { x: 1.6, z: -3.4, hw: 2.0, hd: 1.6 }, period: [10, 15], warn: 2.0, dur: 0.25 } },
 };
 
 export async function loadProp(p, loader) {

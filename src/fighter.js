@@ -8,7 +8,7 @@ export const ROLE = {
 };
 
 export const BASE_HEIGHT = 1.42;     // world units for a 1.0-size fighter
-export const DESK = { w: 14, d: 9 };  // play surface (x: -7..7, z: -4.5..4.5)
+export const DESK = { w: 14, d: 10 };  // play surface (x: -7..7, z: -4.5..4.5)
 
 const tmp = new THREE.Vector3();
 
@@ -112,7 +112,7 @@ export class Fighter {
       if (this.y < -9 && !this.out) { this.out = true; this.alive = false; }
     } else {
       const maxV = (this.dashT > 0 ? 13 : 4.6) * this.speed;
-      const damp = this.stun > 0 ? 1.9 : (this.dashT > 0 ? 1.5 : 7.5);
+      const damp = this.stun > 0 ? 2.3 : (this.dashT > 0 ? 1.6 : 7.5);
       this.vel.multiplyScalar(Math.exp(-damp * dt));
       const v = Math.hypot(this.vel.x, this.vel.z);
       if (this.stun <= 0 && v > maxV) this.vel.multiplyScalar(maxV / v);

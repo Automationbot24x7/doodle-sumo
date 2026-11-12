@@ -64,5 +64,17 @@
       "model": 6925740,
       "articulate": 6926200
     }
+  },
+  {
+    "id": "pencilcup",
+    "title": "Pencil cup",
+    "prompt": "A round pencil cup holder full of colourful pencils and wax crayons standing upright, cartoon toy style, single object",
+    "motion": null,
+    "role": "decor",
+    "urdf": false,
+    "joints": [],
+    "tasks": {
+      "model": 6926478
+    }
   }
 ]

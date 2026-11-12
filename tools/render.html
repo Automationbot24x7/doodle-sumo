@@ -1,0 +1,33 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>render</title>
+<style>html,body{margin:0;height:100%;background:#fff}canvas{display:block;width:100%;height:100%}</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+</head><body><canvas id="c"></canvas><script type="module">
+// Renders one Lux3D asset for report images. ?src=<glb or urdf dir/>&mode=tex|wire|skel|ghost&anim=<clip index>&t=<seconds>&yaw=<rad>&bg=<css color>&joint=<value>
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { loadURDF } from '../src/urdf.js';
+const q = new URLSearchParams(location.search);
+const r = new THREE.WebGLRenderer({ canvas: c, antialias: true, preserveDrawingBuffer: true, alpha: true });
+r.setPixelRatio(1); r.setSize(innerWidth, innerHeight, false); r.toneMapping = THREE.ACESFilmicToneMapping;
+const s = new THREE.Scene(); s.background = new THREE.Color(q.get('bg') || '#ffffff');
+s.environment = new THREE.PMREMGenerator(r).fromScene(new RoomEnvironment(), 0.04).texture;
+s.add(new THREE.HemisphereLight('#fff', '#999', 1.1)); const d = new THREE.DirectionalLight('#fff', 2); d.position.set(2, 4, 3); s.add(d);
+const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+const src = q.get('src'); let obj, gl;
+if (src.endsWith('/')) { const u = await loadURDF(src, loader); obj = u.root; const jv = q.get('joint'); if (jv) Object.values(u.joints).forEach((j) => j.set(+jv * (isFinite(j.upper) ? j.upper : 1))); }
+else { gl = await loader.loadAsync(src); obj = gl.scene; }
+s.add(obj);
+if (gl?.animations?.length && q.get('anim')) { const m = new THREE.AnimationMixer(obj); m.clipAction(gl.animations[+q.get('anim')]).play(); m.update(+(q.get('t') || 0.4)); }
+obj.updateMatrixWorld(true);
+const mode = q.get('mode') || 'tex';
+if (mode !== 'tex') obj.traverse((o) => { if (o.isMesh) o.material = mode === 'wire' ? new THREE.MeshBasicMaterial({ color: '#3d7be0', wireframe: true, transparent: true, opacity: 0.45 }) : new THREE.MeshBasicMaterial({ color: '#c9daf2', transparent: true, opacity: 0.3, depthWrite: false }); });
+if (mode === 'skel' || mode === 'ghostskel') { const sk = new THREE.SkeletonHelper(obj); sk.material.depthTest = false; sk.material.color = new THREE.Color('#e2453c'); sk.material.linewidth = 3; s.add(sk); }
+const b = new THREE.Box3().setFromObject(obj); const size = b.getSize(new THREE.Vector3()); const ctr = b.getCenter(new THREE.Vector3());
+const cam = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, 0.001, 100);
+const yaw = +(q.get('yaw') || 0.55), dist = Math.max(size.x, size.y, size.z) * +(q.get('k') || 2.3);
+cam.position.set(ctr.x + Math.sin(yaw) * dist, ctr.y + size.y * 0.25, ctr.z + Math.cos(yaw) * dist); cam.lookAt(ctr);
+r.render(s, cam); window.done = true;
+</script></body></html>

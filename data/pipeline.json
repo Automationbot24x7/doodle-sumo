@@ -1,5 +1,5 @@
 {
-  "built": "2026-11-12T20:54:38.021Z",
+  "built": "2026-11-12T21:04:40.992Z",
   "tasks": [
     {
       "t": "2026-11-12T20:12:41.870Z",
@@ -144,6 +144,45 @@
       "taskId": 6925965,
       "ok": true,
       "secs": 314
+    },
+    {
+      "t": "2026-11-12T20:56:28.329Z",
+      "kind": "img-to-3d",
+      "label": "tofu:direct-from-doodle",
+      "taskId": 6926288,
+      "ok": true,
+      "secs": 244
+    },
+    {
+      "t": "2026-11-12T20:59:19.999Z",
+      "kind": "rig",
+      "label": "mug:rig",
+      "taskId": 6926460,
+      "ok": false,
+      "secs": 307
+    },
+    {
+      "t": "2026-11-12T20:59:44.062Z",
+      "kind": "world-gen",
+      "label": "bedroom:world",
+      "ok": true,
+      "secs": 700
+    },
+    {
+      "t": "2026-11-12T21:00:08.112Z",
+      "kind": "multimodal-to-image",
+      "label": "battery:toy",
+      "taskId": 6927056,
+      "ok": true,
+      "secs": 44
+    },
+    {
+      "t": "2026-11-12T21:01:54.572Z",
+      "kind": "text-to-3d",
+      "label": "pencilcup:model",
+      "taskId": 6926478,
+      "ok": true,
+      "secs": 439
     }
   ],
   "prompts": [
@@ -265,6 +304,19 @@
     {
       "taskId": 6926478,
       "prompt": "A round pencil cup holder full of colourful pencils and wax crayons standing upright, cartoon toy style, single object",
+      "version": "G1"
+    },
+    {
+      "taskId": 6927056,
+      "prompt": "Turn this crayon doodle into a cute collectible 3D vinyl toy figure with the same character, colours and proportions. Full body, standing in a T-pose with both arms straight out to the sides, legs apart, front view, plain white background, soft studio light."
+    },
+    {
+      "taskId": 6927114,
+      "version": "G1"
+    },
+    {
+      "taskId": 6927385,
+      "prompt": "A small stack of three chunky hardcover school books lying flat, bright red, blue and yellow covers, cartoon style, single object",
       "version": "G1"
     }
   ]

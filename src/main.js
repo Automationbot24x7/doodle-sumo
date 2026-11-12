@@ -279,7 +279,7 @@ function step(dt) {
         v2.set(b.pos.x - a.pos.x, 0, b.pos.z - a.pos.z); const d = v2.length();
         if (d > reach + b.radius) continue; v2.normalize();
         if (fwd.dot(v2) < Math.cos(1.15)) continue;
-        const ch = a.attackCharge; const imp = (6.5 + 13 * ch * ch + 3 * ch) * a.power * (state.boost || 1) / Math.sqrt(b.mass * 1.15);
+        const ch = a.attackCharge; const imp = (5 + 11 * ch * ch + 2.5 * ch) * a.power * (state.boost || 1) / Math.sqrt(b.mass * 1.15);
         const dir = v2.clone().lerp(fwd, 0.35).normalize();
         b.vel.addScaledVector(dir, imp); b.stun = 0.25 + 0.45 * ch; b.squash = 0.25 + ch * 0.2; b.lastHitBy = a; b.charging = false;
         a.vel.addScaledVector(fwd, -1.2);
@@ -348,7 +348,8 @@ function step(dt) {
   } else if (state.phase === 'roundEnd') {
     if (state.roundWinner && state.phaseT > 1.4 && state.roundWinner.currentRole !== 'dance') state.roundWinner.play('dance', 0.3);
     if (state.phaseT > 3.2) {
-      const champ = state.fighters.find((f) => state.wins[f.slot] >= 2);
+      let champ = state.fighters.find((f) => state.wins[f.slot] >= 2);
+      if (!champ && state.round >= 5) champ = [...state.fighters].sort((a, b) => state.wins[b.slot] - state.wins[a.slot] || (b === state.roundWinner) - (a === state.roundWinner))[0];
       if (champ) endMatch(champ); else newRound();
     }
   }
