@@ -65,4 +65,14 @@ if (!want.size || want.has('optimize')) {
   sh(`npx gltf-transform resample "${t3}" "${t4}"`);
   sh(`npx gltf-transform meshopt "${t4}" "${join(out, 'fighter.glb')}"`);
 }
+if (want.has('print')) {
+  // Lux3D multi-format export of the (unrigged) model: 3MF + STL for 3D printing.
+  const r = await run('export', { modelUrl: S.glbUrl, outputFormat: ['stl', '3mf'] }, `${name}:print`);
+  S.printOutputs = r.outputs; S.printTask = r.taskId; save();
+  const pr = join(ROOT, 'assets', 'print'); mkdirSync(pr, { recursive: true });
+  const stl = r.outputs.find((u) => /\.stl(\?|$)/i.test(u || '')), mf = r.outputs.find((u) => /\.3mf(\?|$)/i.test(u || ''));
+  if (stl) await download(stl, join(pr, `${name}.stl`));
+  if (mf) await download(mf, join(pr, `${name}.3mf`));
+  if (!stl && !mf) console.log('export outputs:', r.outputs);
+}
 console.log(JSON.stringify(S, null, 2));

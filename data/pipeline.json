@@ -1,5 +1,5 @@
 {
-  "built": "2026-11-12T20:40:11.864Z",
+  "built": "2026-11-12T20:48:56.753Z",
   "tasks": [
     {
       "t": "2026-11-12T20:12:41.870Z",
@@ -64,6 +64,62 @@
       "taskId": 6924418,
       "ok": true,
       "secs": 114
+    },
+    {
+      "t": "2026-11-12T20:44:14.576Z",
+      "kind": "text-to-3d",
+      "label": "fan:model",
+      "taskId": 6924815,
+      "ok": true,
+      "secs": 359
+    },
+    {
+      "t": "2026-11-12T20:45:50.207Z",
+      "kind": "img-to-3d",
+      "label": "eraser:model",
+      "taskId": 6924211,
+      "ok": true,
+      "secs": 814
+    },
+    {
+      "t": "2026-11-12T20:46:24.442Z",
+      "kind": "articulate",
+      "label": "fan:articulate",
+      "taskId": 6925441,
+      "ok": true,
+      "secs": 123
+    },
+    {
+      "t": "2026-11-12T20:46:54.368Z",
+      "kind": "export",
+      "label": "tofu:print",
+      "taskId": 6925653,
+      "ok": true,
+      "secs": 44
+    },
+    {
+      "t": "2026-11-12T20:47:09.058Z",
+      "kind": "rig",
+      "label": "eraser:rig",
+      "taskId": 6925604,
+      "ok": true,
+      "secs": 70
+    },
+    {
+      "t": "2026-11-12T20:47:39.186Z",
+      "kind": "retarget",
+      "label": "eraser:anims",
+      "taskId": 6925778,
+      "ok": true,
+      "secs": 18
+    },
+    {
+      "t": "2026-11-12T20:48:52.944Z",
+      "kind": "multimodal-to-image",
+      "label": "mug:toy",
+      "taskId": 6925829,
+      "ok": true,
+      "secs": 44
     }
   ],
   "prompts": [
@@ -128,6 +184,47 @@
     {
       "taskId": 6924815,
       "prompt": "A small retro desk fan with a round wire cage, light blue body and white blades, cartoon toy style, single object",
+      "version": "G1"
+    },
+    {
+      "taskId": 6925441,
+      "prompt": "Keep the base and the stand fixed. The fan blades and their hub rotate continuously around the central axle."
+    },
+    {
+      "taskId": 6925604
+    },
+    {
+      "taskId": 6925653
+    },
+    {
+      "taskId": 6925740,
+      "prompt": "A colourful toy jack-in-the-box: a square tin box with a crank handle on the side and a closed hinged lid on top, cartoon style, single object",
+      "version": "G1"
+    },
+    {
+      "taskId": 6925778,
+      "anims": [
+        "Idle_Loop",
+        "Crouch_Idle_Loop",
+        "Jog_Fwd_Loop",
+        "Sprint_Loop",
+        "Punch_Cross",
+        "Punch_Jab",
+        "Roll",
+        "Swim_Fwd_Loop",
+        "Dance_Loop",
+        "Yes"
+      ]
+    },
+    {
+      "prompt": "A cozy, colourful child's bedroom in warm afternoon light: wooden floor with a striped rug, a bed with a patchwork quilt, shelves full of toys and books, crayon drawings taped to pastel walls, a big window with sunlight, a beanbag and a toy box. Playful, clean, cartoon-like."
+    },
+    {
+      "taskId": 6925829,
+      "prompt": "Turn this crayon doodle into a cute collectible 3D vinyl toy figure with the same character, colours and proportions. Full body, standing in a T-pose with both arms straight out to the sides, legs apart, front view, plain white background, soft studio light."
+    },
+    {
+      "taskId": 6925965,
       "version": "G1"
     }
   ]

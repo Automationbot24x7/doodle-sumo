@@ -78,7 +78,7 @@ function makeThumbs() {
   s.add(new THREE.HemisphereLight('#fff', '#888', 1.6)); const dl = new THREE.DirectionalLight('#fff', 2); dl.position.set(2, 3, 4); s.add(dl);
   const cam = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
   for (const def of FIGHTERS) {
-    const f = new Fighter(def, gltfs[def.id]);
+    const f = new Fighter(def, gltfs[def.id], { marker: false });
     f.mixer.stopAllAction(); f.model.updateMatrixWorld(true);
     s.add(f.group); const h = f.height; cam.position.set(h * 0.9, h * 0.75, h * 2.6); cam.lookAt(0, h * 0.5, 0);
     rt.render(s, cam); const model = rt.domElement.toDataURL('image/png');
@@ -385,7 +385,7 @@ function updateCamera(dt) {
   c.multiplyScalar(0.55);
   camTarget.lerp(c, 1 - Math.exp(-4 * dt));
   const aspectK = Math.max(1, 1.5 / camera.aspect);
-  const want = Math.min(21, Math.max(14, 11 + spread * 1.1)) * aspectK;
+  const want = Math.min(20, Math.max(12.5, 10 + spread * 1.1)) * aspectK;
   camDist += (want - camDist) * (1 - Math.exp(-2.5 * dt));
   const sx = (Math.random() - 0.5) * shake, sy = (Math.random() - 0.5) * shake;
   camera.position.set(camTarget.x * 0.85 + sx, camDist * 0.82 + sy, camTarget.z + camDist * 0.72);
@@ -414,7 +414,7 @@ function frame() {
   try { await loadAll(); } catch (e) { $('#loadTxt').textContent = 'Could not load the toys: ' + e.message; throw e; }
   ({ colliders, hazards } = placeProps(PROPS, propGltfs, world, blobTex)); makeThumbs(); buildRoster();
   // a few fighters idling on the desk behind the menu
-  state.fighters = FIGHTERS.slice(0, 4).map((def, i) => { const f = new Fighter(def, gltfs[def.id], { slot: i }); const [x, z] = SPAWNS[i]; f.reset(new THREE.Vector3(x * 1.1, 0, z * 1.4), Math.atan2(-x, -z)); f.play(i % 2 ? 'dance' : 'stance'); world.add(f.group); return f; });
+  state.fighters = FIGHTERS.slice(0, 4).map((def, i) => { const f = new Fighter(def, gltfs[def.id], { slot: i, marker: false }); const [x, z] = SPAWNS[i]; f.reset(new THREE.Vector3(x * 1.1, 0, z * 1.4), Math.atan2(-x, -z)); f.play(i % 2 ? 'dance' : 'stance'); world.add(f.group); return f; });
   $('#loading').classList.remove('show');
   renderer.setAnimationLoop(frame);
   window.__doodle = { state, scene, camera, FIGHTERS, PROPS, hazards };

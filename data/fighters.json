@@ -24,5 +24,31 @@
       "rig": 6923023,
       "anims": 6923985
     }
+  },
+  {
+    "id": "eraser",
+    "title": "Captain Eraser",
+    "blurb": "Rubs out the competition.",
+    "mass": 1.1,
+    "speed": 1,
+    "power": 1.05,
+    "anims": [
+      "Idle_Loop",
+      "Crouch_Idle_Loop",
+      "Jog_Fwd_Loop",
+      "Sprint_Loop",
+      "Punch_Cross",
+      "Punch_Jab",
+      "Roll",
+      "Swim_Fwd_Loop",
+      "Dance_Loop",
+      "Yes"
+    ],
+    "tasks": {
+      "toy": 6924165,
+      "model": 6924211,
+      "rig": 6925604,
+      "anims": 6925778
+    }
   }
 ]

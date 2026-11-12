@@ -18,5 +18,25 @@
       "model": 6923834,
       "articulate": 6924418
     }
+  },
+  {
+    "id": "fan",
+    "title": "Desk fan",
+    "prompt": "A small retro desk fan with a round wire cage, light blue body and white blades, cartoon toy style, single object",
+    "motion": "Keep the base and the stand fixed. The fan blades and their hub rotate continuously around the central axle.",
+    "role": "hazard",
+    "urdf": true,
+    "joints": [
+      {
+        "name": "rotor_joint",
+        "type": "continuous",
+        "lower": null,
+        "upper": null
+      }
+    ],
+    "tasks": {
+      "model": 6924815,
+      "articulate": 6925441
+    }
   }
 ]

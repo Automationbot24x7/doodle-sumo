@@ -7,7 +7,7 @@ export const ROLE = {
   shove: 'Punch_Cross', jab: 'Punch_Jab', roll: 'Roll', flail: 'Swim_Fwd_Loop', dance: 'Dance_Loop', cheer: 'Yes',
 };
 
-export const BASE_HEIGHT = 1.25;     // world units for a 1.0-size fighter
+export const BASE_HEIGHT = 1.42;     // world units for a 1.0-size fighter
 export const DESK = { w: 14, d: 9 };  // play surface (x: -7..7, z: -4.5..4.5)
 
 const tmp = new THREE.Vector3();
@@ -29,7 +29,16 @@ export class Fighter {
     root.position.y = -b2.min.y;
     this.height = target;
     this.radius = Math.max(0.34, Math.min(0.62, ((b2.max.x - b2.min.x) * 0.28 + (b2.max.z - b2.min.z) * 0.5) * 0.5 + 0.08));
-    this.group = new THREE.Group(); this.group.add(root);
+    // group = position only; body = facing + squash; marker ring + player tag stay upright
+    this.group = new THREE.Group(); this.body = new THREE.Group(); this.body.add(root); this.group.add(this.body);
+    if (opts.marker !== false) {
+      const col = new THREE.Color(opts.color || '#2b2b33');
+      this.ring = new THREE.Mesh(new THREE.RingGeometry(this.radius * 1.05, this.radius * 1.32, 40), new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.85, depthWrite: false }));
+      this.ring.rotation.x = -Math.PI / 2; this.ring.position.y = 0.02; this.group.add(this.ring);
+      this.chargeRing = new THREE.Mesh(new THREE.RingGeometry(this.radius * 1.4, this.radius * 1.62, 40, 1, 0, 0.001), new THREE.MeshBasicMaterial({ color: '#f6c431', transparent: true, opacity: 0.95, depthWrite: false, side: THREE.DoubleSide }));
+      this.chargeRing.rotation.x = -Math.PI / 2; this.chargeRing.position.y = 0.025; this.group.add(this.chargeRing);
+      if (this.isPlayer) this.group.add(this.tag = makeTag(`P${this.slot + 1}`, opts.color, target + 0.45));
+    }
     this.mixer = new THREE.AnimationMixer(root);
     this.clips = {};
     const names = def.anims || [];
@@ -49,7 +58,7 @@ export class Fighter {
     this.facing = facing; this.state = 'idle'; this.alive = true; this.falling = false; this.out = false;
     this.stun = 0; this.cool = 0; this.dashCool = 0; this.dashT = 0; this.charge = 0; this.charging = false;
     this.attackT = -1; this.attackCharge = 0; this.tumble = 0; this.lastHitBy = null; this.squash = 0; this.won = false;
-    this.group.position.copy(this.pos); this.group.rotation.set(0, facing, 0);
+    this.group.position.copy(this.pos); this.body.rotation.set(0, facing, 0); this.body.scale.set(1, 1, 1);
     this.model.rotation.set(0, 0, 0);
     this.play('stance', 0);
   }
@@ -117,10 +126,16 @@ export class Fighter {
       else this.play('stance', 0.25);
     }
     this.group.position.set(this.pos.x, this.y, this.pos.z);
-    this.group.rotation.y = this.facing;
+    this.body.rotation.y = this.facing;
     const sq = this.charging ? this.charge * 0.12 : 0;
     const k = 1 + this.squash;
-    this.group.scale.set(k + sq * 0.6, 1 / k - sq, k + sq * 0.6);
+    this.body.scale.set(k + sq * 0.6, 1 / k - sq, k + sq * 0.6);
+    if (this.ring) {
+      this.ring.visible = this.chargeRing.visible = !this.falling && this.alive;
+      const c = this.charging ? this.charge : 0;
+      if (c !== this._lastC) { this._lastC = c; this.chargeRing.geometry.dispose(); this.chargeRing.geometry = new THREE.RingGeometry(this.radius * 1.4, this.radius * 1.62, 40, 1, Math.PI / 2, Math.max(0.001, c * Math.PI * 2)); }
+    }
+    if (this.tag) this.tag.visible = this.alive && !this.won;
     this.mixer.update(dt);
   }
 
@@ -134,4 +149,15 @@ export class Fighter {
 export function lerpAngle(a, b, t) {
   let d = ((b - a + Math.PI) % (Math.PI * 2)) - Math.PI; if (d < -Math.PI) d += Math.PI * 2;
   return a + d * t;
+}
+
+function makeTag(text, color, y) {
+  const c = document.createElement('canvas'); c.width = 128; c.height = 96; const g = c.getContext('2d');
+  g.fillStyle = color || '#e2453c'; g.strokeStyle = '#2b2b33'; g.lineWidth = 6;
+  g.beginPath(); g.roundRect(8, 6, 112, 60, 16); g.fill(); g.stroke();
+  g.beginPath(); g.moveTo(52, 64); g.lineTo(64, 88); g.lineTo(76, 64); g.closePath(); g.fill(); g.stroke();
+  g.fillStyle = '#fff'; g.font = 'bold 44px Nunito, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(text, 64, 38);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false, transparent: true }));
+  s.scale.set(0.62, 0.47, 1); s.position.y = y; s.renderOrder = 10; return s;
 }
