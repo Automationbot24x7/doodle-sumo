@@ -8,6 +8,7 @@ import path from 'node:path';
 const [name, url, secs, setup] = process.argv.slice(2).filter((a) => !a.startsWith('--'));
 const HEADED = process.argv.includes('--headed');
 const AUDIO = process.argv.includes('--audio');
+const ZOOM = +((process.argv.find((a) => a.startsWith('--zoom=')) || '--zoom=1').split('=')[1]);
 const W = 1920, H = 1080;
 const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 const OUT = path.resolve('video/cap', name);
@@ -38,7 +39,7 @@ const cdp = (method, params = {}) => new Promise((res, rej) => { const id = ++se
 const evaluate = async (expr) => (await cdp('Runtime.evaluate', { expression: expr, awaitPromise: true, returnByValue: true })).result?.value;
 
 await cdp('Page.enable'); await cdp('Runtime.enable');
-await cdp('Emulation.setDeviceMetricsOverride', { width: W, height: H, deviceScaleFactor: 1, mobile: false });
+await cdp('Emulation.setDeviceMetricsOverride', { width: Math.round(W / ZOOM), height: Math.round(H / ZOOM), deviceScaleFactor: ZOOM, mobile: false });
 await cdp('Page.navigate', { url });
 await sleep(1500);
 for (let i = 0; i < 80; i++) { if (await evaluate('document.readyState === "complete" && !document.querySelector("#loading.show")')) break; await sleep(250); }
@@ -47,7 +48,7 @@ await sleep(800);
 const frames = [];
 onFrame = (p) => { const f = path.join(OUT, `f${String(frames.length).padStart(5, '0')}.jpg`); fs.writeFileSync(f, Buffer.from(p.data, 'base64')); frames.push({ f: path.basename(f), t: p.metadata.timestamp }); };
 if (AUDIO) await evaluate('window.__audioRec.start()');
-await cdp('Page.startScreencast', { format: 'jpeg', quality: 92, maxWidth: W, maxHeight: H, everyNthFrame: 1 });
+await cdp('Page.startScreencast', { format: 'jpeg', quality: 80, maxWidth: W, maxHeight: H, everyNthFrame: 1 });
 if (setup) await evaluate(fs.readFileSync(setup, 'utf8'));
 const t0 = Date.now();
 while ((Date.now() - t0) / 1000 < +secs) await sleep(100);

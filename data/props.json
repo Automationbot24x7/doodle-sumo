@@ -124,5 +124,17 @@
     "tasks": {
       "model": 6929140
     }
+  },
+  {
+    "id": "lamp",
+    "title": "Desk lamp",
+    "prompt": "A tall green metal desk lamp with a jointed arm and a round dome shade, cartoon style, single object",
+    "motion": null,
+    "role": "decor",
+    "urdf": false,
+    "joints": [],
+    "tasks": {
+      "model": 6929435
+    }
   }
 ]

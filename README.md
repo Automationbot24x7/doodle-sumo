@@ -5,6 +5,10 @@
 Play it in the browser: **https://automationbot24x7.github.io/doodle-sumo/**
 How every toy was made (live 3D viewers, joint sliders, full task log): **https://automationbot24x7.github.io/doodle-sumo/lab.html**
 
+75-second demo video: **https://automationbot24x7.github.io/doodle-sumo/assets/video/doodle-sumo-demo.mp4**
+
+[![Doodle Sumo gameplay](assets/video/poster.jpg)](https://automationbot24x7.github.io/doodle-sumo/assets/video/doodle-sumo-demo.mp4)
+
 Built for the **Manycore Aholo Global 3D AI Hackathon** (#Manycorehackathon).
 
 ## The game
