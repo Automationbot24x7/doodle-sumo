@@ -38,5 +38,31 @@
       "model": 6924815,
       "articulate": 6925441
     }
+  },
+  {
+    "id": "jack",
+    "title": "Jack-in-the-box",
+    "prompt": "A colourful toy jack-in-the-box: a square tin box with a crank handle on the side and a closed hinged lid on top, cartoon style, single object",
+    "motion": "Keep the box fixed. The lid on top is hinged at the back edge and flips open about 110 degrees, then closes. The crank handle on the side rotates around its axle.",
+    "role": "hazard",
+    "urdf": true,
+    "joints": [
+      {
+        "name": "lid_joint",
+        "type": "revolute",
+        "lower": 0,
+        "upper": 1.92
+      },
+      {
+        "name": "crank_joint",
+        "type": "continuous",
+        "lower": null,
+        "upper": null
+      }
+    ],
+    "tasks": {
+      "model": 6925740,
+      "articulate": 6926200
+    }
   }
 ]

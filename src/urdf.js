@@ -23,7 +23,7 @@ export async function loadURDF(base, loader) {
     const pivot = new THREE.Group(); frame.add(pivot); pivot.add(child); parent.add(frame); children.add(child.name);
     const type = j.getAttribute('type');
     joints[j.getAttribute('name')] = {
-      type, axis, lower: lim ? +lim.getAttribute('lower') : -Infinity, upper: lim ? +lim.getAttribute('upper') : Infinity, value: 0,
+      name: j.getAttribute('name'), type, axis, lower: lim ? +lim.getAttribute('lower') : -Infinity, upper: lim ? +lim.getAttribute('upper') : Infinity, value: 0,
       set(v) {
         this.value = v;
         if (type === 'prismatic') pivot.position.copy(axis).multiplyScalar(v);

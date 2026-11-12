@@ -13,7 +13,7 @@ export class Bot {
     if (!foes.length) return inp;
     if (!this.target || !this.target.alive || this.target.falling || this.retarget <= 0) {
       // prefer rivals near an edge (easy ring-outs), then the closest
-      this.target = foes.map((o) => ({ o, s: dist(f, o) - edgeDanger(o) * 3 + (o.isPlayer ? -0.6 * this.level : 0) + Math.random() * 1.2 }))
+      this.target = foes.map((o) => ({ o, s: dist(f, o) - edgeDanger(o) * 3 + (o.isPlayer ? -0.25 * this.level : 0) + Math.random() * 1.2 }))
         .sort((a, b) => a.s - b.s)[0].o;
       this.retarget = 1.5 + Math.random() * 1.5;
     }

@@ -52,6 +52,17 @@ const wall = new THREE.Mesh(new THREE.PlaneGeometry(80, 40), new THREE.MeshStand
 wall.position.set(0, 4, -14); world.add(wall);
 const blobTex = blobTexture();
 
+// The room around the desk: a 360° panorama generated with Aholo SpatialGen (if present).
+async function loadRoom() {
+  try {
+    const tex = await new THREE.TextureLoader().loadAsync('assets/world/pano.jpg');
+    tex.mapping = THREE.EquirectangularReflectionMapping; tex.colorSpace = THREE.SRGBColorSpace;
+    scene.background = tex; scene.backgroundBlurriness = 0.035; scene.backgroundIntensity = 0.95;
+    scene.backgroundRotation.set(0, Math.PI * 0.5, 0);
+    scene.fog = null; wall.visible = false; floor.visible = false; rug.visible = false;
+  } catch { /* plain room fallback */ }
+}
+
 // ---------- assets
 const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
 let FIGHTERS = [], PROPS = [], gltfs = {}, propGltfs = {};
@@ -129,7 +140,7 @@ const QS = new URLSearchParams(location.search); const DEMO = QS.has('demo');
 addEventListener('keydown', (e) => {
   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) e.preventDefault();
   if (!keys.has(e.code)) pressed.add(e.code); keys.add(e.code);
-  if (e.code === 'Enter') { if ($('#title').classList.contains('show')) startMatch(); else if ($('#results').classList.contains('show')) startMatch(); }
+  if (e.code === 'Enter') { if ($('#title').classList.contains('show')) startMatch(); else if ($('#results').classList.contains('show')) startMatch(); else if (state.spectating && state.phase === 'fight') state.skip = true; }
   if (e.code === 'KeyM') toggleMute();
   if (e.code === 'Escape' && state.phase !== 'menu') toMenu();
 });
@@ -196,6 +207,7 @@ let shake = 0, hitStop = 0;
 
 // ---------- match
 const state = { phase: 'menu', fighters: [], bots: [], round: 0, wins: {}, t: 0, banner: 0, phaseT: 0 };
+const ROUND_LEN = 60;
 const SPAWNS = [[-1.7, 1.2], [1.7, -1.2], [1.7, 1.2], [-1.7, -1.2]];
 const COLORS = ['#e2453c', '#3d7be0', '#3fae6a', '#f6c431'];
 
@@ -217,7 +229,7 @@ function startMatch() {
   state.round = 0; buildPlates(); show('game'); newRound();
 }
 function newRound() {
-  state.round++; state.t = 0; state.showdown = false;
+  state.round++; state.t = 0; state.showdown = false; state.spectating = false; state.skip = false;
   state.fighters.forEach((f, i) => { const [x, z] = SPAWNS[i]; f.reset(new THREE.Vector3(x, 0, z), Math.atan2(-x, -z)); });
   resetHazards(hazards);
   state.phase = 'countdown'; state.phaseT = 0; updatePlates();
@@ -249,7 +261,7 @@ function step(dt) {
   // pressure: last two standing hit harder, and harder still late in the round
   const standingNow = F.filter((f) => f.alive && !f.falling).length;
   if (state.phase === 'fight' && standingNow === 2 && !state.showdown && F.length > 2) { state.showdown = true; banner('Final showdown!', 'Shoves hit harder'); }
-  state.boost = (standingNow === 2 ? 1.3 : 1) * (state.t > 45 ? 1.35 : 1);
+  state.boost = (standingNow === 2 ? 1.3 : 1) * (state.t > ROUND_LEN - 20 ? 1.35 : 1);
   // inputs
   F.forEach((f, i) => {
     let inp;
@@ -319,7 +331,9 @@ function step(dt) {
   if (state.phase === 'fight') {
     const standing = F.filter((f) => f.alive && !f.falling);
     const humansLeft = F.some((f) => f.isPlayer && f.alive && !f.falling);
-    if (standing.length <= 1 || state.t > 70 || (!humansLeft && standing.length <= 1)) {
+    const anyHumans = F.some((f) => f.isPlayer) && !DEMO;
+    if (anyHumans && !humansLeft && standing.length > 1 && !state.spectating) { state.spectating = true; setTimeout(() => state.phase === 'fight' && banner('Knocked out!', 'Watching at 1.7× speed · Enter to skip'), 900); }
+    if (standing.length <= 1 || state.t > ROUND_LEN || state.skip) {
       let w = standing[0];
       if (!w && F.length) w = null;
       if (standing.length > 1) w = standing.sort((a, b) => Math.hypot(a.pos.x, a.pos.z) - Math.hypot(b.pos.x, b.pos.z))[0];
@@ -329,7 +343,7 @@ function step(dt) {
       updatePlates();
     }
     // timer display
-    const left = Math.max(0, 70 - state.t); $('#timer').textContent = state.phase === 'fight' ? Math.ceil(left) : '';
+    const left = Math.max(0, ROUND_LEN - state.t); $('#timer').textContent = state.phase === 'fight' ? Math.ceil(left) : '';
     if (left < 20 && left + dt >= 20) banner('Recess bell!', 'Traps go wild');
   } else if (state.phase === 'roundEnd') {
     if (state.roundWinner && state.phaseT > 1.4 && state.roundWinner.currentRole !== 'dance') state.roundWinner.play('dance', 0.3);
@@ -347,7 +361,7 @@ const hazardFx = {
   puff: (pos) => spawn(puffTex, pos, 1, 0, 1, 0.5, 0.16),
   pop: (t, pos, cls) => pop(t, pos, cls),
 };
-function tickHazards(dt) { updateHazards(hazards, state.fighters, dt, state.phase === 'fight', state.phase === 'fight' && state.t > 50, hazardFx); }
+function tickHazards(dt) { updateHazards(hazards, state.fighters, dt, state.phase === 'fight', state.phase === 'fight' && state.t > ROUND_LEN - 20, hazardFx); }
 const pick1 = (a) => a[Math.floor(Math.random() * a.length)];
 
 function endMatch(champ) {
@@ -402,6 +416,7 @@ function frame() {
   if (canvas.clientWidth && (canvas.width !== Math.floor(canvas.clientWidth * renderer.getPixelRatio()))) resize();
   let dt = Math.min(0.05, clock.getDelta());
   if (hitStop > 0) { hitStop -= dt; dt *= 0.08; }
+  if (state.spectating && state.phase === 'fight') dt *= 1.7;
   if (state.phase !== 'menu') step(dt); else state.fighters.forEach((f) => f.update(dt));
   if (state.phase !== 'fight' && state.phase !== 'roundEnd') tickHazards(dt);
   updateParts(dt); updateCamera(dt);
@@ -411,7 +426,7 @@ function frame() {
 
 (async function boot() {
   resize();
-  try { await loadAll(); } catch (e) { $('#loadTxt').textContent = 'Could not load the toys: ' + e.message; throw e; }
+  try { await Promise.all([loadAll(), loadRoom()]); } catch (e) { $('#loadTxt').textContent = 'Could not load the toys: ' + e.message; throw e; }
   ({ colliders, hazards } = placeProps(PROPS, propGltfs, world, blobTex)); makeThumbs(); buildRoster();
   // a few fighters idling on the desk behind the menu
   state.fighters = FIGHTERS.slice(0, 4).map((def, i) => { const f = new Fighter(def, gltfs[def.id], { slot: i, marker: false }); const [x, z] = SPAWNS[i]; f.reset(new THREE.Vector3(x * 1.1, 0, z * 1.4), Math.atan2(-x, -z)); f.play(i % 2 ? 'dance' : 'stance'); world.add(f.group); return f; });

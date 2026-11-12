@@ -1,5 +1,5 @@
 {
-  "built": "2026-11-12T20:48:56.753Z",
+  "built": "2026-11-12T20:54:38.021Z",
   "tasks": [
     {
       "t": "2026-11-12T20:12:41.870Z",
@@ -120,6 +120,30 @@
       "taskId": 6925829,
       "ok": true,
       "secs": 44
+    },
+    {
+      "t": "2026-11-12T20:51:03.991Z",
+      "kind": "text-to-3d",
+      "label": "jack:model",
+      "taskId": 6925740,
+      "ok": true,
+      "secs": 254
+    },
+    {
+      "t": "2026-11-12T20:53:49.180Z",
+      "kind": "articulate",
+      "label": "jack:articulate",
+      "taskId": 6926200,
+      "ok": true,
+      "secs": 158
+    },
+    {
+      "t": "2026-11-12T20:54:09.814Z",
+      "kind": "img-to-3d",
+      "label": "mug:model",
+      "taskId": 6925965,
+      "ok": true,
+      "secs": 314
     }
   ],
   "prompts": [
@@ -225,6 +249,22 @@
     },
     {
       "taskId": 6925965,
+      "version": "G1"
+    },
+    {
+      "taskId": 6926200,
+      "prompt": "Keep the box fixed. The lid on top is hinged at the back edge and flips open about 110 degrees, then closes. The crank handle on the side rotates around its axle."
+    },
+    {
+      "taskId": 6926288,
+      "version": "G1"
+    },
+    {
+      "taskId": 6926460
+    },
+    {
+      "taskId": 6926478,
+      "prompt": "A round pencil cup holder full of colourful pencils and wax crayons standing upright, cartoon toy style, single object",
       "version": "G1"
     }
   ]
