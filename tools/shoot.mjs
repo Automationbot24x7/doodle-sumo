@@ -18,6 +18,7 @@ const ev = async (x) => (await cdp('Runtime.evaluate', { expression: x, awaitPro
 await cdp('Page.enable');
 for (const j of jobs) {
   await cdp('Emulation.setDeviceMetricsOverride', { width: j.w || 1280, height: j.h || 720, deviceScaleFactor: j.scale || 1, mobile: false });
+  await cdp('Emulation.setDefaultBackgroundColorOverride', j.transparent ? { color: { r: 0, g: 0, b: 0, a: 0 } } : {});
   await cdp('Page.navigate', { url: j.url });
   const ready = j.ready || 'window.done === true';
   for (let i = 0; i < 120; i++) { await sleep(250); if (await ev(`(()=>{try{return !!(${ready})}catch(e){return false}})()`)) break; }

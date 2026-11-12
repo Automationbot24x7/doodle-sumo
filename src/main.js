@@ -95,7 +95,7 @@ function makeThumbs() {
     s.add(f.group); const h = f.height; cam.position.set(h * 0.9, h * 0.75, h * 2.6); cam.lookAt(0, h * 0.5, 0);
     rt.render(s, cam); const model = rt.domElement.toDataURL('image/png');
     // card portrait: sumo stance, facing the camera
-    f.play('stance', 0); f.mixer.update(0.7); f.body.rotation.y = 0.35; f.model.updateMatrixWorld(true);
+    f.play('idle', 0); f.mixer.update(0.5); f.body.rotation.y = 0.35; f.model.updateMatrixWorld(true);
     cam.position.set(h * 0.15, h * 0.62, h * 2.25); cam.lookAt(0, h * 0.45, 0);
     rt.render(s, cam); const card = rt.domElement.toDataURL('image/png');
     f.mixer.stopAllAction(); f.body.rotation.y = 0; f.model.updateMatrixWorld(true);
@@ -240,11 +240,16 @@ function newRound() {
   state.fighters.forEach((f, i) => { const [x, z] = SPAWNS[i]; f.reset(new THREE.Vector3(x, 0, z), Math.atan2(-x, -z)); });
   resetHazards(hazards);
   state.phase = 'countdown'; state.phaseT = 0; updatePlates();
-  banner(`Round ${state.round}`, 'Shove them off the desk!');
+  banner(`Round ${state.round}`, state.round === 1 && !DEMO ? 'Hold J to charge a big slap' : 'Shove them off the desk!');
 }
 function banner(txt, sub = '') { const b = $('#banner'); b.innerHTML = txt + (sub ? `<small>${sub}</small>` : ''); b.classList.add('on'); clearTimeout(banner.t); banner.t = setTimeout(() => b.classList.remove('on'), 1100); }
 function buildPlates() {
   $('#plates').innerHTML = state.fighters.map((f) => `<div class="plate ${f.isPlayer ? 'p' + (f.slot + 1) : ''}" data-s="${f.slot}" style="border-color:${f.color}"><img src="assets/fighters/${f.id}/doodle.png"><div><div class="who">${f.isPlayer ? 'PLAYER ' + (f.slot + 1) : 'CPU'}</div><div class="n">${f.name}</div><div class="pips"><i></i><i></i></div></div></div>`).join('');
+}
+function outStamp(f) {
+  const el = document.createElement('div'); el.className = 'outstamp';
+  el.innerHTML = `<img src="assets/fighters/${f.id}/doodle.png" alt=""><b>OUT!</b><span>${f.name}</span>`;
+  $('#pops').appendChild(el); setTimeout(() => el.remove(), 1500);
 }
 function updatePlates() {
   state.fighters.forEach((f) => { const el = document.querySelector(`.plate[data-s="${f.slot}"]`); if (!el) return; el.classList.toggle('out', !f.alive || f.falling); el.querySelectorAll('.pips i').forEach((p, i) => p.classList.toggle('w', i < state.wins[f.slot])); });
@@ -292,7 +297,7 @@ function step(dt) {
         a.vel.addScaledVector(fwd, -1.2);
         hit = true;
         const at = new THREE.Vector3((a.pos.x + b.pos.x) / 2, b.height * 0.6, (a.pos.z + b.pos.z) / 2);
-        spawn(starTex, at, ch > 0.5 ? 7 : 3, 1, 3 + ch * 3, 0.5, 0.35 + ch * 0.25);
+        spawn(starTex, at, ch > 0.5 ? 7 : 3, 1, 3 + ch * 3, 0.32, 0.35 + ch * 0.25);
         if (ch > 0.55) { sfx.bigSlap(); shake = 0.35; hitStop = 0.09; pop(pick1(popWords.big), at, 'yel'); }
         else { sfx.slap(0.6 + ch); shake = Math.max(shake, 0.12); hitStop = Math.max(hitStop, 0.03); if (Math.random() < 0.5) pop(pick1(popWords.small), at, 'small'); }
       }
@@ -329,6 +334,7 @@ function step(dt) {
     if (!f.alive || f.falling) continue;
     if (Math.abs(f.pos.x) > DESK.w / 2 + f.radius * 0.15 || Math.abs(f.pos.z) > DESK.d / 2 + f.radius * 0.15) {
       f.startFall({ sfx }); pop(f.isPlayer ? 'Nooo!' : pick1(['Aaah!', 'Wheee!', 'Bye!', 'Eep!']), new THREE.Vector3(f.pos.x, 1.4, f.pos.z), 'blu');
+      setTimeout(() => outStamp(f), 380);
       if (f.lastHitBy) setTimeout(() => sfx.thud(), 650);
       if (performance.now() - (state.lastSlow || 0) > 2500) { state.lastSlow = performance.now(); slowmo = 0.55; }
       updatePlates();
@@ -417,9 +423,12 @@ function updateCamera(dt) {
   const c = new THREE.Vector3(); F.forEach((f) => c.add(f.pos)); c.divideScalar(F.length);
   let spread = 0; F.forEach((f) => (spread = Math.max(spread, Math.hypot(f.pos.x - c.x, (f.pos.z - c.z) * 1.4))));
   c.multiplyScalar(0.55);
-  camTarget.lerp(c, 1 - Math.exp(-4 * dt));
+  // video mode: ease in on a trap while it warns and fires
+  const hot = VIDEO && state.phase === 'fight' ? hazards.find((h) => h.warning || h.justFired > 0.4) : null;
+  if (hot) c.lerp(new THREE.Vector3(hot.holder.position.x * 0.8, 0, hot.holder.position.z * 0.8 + 0.6), 0.7);
+  camTarget.lerp(c, 1 - Math.exp(-(hot ? 2.5 : 4) * dt));
   const aspectK = Math.max(1, 1.5 / camera.aspect);
-  const want = Math.min(17, Math.max(10.5, 8.2 + spread * 1.05)) * aspectK;
+  const want = (hot ? 8.5 : Math.min(17, Math.max(10.5, 8.2 + spread * 1.05))) * aspectK;
   camDist += (want - camDist) * (1 - Math.exp(-2.5 * dt));
   const sx = (Math.random() - 0.5) * shake, sy = (Math.random() - 0.5) * shake;
   camera.position.set(camTarget.x * 0.9 + sx, camDist * 0.66 + sy, camTarget.z + camDist * 0.86);

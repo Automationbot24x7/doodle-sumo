@@ -8,14 +8,21 @@ XF = 0.35  # crossfade seconds
 
 # (capture, start, duration, use game audio, hold-last-frame seconds, [(vo id, offset in segment)])
 SEG = [
-    ('reel',  0.2, 11.6, False, 0.0, [('n1', 0.5)]),
-    ('game3', 0.0,  6.0, True,  0.0, [('n2', 0.2)]),
-    ('game3', 6.0,  8.3, True,  0.0, [('n3', 1.0)]),
-    ('game4', 10.0, 15.8, True, 0.0, [('n4', 0.8)]),
-    ('game5', 13.6, 6.6, True,  0.0, [('n5', 0.9)]),
-    ('game3', 55.8, 8.0, True,  0.0, [('n6', 1.0)]),
-    ('lab',   0.3, 13.9, False, 1.3, [('n7', 0.6)]),
+    ('game7', 71.4,  2.7, True,  0.0, []),                      # cold open: the final slap, slow-mo ring-out
+    ('reel',  0.2, 11.6, False, 0.0, [('n1', 0.4)]),
+    ('game7', 0.0,  5.6, True,  0.0, [('n2', 0.2)]),
+    ('game7', 5.6, 19.2, True,  0.0, [('n3', 1.4), ('n4', 8.9)]),
+    ('game7', 70.6, 9.8, True,  0.0, [('n5', 1.6)]),
+    ('game7', 80.4, 7.0, True,  0.0, [('n6', 0.3)]),
+    ('lab',   0.3, 13.9, False, 0.0, [('n7', 0.5)]),
     ('end',   0.0,  1.6, False, 4.4, [('n8', 0.8)]),
+]
+# (overlay png, segment index, offset in segment, duration)
+OVER = [
+    ('open', 0, 0.5, 2.2),
+    ('cap-roster', 2, 0.5, 2.6), ('cap-room', 2, 3.2, 2.3),
+    ('cap-stapler', 3, 5.6, 3.0), ('cap-fan', 3, 10.3, 2.8), ('cap-jack', 3, 16.9, 2.3),
+    ('cap-flail', 4, 2.9, 2.6), ('cap-print', 5, 1.0, 4.5),
 ]
 
 def sh(cmd):
@@ -48,7 +55,14 @@ for i in range(1, len(SEG)):
     out = f'[x{i}]' if i < len(SEG) - 1 else '[vout]'
     fc.append(f'{prev}[{i}:v]xfade=transition=fade:duration={XF}:offset={off:.3f}{out}')
     prev = out
-sh(f'ffmpeg -y -v error {inputs} -filter_complex "{";".join(fc)}" -map "[vout]" -c:v libx264 -preset medium -crf 17 -pix_fmt yuv420p {B}/video.mp4')
+n = len(SEG); prev = '[vout]'; oin = ''
+for j, (png, si, o, d) in enumerate(OVER):
+    st = starts[si] + o; oin += f' -loop 1 -t {total:.2f} -i {WROOT}/video/overlays/{png}.png'
+    fc.append(f'[{n + j}:v]format=rgba,fade=in:st={st:.2f}:d=0.2:alpha=1,fade=out:st={st + d - 0.25:.2f}:d=0.25:alpha=1[o{j}]')
+    out = f'[ov{j}]'
+    fc.append(f"{prev}[o{j}]overlay=0:0:enable='between(t,{st:.2f},{st + d:.2f})'{out}"); prev = out
+fc.append(f'{prev}null[vfinal]')
+sh(f'ffmpeg -y -v error {inputs}{oin} -filter_complex "{";".join(fc)}" -map "[vfinal]" -t {total:.2f} -c:v libx264 -preset medium -crf 17 -pix_fmt yuv420p {B}/video.mp4')
 
 # 3) audio: music bed + game sfx at segment starts + narration, music ducked under the voice
 ain = [f'-i {WROOT}/video/cap/music/music.wav']

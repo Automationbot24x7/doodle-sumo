@@ -72,7 +72,7 @@
       <ul>
         <li><b>Party sumo:</b> four toys, one desk. Shove, charge a big slap, dash-roll. Last toy standing wins the round; first to two wins.</li>
         <li><b>The desk fights back:</b> a stapler snaps shut, a fan blows gusts, a jack-in-the-box blasts everyone nearby.</li>
-        <li><b>Paper → pixels → plastic:</b> the winner can be downloaded as a 3MF/STL file and 3D-printed.</li>
+        <li><b>Paper → pixels → printable file:</b> the winner can be downloaded as a Lux3D 3MF/STL export, ready for a slicer.</li>
         <li>Runs in any browser, no install. 1 player vs bots, or 2 players on one keyboard; touch on phones.</li>
       </ul>
     </div>
@@ -166,8 +166,9 @@
     <div style="flex:1">
       <p>The <b>Lab page</b> shows every fighter's doodle, toy concept, live 3D model (textured / mesh / skeleton) and all ten moves, plus each trap's URDF with a slider to move the joint yourself. It also lists every Lux3D task ID behind the game.</p>
       <div class="stats" id="stats" style="grid-template-columns:repeat(2,1fr)"></div>
+      <p style="font-size:21px;margin-top:16px"><b>Where the ~656 credits went:</b> six final fighters 324 (about 54 each), iterations 58 (Mugsy v1, move set v1, the doodle-direct test), nine desk props 180, three trap articulations 84, the SpatialGen room 10.</p>
     </div>
-    <img class="shot" src="img/lab.jpg" style="width:860px;height:600px;object-position:top">
+    <img class="shot" src="img/lab.jpg" style="width:860px;height:600px;object-position:left top">
   </div>
   <div class="tag">DOODLE SUMO · PROJECT REPORT</div><div class="num">9</div>
 </section>
@@ -207,13 +208,13 @@ urdf  = run('articulate', { glbUrl: obj.glb, prompt: MOTION })</pre>
   <h2>Try it</h2>
   <div class="row" style="align-items:flex-start;gap:50px">
     <div style="flex:1">
-      <p><span class="big-link">automationbot24x7.github.io/doodle-sumo</span><br><span class="muted">Play in any desktop or mobile browser. WASD + J/K, or touch.</span></p>
+      <p style="margin:0 0 10px"><span class="big-link">automationbot24x7.github.io/doodle-sumo</span><br><span class="muted">Play in any desktop or mobile browser. WASD + J/K, or touch.</span></p>
       <p><span class="big-link" style="font-size:30px">…/doodle-sumo/lab.html</span><br><span class="muted">How every toy was made, with live 3D viewers and joint sliders.</span></p>
       <p><span class="big-link" style="font-size:30px">github.com/Automationbot24x7/doodle-sumo</span><br><span class="muted">Source code (MIT) and the full Lux3D pipeline.</span></p>
-      <h3 style="margin-top:30px">Tools used</h3>
-      <p style="font-size:24px"><b>Aholo Lux3D</b> (API): all 3D models, toy concept images, rigging, animation, articulation, print export. <b>Aholo SpatialGen</b>: the bedroom panorama. three.js (rendering), glTF-Transform (compression). Code written with the AI coding assistant Claude Code.</p>
-      <h3 style="margin-top:16px">Next</h3>
-      <p style="font-size:22px;margin-top:4px">"Bring your own doodle": photograph a drawing and fight with it minutes later, using your own Aholo key.</p>
+      <h3 style="margin-top:14px">Tools used</h3>
+      <p style="font-size:21px;margin:6px 0"><b>Aholo Lux3D</b> (API): all 3D models, toy concept images, rigging, animation, articulation, print export. <b>Aholo SpatialGen</b>: the bedroom panorama. three.js (rendering), glTF-Transform (compression). Code written with the AI coding assistant Claude Code.</p>
+      <h3 style="margin-top:8px">Next</h3>
+      <p style="font-size:20px;margin-top:4px">Today the roster is six pre-made doodles (drawn for this project). Next: "bring your own doodle": photograph a drawing and fight with it minutes later, using your own Aholo key.</p>
     </div>
     <img class="shot" src="img/results.jpg" style="width:820px;height:462px">
   </div>

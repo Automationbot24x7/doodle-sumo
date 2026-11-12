@@ -39,7 +39,11 @@ const mixer = new THREE.AnimationMixer(model);
 const skel = new THREE.SkeletonHelper(model); skel.visible = false; skel.material.depthTest = false; skel.material.color = new THREE.Color('#e2453c'); scene.add(skel);
 const mats = []; model.traverse((o) => { if (o.isMesh) mats.push([o, o.material]); });
 const wire = new THREE.MeshBasicMaterial({ color: '#3d7be0', wireframe: true, transparent: true, opacity: 0.35 });
-const ghost = new THREE.MeshBasicMaterial({ color: '#c9daf2', transparent: true, opacity: 0.18, depthWrite: false });
+const ghost = new THREE.MeshBasicMaterial({ color: '#9fb8e8', transparent: true, opacity: 0.3, depthWrite: false });
+// joint dots so the Lux3D skeleton reads clearly on video
+const dots = []; const dotMat = new THREE.MeshBasicMaterial({ color: '#e2453c', depthTest: false });
+model.traverse((o) => { if (o.isBone && !/Thumb|Index|Middle|Ring|Pinky|_end/i.test(o.name)) { const m = new THREE.Mesh(new THREE.SphereGeometry(h * 0.014, 10, 8), dotMat); m.renderOrder = 20; m.visible = false; o.add(m); dots.push(m); } });
+const showDots = (v) => dots.forEach((d) => (d.visible = v));
 const setMat = (m) => mats.forEach(([o, mat]) => (o.material = m || mat));
 let yaw = 0, spin = 1.2, current;
 const play = (animId, fade = 0.25) => {
@@ -66,15 +70,15 @@ async function playReel() {
   shapes.forEach((el, i) => { el.style.transition = `stroke-dashoffset ${per * 3}ms ease ${i * per}ms, fill-opacity 300ms ease ${1500 + i * 8}ms`; });
   await sleep(50); shapes.forEach((el) => { el.style.strokeDashoffset = 0; el.style.fillOpacity = 1; });
   await sleep(2300);
-  step('2/5', 'LUX3D · TOY CONCEPT'); cap('…becomes a <b>Lux3D</b> toy…'); await flash();
+  step('2/5', 'LUX3D · TOY CONCEPT IMAGE'); cap('…becomes a <b>Lux3D</b> toy concept…'); await flash();
   $('#toy').style.opacity = 1; $('#doodle').style.opacity = 0; $('#toy').style.transform = 'translate(-50%,-50%) scale(1.04)';
   await sleep(1600);
   step('3/5', 'LUX3D · 3D MODEL'); cap('…a real <b>3D model</b>…'); await flash();
   play('A_TPose'); mixer.stopAllAction(); canvas.style.opacity = 1; $('#toy').style.opacity = 0; spin = 2.2;
   await sleep(1600);
-  step('4/5', 'LUX3D · AUTO-RIG'); cap('…with a <b>skeleton</b>…'); setMat(wire); await sleep(500); setMat(ghost); skel.visible = true; spin = 0.6;
+  step('4/5', 'LUX3D · AUTO-RIG'); cap('…with a <b>skeleton</b>…'); setMat(wire); await sleep(500); setMat(ghost); skel.visible = true; showDots(true); spin = 0.6;
   await sleep(1500);
-  step('5/5', 'LUX3D · MOVES'); cap('…and <b>moves</b>.'); setMat(null); skel.visible = false; spin = 0.4;
+  step('5/5', 'LUX3D · MOVES'); cap('…and <b>moves</b>.'); setMat(null); skel.visible = false; showDots(false); spin = 0.4;
   play('Punch_Cross', 0.1); await sleep(700); play('Roll', 0.1); await sleep(900); play('Dance_Loop', 0.2); await sleep(1600);
   window.reelDone = true;
 }
