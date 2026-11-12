@@ -162,3 +162,14 @@ a { color: var(--blue); }
 #results .flow figure { width: 112px; }
 #results .flow img { width: 112px; height: 112px; }
 #results .flow .arr { font-size: 26px; }
+
+/* phones */
+@media (max-width: 640px) {
+  #title .actions { position: sticky; bottom: -16px; background: var(--paper); padding: 10px 0 12px; margin-bottom: -16px; border-top: 2px dashed #d8d2c3; z-index: 2; }
+  #title .card .stats { display: none; }
+}
+@media (max-height: 500px) {
+  .plates { top: 6px; transform: translateX(-50%) scale(.72); transform-origin: top center; }
+  .timer { top: 62px; font-size: 40px; }
+  .banner { top: 26%; }
+}
