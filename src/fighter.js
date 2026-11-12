@@ -131,7 +131,7 @@ export class Fighter {
     const k = 1 + this.squash;
     this.body.scale.set(k + sq * 0.6, 1 / k - sq, k + sq * 0.6);
     if (this.ring) {
-      this.ring.visible = this.chargeRing.visible = !this.falling && this.alive;
+      this.ring.visible = this.chargeRing.visible = !this.falling && this.alive && !this.won;
       const c = this.charging ? this.charge : 0;
       if (c !== this._lastC) { this._lastC = c; this.chargeRing.geometry.dispose(); this.chargeRing.geometry = new THREE.RingGeometry(this.radius * 1.4, this.radius * 1.62, 40, 1, Math.PI / 2, Math.max(0.001, c * Math.PI * 2)); }
     }

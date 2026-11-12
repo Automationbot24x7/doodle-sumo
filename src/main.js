@@ -400,8 +400,12 @@ function updateCamera(dt) {
     camera.position.set(Math.sin(menuT) * 14 + off.x, 8.5, Math.cos(menuT) * 14 + off.z); camera.lookAt(camTarget.x + off.x, 0, camTarget.z + off.z); return;
   }
   if (state.phase === 'results' && state.champ) {
-    menuT += dt * 0.35; const c = state.champ.pos;
-    camera.position.lerp(new THREE.Vector3(c.x + Math.sin(menuT) * 4.2, 2.6, c.z + Math.cos(menuT) * 4.2), 1 - Math.exp(-3 * dt)); camera.lookAt(c.x, 0.8, c.z); return;
+    menuT += dt * 0.25; const c = state.champ.pos; const h = state.champ.height;
+    const wide = innerWidth >= 1100, R = h * 3.4;
+    const side = wide ? -h * 0.95 : 0; // shift the champion to the right of the screen, beside the card
+    const off = new THREE.Vector3(-Math.cos(menuT) * side * -1, 0, Math.sin(menuT) * side * -1);
+    camera.position.lerp(new THREE.Vector3(c.x + Math.sin(menuT) * R + off.x, h * 1.25, c.z + Math.cos(menuT) * R + off.z), 1 - Math.exp(-3 * dt));
+    camera.lookAt(c.x + off.x, h * 0.55, c.z + off.z); return;
   }
   const c = new THREE.Vector3(); F.forEach((f) => c.add(f.pos)); c.divideScalar(F.length);
   let spread = 0; F.forEach((f) => (spread = Math.max(spread, Math.hypot(f.pos.x - c.x, (f.pos.z - c.z) * 1.4))));
