@@ -10,9 +10,9 @@ export const LAYOUT = {
   crayons: { x: -2.6, z: -4.4, yaw: 0.12, h: 0.55, r: 0.75 },
   lamp: { x: 7.9, z: -5.6, yaw: -2.3, h: 6.0, r: 0, off: true },
   // traps, driven through the joints Lux3D articulation produced (URDF)
-  stapler: { x: -6.25, z: 0.2, yaw: Math.PI, h: 0.85, r: 0, hazard: { kind: 'staple', zone: { x: -5.1, z: 0.2, hw: 1.3, hd: 0.6 }, period: [7, 11], warn: 1.5 } },
+  stapler: { x: -5.2, z: 0.2, yaw: Math.PI, h: 0.95, r: 0, hazard: { kind: 'staple', zone: { x: -3.85, z: 0.2, hw: 1.4, hd: 0.65 }, period: [7, 11], warn: 1.5 } },
   fan: { x: 6.55, z: 0.5, yaw: -Math.PI / 2, h: 1.7, r: 0.55, hazard: { kind: 'wind', zone: { x: 0.6, z: 0.5, hw: 5.8, hd: 1.6 }, period: [9, 13], warn: 1.3, dur: 2.6 } },
-  jack: { x: 1.6, z: -4.15, yaw: 0, h: 1.1, r: 0.7, hazard: { kind: 'pop', zone: { x: 1.6, z: -3.4, hw: 2.0, hd: 1.6 }, period: [10, 15], warn: 2.0, dur: 0.25 } },
+  jack: { x: 1.4, z: -3.4, yaw: 0, h: 1.2, r: 0.7, hazard: { kind: 'pop', zone: { x: 1.4, z: -2.5, hw: 2.0, hd: 1.6 }, period: [10, 15], warn: 2.0, dur: 0.25 } },
 };
 
 export async function loadProp(p, loader) {

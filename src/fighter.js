@@ -7,7 +7,7 @@ export const ROLE = {
   shove: 'Punch_Cross', jab: 'Punch_Jab', roll: 'Roll', flail: 'Swim_Fwd_Loop', dance: 'Dance_Loop', cheer: 'Yes',
 };
 
-export const BASE_HEIGHT = 1.42;     // world units for a 1.0-size fighter
+export const BASE_HEIGHT = 1.62;     // world units for a 1.0-size fighter
 export const DESK = { w: 14, d: 10 };  // play surface (x: -7..7, z: -4.5..4.5)
 
 const tmp = new THREE.Vector3();
@@ -35,9 +35,9 @@ export class Fighter {
       const col = new THREE.Color(opts.color || '#2b2b33');
       this.ring = new THREE.Mesh(new THREE.RingGeometry(this.radius * 1.05, this.radius * 1.32, 40), new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: 0.85, depthWrite: false }));
       this.ring.rotation.x = -Math.PI / 2; this.ring.position.y = 0.02; this.group.add(this.ring);
-      this.chargeRing = new THREE.Mesh(new THREE.RingGeometry(this.radius * 1.4, this.radius * 1.62, 40, 1, 0, 0.001), new THREE.MeshBasicMaterial({ color: '#f6c431', transparent: true, opacity: 0.95, depthWrite: false, side: THREE.DoubleSide }));
+      this.chargeRing = new THREE.Mesh(new THREE.RingGeometry(this.radius * 1.4, this.radius * 1.62, 40, 1, 0, 0.001), new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.95, depthWrite: false, side: THREE.DoubleSide }));
       this.chargeRing.rotation.x = -Math.PI / 2; this.chargeRing.position.y = 0.025; this.group.add(this.chargeRing);
-      if (this.isPlayer) this.group.add(this.tag = makeTag(`P${this.slot + 1}`, opts.color, target + 0.45));
+      this.group.add(this.tag = makeTag(this.isPlayer ? `P${this.slot + 1}` : 'CPU', opts.color, target + 0.45, !this.isPlayer));
     }
     this.mixer = new THREE.AnimationMixer(root);
     this.clips = {};
@@ -151,7 +151,7 @@ export function lerpAngle(a, b, t) {
   return a + d * t;
 }
 
-function makeTag(text, color, y) {
+function makeTag(text, color, y, small) {
   const c = document.createElement('canvas'); c.width = 128; c.height = 96; const g = c.getContext('2d');
   g.fillStyle = color || '#e2453c'; g.strokeStyle = '#2b2b33'; g.lineWidth = 6;
   g.beginPath(); g.roundRect(8, 6, 112, 60, 16); g.fill(); g.stroke();
@@ -159,5 +159,5 @@ function makeTag(text, color, y) {
   g.fillStyle = '#fff'; g.font = 'bold 44px Nunito, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(text, 64, 38);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
   const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false, transparent: true }));
-  s.scale.set(0.62, 0.47, 1); s.position.y = y; s.renderOrder = 10; return s;
+  const k = small ? 0.78 : 1; s.scale.set(0.62 * k, 0.47 * k, 1); s.position.y = y; s.renderOrder = 10; return s;
 }

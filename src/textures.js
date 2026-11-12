@@ -6,13 +6,13 @@ function rng(seed) { let s = seed >>> 0; return () => ((s = (s * 1664525 + 10139
 export function woodTexture(renderer) {
   const W = 2048, H = 1344, c = document.createElement('canvas'); c.width = W; c.height = H;
   const g = c.getContext('2d'); const r = rng(42);
-  g.fillStyle = '#c98e57'; g.fillRect(0, 0, W, H);
+  g.fillStyle = '#a06a3c'; g.fillRect(0, 0, W, H);
   // planks
   const planks = 5;
   for (let p = 0; p < planks; p++) {
     const y0 = (p * H) / planks, h = H / planks;
     const tint = 0.9 + r() * 0.2;
-    g.fillStyle = `rgba(${Math.round(205 * tint)},${Math.round(146 * tint)},${Math.round(92 * tint)},1)`;
+    g.fillStyle = `rgba(${Math.round(166 * tint)},${Math.round(110 * tint)},${Math.round(66 * tint)},1)`;
     g.fillRect(0, y0, W, h);
     for (let i = 0; i < 70; i++) {
       const y = y0 + r() * h; const a = 0.05 + r() * 0.12;
@@ -32,8 +32,11 @@ export function woodTexture(renderer) {
   const doodle = (fn, col, lw = 5, a = 0.35) => { g.save(); g.globalAlpha = a; g.strokeStyle = col; g.lineWidth = lw; fn(); g.restore(); };
   doodle(() => { g.beginPath(); g.arc(1650, 260, 70, 0, Math.PI * 2); g.stroke(); g.beginPath(); g.arc(1625, 245, 8, 0, 7); g.arc(1675, 245, 8, 0, 7); g.stroke(); g.beginPath(); g.arc(1650, 270, 35, 0.3, Math.PI - 0.3); g.stroke(); }, '#4a3a8a');
   doodle(() => { g.beginPath(); for (let i = 0; i < 5; i++) { const a = -Math.PI / 2 + i * 4 * Math.PI / 5; g.lineTo(380 + Math.cos(a) * 60, 1090 + Math.sin(a) * 60); } g.closePath(); g.stroke(); }, '#a8322a');
-  doodle(() => { g.font = 'bold 64px Gaegu, Comic Sans MS'; g.fillStyle = '#3a3a8a'; g.globalAlpha = 0.28; g.fillText('SUMO CHAMP →', 1300, 1180); }, '#333');
   doodle(() => { g.beginPath(); g.moveTo(220, 240); g.bezierCurveTo(300, 140, 420, 340, 520, 220); g.stroke(); }, '#225', 4, 0.25);
+  // red crayon danger stripe just inside the desk edge
+  g.save(); g.strokeStyle = 'rgba(226,69,60,.75)'; g.lineWidth = 16; g.setLineDash([60, 34]); g.lineCap = 'round';
+  for (let pass = 0; pass < 2; pass++) { const m = 40 + pass * 6; g.strokeRect(m, m, W - 2 * m, H - 2 * m); }
+  g.restore();
   for (let i = 0; i < 40; i++) { g.strokeStyle = `rgba(80,50,25,${0.05 + r() * 0.1})`; g.lineWidth = 1 + r() * 2; const x = r() * W, y = r() * H, l = 20 + r() * 80, a = r() * Math.PI; g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * l, y + Math.sin(a) * l); g.stroke(); }
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = renderer.capabilities.getMaxAnisotropy(); return t;
 }
@@ -44,14 +47,19 @@ export function paperRingTexture() {
   g.fillStyle = '#fbf8f1'; g.fillRect(0, 0, S, S);
   g.strokeStyle = '#c9daf2'; g.lineWidth = 3; for (let y = 64; y < S; y += 48) { g.beginPath(); g.moveTo(0, y); g.lineTo(S, y); g.stroke(); }
   g.strokeStyle = 'rgba(226,69,60,.45)'; g.lineWidth = 4; g.beginPath(); g.moveTo(110, 0); g.lineTo(110, S); g.stroke();
-  // crayon ring (several wobbly passes)
-  for (let pass = 0; pass < 7; pass++) {
-    g.strokeStyle = `rgba(40,40,52,${0.25 + r() * 0.2})`; g.lineWidth = 9 + r() * 6; g.beginPath();
-    for (let a = 0; a <= Math.PI * 2 + 0.05; a += 0.05) { const rad = 400 + Math.sin(a * 3 + pass) * 6 + (r() - 0.5) * 6; g.lineTo(S / 2 + Math.cos(a) * rad, S / 2 + Math.sin(a) * rad); }
-    g.stroke();
-  }
-  // starting lines (shikiri-sen)
-  g.strokeStyle = 'rgba(40,40,52,.8)'; g.lineWidth = 12; g.beginPath(); g.moveTo(440, 470); g.lineTo(440, 554); g.moveTo(584, 470); g.lineTo(584, 554); g.stroke();
+  // crayon X marks where the four toys start (sheet spans 6.4 world units)
+  const k = S / 6.4; const cols = ['#e2453c', '#3d7be0', '#3fae6a', '#e0a400'];
+  [[-1.7, 1.2], [1.7, -1.2], [1.7, 1.2], [-1.7, -1.2]].forEach(([x, z], i) => {
+    const cx = S / 2 + x * k, cy = S / 2 + z * k;
+    for (let pass = 0; pass < 3; pass++) { g.strokeStyle = cols[i]; g.globalAlpha = 0.55 + r() * 0.2; g.lineWidth = 11 + r() * 5; g.beginPath(); g.moveTo(cx - 46 + r() * 6, cy - 46); g.lineTo(cx + 46, cy + 46 + r() * 6); g.moveTo(cx + 46, cy - 46 + r() * 6); g.lineTo(cx - 46 + r() * 6, cy + 46); g.stroke(); }
+  });
+  g.globalAlpha = 1;
+  // note in the middle: the one rule
+  g.fillStyle = 'rgba(40,40,52,.82)'; g.font = 'bold 96px Gaegu, Comic Sans MS, cursive'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.save(); g.translate(S / 2, S / 2 - 24); g.rotate(-0.05); g.fillText("shove 'em", 0, -36); g.fillText('off the desk!', 0, 56); g.restore();
+  g.strokeStyle = 'rgba(226,69,60,.8)'; g.lineWidth = 9; g.lineCap = 'round';
+  const arrow = (x1, y1, x2, y2) => { g.beginPath(); g.moveTo(x1, y1); g.lineTo(x2, y2); const a = Math.atan2(y2 - y1, x2 - x1); g.lineTo(x2 - Math.cos(a - 0.5) * 34, y2 - Math.sin(a - 0.5) * 34); g.moveTo(x2, y2); g.lineTo(x2 - Math.cos(a + 0.5) * 34, y2 - Math.sin(a + 0.5) * 34); g.stroke(); };
+  arrow(330, 420, 150, 380); arrow(700, 420, 880, 380); arrow(512, 640, 512, 800);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
 

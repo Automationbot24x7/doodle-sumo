@@ -24,7 +24,8 @@ const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 200);
 camera.position.set(0, 12, 12);
 
 // ---------- lights
-scene.add(new THREE.HemisphereLight('#fff4e0', '#4a3a30', 1.1));
+scene.add(new THREE.HemisphereLight('#fff4e0', '#4a3a30', 0.95));
+const rim = new THREE.DirectionalLight('#bcd4ff', 1.6); rim.position.set(4, 6, -10); scene.add(rim);
 const sun = new THREE.DirectionalLight('#fff1d6', 2.3);
 sun.position.set(-6, 14, 7); sun.castShadow = true;
 sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0004; sun.shadow.normalBias = 0.02;
@@ -84,7 +85,7 @@ const rand = (a, b) => a + Math.random() * (b - a);
 // ---------- thumbnails (3D render + skeleton) rendered once per fighter
 function makeThumbs() {
   const rt = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
-  rt.setSize(256, 256); rt.outputColorSpace = THREE.SRGBColorSpace;
+  rt.setSize(320, 320); rt.outputColorSpace = THREE.SRGBColorSpace;
   const s = new THREE.Scene(); s.environment = scene.environment;
   s.add(new THREE.HemisphereLight('#fff', '#888', 1.6)); const dl = new THREE.DirectionalLight('#fff', 2); dl.position.set(2, 3, 4); s.add(dl);
   const cam = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
@@ -93,11 +94,17 @@ function makeThumbs() {
     f.mixer.stopAllAction(); f.model.updateMatrixWorld(true);
     s.add(f.group); const h = f.height; cam.position.set(h * 0.9, h * 0.75, h * 2.6); cam.lookAt(0, h * 0.5, 0);
     rt.render(s, cam); const model = rt.domElement.toDataURL('image/png');
+    // card portrait: sumo stance, facing the camera
+    f.play('stance', 0); f.mixer.update(0.7); f.body.rotation.y = 0.35; f.model.updateMatrixWorld(true);
+    cam.position.set(h * 0.15, h * 0.62, h * 2.25); cam.lookAt(0, h * 0.45, 0);
+    rt.render(s, cam); const card = rt.domElement.toDataURL('image/png');
+    f.mixer.stopAllAction(); f.body.rotation.y = 0; f.model.updateMatrixWorld(true);
+    cam.position.set(h * 0.9, h * 0.75, h * 2.6); cam.lookAt(0, h * 0.5, 0);
     const skel = new THREE.SkeletonHelper(f.model); skel.material.linewidth = 3; skel.material.depthTest = false; skel.material.color = new THREE.Color('#e2453c');
     f.model.traverse((o) => { if (o.isMesh) { o.userData.m = o.material; o.material = new THREE.MeshBasicMaterial({ color: '#c9daf2', wireframe: true, transparent: true, opacity: 0.35 }); } });
     s.add(skel); rt.render(s, cam); const skeleton = rt.domElement.toDataURL('image/png');
     s.remove(skel); s.remove(f.group);
-    thumbs[def.id] = { model, skeleton };
+    thumbs[def.id] = { model, skeleton, card };
   }
   rt.dispose();
 }
@@ -108,7 +115,7 @@ function buildRoster() {
   const box = $('#roster'); box.innerHTML = '';
   for (const f of FIGHTERS) {
     const el = document.createElement('button'); el.className = 'card'; el.dataset.id = f.id;
-    el.innerHTML = `<span class="badge">P1</span><div class="imgs"><img class="doodle" src="assets/fighters/${f.id}/doodle.png" alt=""><img class="toy" src="assets/fighters/${f.id}/toy.png" alt=""></div>
+    el.innerHTML = `<span class="badge">P1</span><div class="imgs"><img class="toy3d" src="${thumbs[f.id]?.card || `assets/fighters/${f.id}/toy.png`}" alt="${f.title}"><img class="sticker" src="assets/fighters/${f.id}/doodle.png" alt="original doodle"></div>
       <div class="nm">${f.title}</div><div class="bl">${f.blurb}</div>
       <div class="stats"><span>Weight</span><span class="bar"><i style="width:${Math.round(f.mass / 1.6 * 100)}%"></i></span><span>Speed</span><span class="bar"><i style="width:${Math.round(f.speed / 1.3 * 100)}%"></i></span><span>Power</span><span class="bar"><i style="width:${Math.round(f.power / 1.15 * 100)}%"></i></span></div>`;
     el.onclick = () => { initAudio(); sfx.ui(); choose(f.id); };
@@ -203,7 +210,7 @@ function pop(text, worldPos, cls = '') {
   el.style.left = ((v.x + 1) / 2) * innerWidth + 'px'; el.style.top = ((1 - v.y) / 2) * innerHeight + 'px';
   $('#pops').appendChild(el); setTimeout(() => el.remove(), 850);
 }
-let shake = 0, hitStop = 0;
+let shake = 0, hitStop = 0, slowmo = 0;
 
 // ---------- match
 const state = { phase: 'menu', fighters: [], bots: [], round: 0, wins: {}, t: 0, banner: 0, phaseT: 0 };
@@ -237,7 +244,7 @@ function newRound() {
 }
 function banner(txt, sub = '') { const b = $('#banner'); b.innerHTML = txt + (sub ? `<small>${sub}</small>` : ''); b.classList.add('on'); clearTimeout(banner.t); banner.t = setTimeout(() => b.classList.remove('on'), 1100); }
 function buildPlates() {
-  $('#plates').innerHTML = state.fighters.map((f) => `<div class="plate ${f.isPlayer ? 'p' + (f.slot + 1) : ''}" data-s="${f.slot}"><img src="assets/fighters/${f.id}/toy.png"><div><div class="who">${f.isPlayer ? 'PLAYER ' + (f.slot + 1) : 'CPU'}</div><div class="n">${f.name}</div><div class="pips"><i></i><i></i></div></div></div>`).join('');
+  $('#plates').innerHTML = state.fighters.map((f) => `<div class="plate ${f.isPlayer ? 'p' + (f.slot + 1) : ''}" data-s="${f.slot}" style="border-color:${f.color}"><img src="assets/fighters/${f.id}/doodle.png"><div><div class="who">${f.isPlayer ? 'PLAYER ' + (f.slot + 1) : 'CPU'}</div><div class="n">${f.name}</div><div class="pips"><i></i><i></i></div></div></div>`).join('');
 }
 function updatePlates() {
   state.fighters.forEach((f) => { const el = document.querySelector(`.plate[data-s="${f.slot}"]`); if (!el) return; el.classList.toggle('out', !f.alive || f.falling); el.querySelectorAll('.pips i').forEach((p, i) => p.classList.toggle('w', i < state.wins[f.slot])); });
@@ -287,7 +294,7 @@ function step(dt) {
         const at = new THREE.Vector3((a.pos.x + b.pos.x) / 2, b.height * 0.6, (a.pos.z + b.pos.z) / 2);
         spawn(starTex, at, ch > 0.5 ? 7 : 3, 1, 3 + ch * 3, 0.5, 0.35 + ch * 0.25);
         if (ch > 0.55) { sfx.bigSlap(); shake = 0.35; hitStop = 0.09; pop(pick1(popWords.big), at, 'yel'); }
-        else { sfx.slap(0.6 + ch); shake = Math.max(shake, 0.12); hitStop = Math.max(hitStop, 0.03); if (Math.random() < 0.5) pop(pick1(popWords.small), at); }
+        else { sfx.slap(0.6 + ch); shake = Math.max(shake, 0.12); hitStop = Math.max(hitStop, 0.03); if (Math.random() < 0.5) pop(pick1(popWords.small), at, 'small'); }
       }
       if (!hit && a.isPlayer) sfx.whoosh();
     }
@@ -323,6 +330,7 @@ function step(dt) {
     if (Math.abs(f.pos.x) > DESK.w / 2 + f.radius * 0.15 || Math.abs(f.pos.z) > DESK.d / 2 + f.radius * 0.15) {
       f.startFall({ sfx }); pop(f.isPlayer ? 'Nooo!' : pick1(['Aaah!', 'Wheee!', 'Bye!', 'Eep!']), new THREE.Vector3(f.pos.x, 1.4, f.pos.z), 'blu');
       if (f.lastHitBy) setTimeout(() => sfx.thud(), 650);
+      if (performance.now() - (state.lastSlow || 0) > 2500) { state.lastSlow = performance.now(); slowmo = 0.55; }
       updatePlates();
     }
   }
@@ -400,11 +408,11 @@ function updateCamera(dt) {
   c.multiplyScalar(0.55);
   camTarget.lerp(c, 1 - Math.exp(-4 * dt));
   const aspectK = Math.max(1, 1.5 / camera.aspect);
-  const want = Math.min(20, Math.max(12.5, 10 + spread * 1.1)) * aspectK;
+  const want = Math.min(17, Math.max(10.5, 8.2 + spread * 1.05)) * aspectK;
   camDist += (want - camDist) * (1 - Math.exp(-2.5 * dt));
   const sx = (Math.random() - 0.5) * shake, sy = (Math.random() - 0.5) * shake;
-  camera.position.set(camTarget.x * 0.85 + sx, camDist * 0.82 + sy, camTarget.z + camDist * 0.72);
-  camera.lookAt(camTarget.x, 0, camTarget.z - 0.4);
+  camera.position.set(camTarget.x * 0.9 + sx, camDist * 0.66 + sy, camTarget.z + camDist * 0.86);
+  camera.lookAt(camTarget.x, 0.35, camTarget.z - 0.2);
   shake *= Math.exp(-8 * dt);
 }
 
@@ -417,6 +425,7 @@ function frame() {
   if (canvas.clientWidth && (canvas.width !== Math.floor(canvas.clientWidth * renderer.getPixelRatio()))) resize();
   let dt = Math.min(0.05, clock.getDelta());
   if (hitStop > 0) { hitStop -= dt; dt *= 0.08; }
+  else if (slowmo > 0) { slowmo -= dt; dt *= 0.35; }
   if (state.spectating && state.phase === 'fight') dt *= 1.7;
   if (state.phase !== 'menu') step(dt); else state.fighters.forEach((f) => f.update(dt));
   if (state.phase !== 'fight' && state.phase !== 'roundEnd') tickHazards(dt);
