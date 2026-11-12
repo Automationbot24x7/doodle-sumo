@@ -100,5 +100,29 @@
     "tasks": {
       "model": 6928067
     }
+  },
+  {
+    "id": "duck",
+    "title": "Rubber duck",
+    "prompt": "A classic yellow rubber duck bath toy with an orange beak, single object",
+    "motion": null,
+    "role": "decor",
+    "urdf": false,
+    "joints": [],
+    "tasks": {
+      "model": 6928728
+    }
+  },
+  {
+    "id": "crayons",
+    "title": "Crayon box",
+    "prompt": "An open cardboard box of chunky wax crayons in rainbow colours, lying flat, cartoon style, single object",
+    "motion": null,
+    "role": "decor",
+    "urdf": false,
+    "joints": [],
+    "tasks": {
+      "model": 6929140
+    }
   }
 ]

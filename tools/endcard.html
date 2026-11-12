@@ -1,0 +1,34 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Doodle Sumo end card</title>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#2b2b33; --red:#e2453c; --blue:#3d7be0; --yellow:#f6c431; --line:#c9daf2; }
+  html,body{margin:0;height:100%;overflow:hidden;font-family:'Nunito',sans-serif;color:var(--ink);
+    background:linear-gradient(90deg,transparent 7vw,rgba(226,69,60,.35) 7vw,rgba(226,69,60,.35) calc(7vw + 2px),transparent calc(7vw + 2px)),repeating-linear-gradient(180deg,transparent 0 39px,var(--line) 39px 40px),#fbf8f1;}
+  .wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.4vh}
+  h1{font-family:'Gaegu',cursive;font-size:15vh;margin:0;line-height:.9}
+  .w1{color:var(--blue);display:inline-block;transform:rotate(-4deg)} .w2{color:var(--red);display:inline-block;transform:rotate(3deg)}
+  .row{display:flex;gap:1.6vw}
+  .row img{width:12vh;height:12vh;object-fit:contain;background:#fff;border:3px solid var(--ink);border-radius:14px;box-shadow:4px 5px 0 var(--ink);opacity:0;transform:translateY(20px) rotate(-3deg);transition:all .4s cubic-bezier(.2,1.6,.4,1)}
+  .row img.in{opacity:1;transform:none}
+  .url{font-size:4.2vh;font-weight:900;color:var(--blue)}
+  .tag{font-size:3vh;font-weight:800}
+  .made{font-size:2.4vh;color:#5d5d6b;font-weight:800}
+</style></head><body>
+<div class="wrap">
+  <h1><span class="w1">Doodle</span> <span class="w2">Sumo</span></h1>
+  <div class="row" id="row"></div>
+  <div class="url">automationbot24x7.github.io/doodle-sumo</div>
+  <div class="tag">Play free in your browser · #Manycorehackathon</div>
+  <div class="made">Every toy, skeleton, move and trap joint made with Aholo Lux3D</div>
+</div>
+<script>
+(async () => {
+  const F = await (await fetch('../data/fighters.json')).json();
+  const row = document.getElementById('row');
+  F.forEach((f) => { const i = document.createElement('img'); i.src = `../assets/fighters/${f.id}/toy.png`; row.appendChild(i); });
+  await new Promise((r) => setTimeout(r, 400));
+  [...row.children].forEach((img, i) => setTimeout(() => img.classList.add('in'), 120 * i));
+  window.done = true;
+})();
+</script></body></html>

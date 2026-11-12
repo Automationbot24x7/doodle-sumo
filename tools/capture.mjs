@@ -7,6 +7,7 @@ import path from 'node:path';
 
 const [name, url, secs, setup] = process.argv.slice(2).filter((a) => !a.startsWith('--'));
 const HEADED = process.argv.includes('--headed');
+const AUDIO = process.argv.includes('--audio');
 const W = 1920, H = 1080;
 const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
 const OUT = path.resolve('video/cap', name);
@@ -45,11 +46,13 @@ await sleep(800);
 
 const frames = [];
 onFrame = (p) => { const f = path.join(OUT, `f${String(frames.length).padStart(5, '0')}.jpg`); fs.writeFileSync(f, Buffer.from(p.data, 'base64')); frames.push({ f: path.basename(f), t: p.metadata.timestamp }); };
+if (AUDIO) await evaluate('window.__audioRec.start()');
 await cdp('Page.startScreencast', { format: 'jpeg', quality: 92, maxWidth: W, maxHeight: H, everyNthFrame: 1 });
 if (setup) await evaluate(fs.readFileSync(setup, 'utf8'));
 const t0 = Date.now();
 while ((Date.now() - t0) / 1000 < +secs) await sleep(100);
 await cdp('Page.stopScreencast');
+if (AUDIO) { const b64 = await evaluate('window.__audioRec.stop()'); fs.writeFileSync(path.join(OUT, 'audio.webm'), Buffer.from(b64, 'base64')); console.log('audio saved'); }
 await sleep(300);
 
 // concat list with real frame durations

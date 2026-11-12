@@ -50,7 +50,7 @@ const clock = new THREE.Clock();
 function frame() {
   const dt = Math.min(0.05, clock.getDelta()); mixer.update(dt); yaw += dt * spin;
   const w = innerWidth, hh = innerHeight; renderer.setSize(w, hh, false); cam.aspect = w / hh; cam.updateProjectionMatrix();
-  const d = h * 3.2; cam.position.set(center.x + Math.sin(yaw) * d, center.y + h * 0.25, center.z + Math.cos(yaw) * d); cam.lookAt(center.x, center.y, center.z);
+  const d = h * 2.15; cam.position.set(center.x + Math.sin(yaw) * d, center.y + h * 0.25, center.z + Math.cos(yaw) * d); cam.lookAt(center.x, center.y, center.z);
   renderer.render(scene, cam); requestAnimationFrame(frame);
 }
 frame();

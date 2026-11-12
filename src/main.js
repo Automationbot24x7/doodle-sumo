@@ -143,7 +143,7 @@ function show(id) { document.querySelectorAll('.screen').forEach((s) => s.classL
 
 // ---------- input
 const keys = new Set(); const pressed = new Set();
-const QS = new URLSearchParams(location.search); const DEMO = QS.has('demo');
+const QS = new URLSearchParams(location.search); const DEMO = QS.has('demo'); const VIDEO = QS.has('video');
 addEventListener('keydown', (e) => {
   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) e.preventDefault();
   if (!keys.has(e.code)) pressed.add(e.code); keys.add(e.code);
@@ -219,7 +219,7 @@ const SPAWNS = [[-1.7, 1.2], [1.7, -1.2], [1.7, 1.2], [-1.7, -1.2]];
 const COLORS = ['#e2453c', '#3d7be0', '#3fae6a', '#f6c431'];
 
 function startMatch() {
-  initAudio(); startMusic();
+  initAudio(); if (!QS.has('nomusic')) startMusic();
   state.fighters.forEach((f) => world.remove(f.group));
   const ids = [pick[0]];
   if (mode === 2) ids.push(pick[1] !== pick[0] ? pick[1] : FIGHTERS.find((f) => f.id !== pick[0]).id);
@@ -268,7 +268,7 @@ function step(dt) {
   // pressure: last two standing hit harder, and harder still late in the round
   const standingNow = F.filter((f) => f.alive && !f.falling).length;
   if (state.phase === 'fight' && standingNow === 2 && !state.showdown && F.length > 2) { state.showdown = true; banner('Final showdown!', 'Shoves hit harder'); }
-  state.boost = (standingNow === 2 ? 1.3 : 1) * (state.t > ROUND_LEN - 20 ? 1.35 : 1);
+  state.boost = (standingNow === 2 ? 1.6 : 1) * (state.t > ROUND_LEN - 25 ? 1.4 : 1);
   // inputs
   F.forEach((f, i) => {
     let inp;
@@ -370,7 +370,14 @@ const hazardFx = {
   puff: (pos) => spawn(puffTex, pos, 1, 0, 1, 0.5, 0.16),
   pop: (t, pos, cls) => pop(t, pos, cls),
 };
-function tickHazards(dt) { updateHazards(hazards, state.fighters, dt, state.phase === 'fight', state.phase === 'fight' && state.t > ROUND_LEN - 20, hazardFx); }
+const VIDEO_SCHEDULE = { stapler: [3.5, 19], fan: [8, 24], jack: [13, 28] };
+function tickHazards(dt) {
+  if (VIDEO && state.phase === 'fight') for (const h of hazards) {
+    const sch = VIDEO_SCHEDULE[h.id]; if (!sch) continue;
+    const due = sch.some((at) => state.t >= at - h.warn && state.t - dt < at - h.warn);
+    if (due) { h.timer = h.warn; h.warning = false; h.active = 0; }
+    else if (!h.warning && h.active <= 0) h.timer = Math.max(h.timer, h.warn + 0.5);
+  } updateHazards(hazards, state.fighters, dt, state.phase === 'fight', state.phase === 'fight' && state.t > ROUND_LEN - 20, hazardFx); }
 const pick1 = (a) => a[Math.floor(Math.random() * a.length)];
 
 function endMatch(champ) {
@@ -446,5 +453,5 @@ function frame() {
   state.fighters = FIGHTERS.slice(0, 4).map((def, i) => { const f = new Fighter(def, gltfs[def.id], { slot: i, marker: false }); const [x, z] = SPAWNS[i]; f.reset(new THREE.Vector3(x * 1.1, 0, z * 1.4), Math.atan2(-x, -z)); f.play(i % 2 ? 'dance' : 'idle'); world.add(f.group); return f; });
   $('#loading').classList.remove('show');
   renderer.setAnimationLoop(frame);
-  window.__doodle = { state, scene, camera, FIGHTERS, PROPS, hazards };
+  window.__doodle = { state, scene, camera, FIGHTERS, PROPS, hazards, Bot, get hazardsList() { return hazards; } };
 })();

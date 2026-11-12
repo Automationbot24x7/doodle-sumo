@@ -8,6 +8,20 @@ export function initAudio() {
   sfxGain = ctx.createGain(); sfxGain.gain.value = 0.8; sfxGain.connect(master);
   musicGain = ctx.createGain(); musicGain.gain.value = 0.22; musicGain.connect(master);
 }
+// Recording hook for the demo video: records exactly what the game plays.
+window.__audioRec = {
+  async start() {
+    initAudio(); const dest = ctx.createMediaStreamDestination(); master.connect(dest);
+    this.chunks = []; this.rec = new MediaRecorder(dest.stream, { mimeType: 'audio/webm;codecs=opus', audioBitsPerSecond: 192000 });
+    this.rec.ondataavailable = (e) => e.data.size && this.chunks.push(e.data); this.rec.start(250); return true;
+  },
+  async stop() {
+    await new Promise((r) => { this.rec.onstop = r; this.rec.stop(); });
+    const buf = await new Blob(this.chunks, { type: 'audio/webm' }).arrayBuffer();
+    let bin = ''; const u = new Uint8Array(buf); for (let i = 0; i < u.length; i += 0x8000) bin += String.fromCharCode(...u.subarray(i, i + 0x8000));
+    return btoa(bin);
+  },
+};
 export function setMuted(m) { muted = m; if (master) master.gain.setTargetAtTime(m ? 0 : 0.9, ctx.currentTime, 0.05); }
 export const isMuted = () => muted;
 

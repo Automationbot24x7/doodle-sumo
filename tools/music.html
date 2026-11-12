@@ -1,0 +1,7 @@
+<!doctype html><html><head><meta charset="utf-8"><title>music</title></head><body>
+<script type="module">
+// Plays the game's own procedural music so the capture tool can record a clean bed for the video.
+import { initAudio, startMusic } from '../src/audio.js';
+window.go = () => { initAudio(); startMusic(); return true; };
+window.done = true;
+</script></body></html>

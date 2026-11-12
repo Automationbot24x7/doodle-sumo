@@ -1,0 +1,14 @@
+{
+  "voice": "Charon",
+  "style": "Warm, playful and upbeat, like a friendly game-trailer narrator. Clear diction, natural pace, small smile in the voice.",
+  "lines": [
+    { "id": "n1", "text": "This is a crayon doodle. Aholo Lux3D turns it into a toy... then a real 3D model... gives it a skeleton... and moves." },
+    { "id": "n2", "text": "Six doodles became six fighters, each with its own weight, speed and power." },
+    { "id": "n3", "text": "Now shove your rivals off a giant desk. Hold to charge a big slap, or dash-roll out of trouble." },
+    { "id": "n4", "text": "But the desk fights back. Lux3D articulation split the stapler, the fan and the jack-in-the-box into parts with real joints, and the game drives those joints live." },
+    { "id": "n5", "text": "Fall off, and you flail. That's a Lux3D swim animation, used for comedy." },
+    { "id": "n6", "text": "The last toy standing dances, and you can download it for your 3D printer." },
+    { "id": "n7", "text": "Everything here came from the Lux3D API: every model, skeleton, move, joint and print file. The Lab page shows each step, lets you drag the hinges yourself, and lists every task." },
+    { "id": "n8", "text": "Doodle Sumo. Play it free in your browser." }
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "built": "2026-11-12T21:16:40.649Z",
+  "built": "2026-11-12T21:29:16.353Z",
   "tasks": [
     {
       "t": "2026-11-12T20:12:41.870Z",
@@ -288,6 +288,94 @@
       "taskId": 6928410,
       "ok": true,
       "secs": 310
+    },
+    {
+      "t": "2026-11-12T21:16:55.086Z",
+      "kind": "export",
+      "label": "battery:print",
+      "taskId": 6928938,
+      "ok": true,
+      "secs": 35
+    },
+    {
+      "t": "2026-11-12T21:17:19.630Z",
+      "kind": "rig",
+      "label": "pencil:rig",
+      "taskId": 6928943,
+      "ok": true,
+      "secs": 55
+    },
+    {
+      "t": "2026-11-12T21:17:44.742Z",
+      "kind": "retarget",
+      "label": "pencil:anims",
+      "taskId": 6929030,
+      "ok": true,
+      "secs": 17
+    },
+    {
+      "t": "2026-11-12T21:18:28.680Z",
+      "kind": "text-to-3d",
+      "label": "duck:model",
+      "taskId": 6928728,
+      "ok": true,
+      "secs": 249
+    },
+    {
+      "t": "2026-11-12T21:18:46.399Z",
+      "kind": "multimodal-to-image",
+      "label": "gummy:toy",
+      "taskId": 6929059,
+      "ok": true,
+      "secs": 35
+    },
+    {
+      "t": "2026-11-12T21:24:30.216Z",
+      "kind": "text-to-3d",
+      "label": "crayons:model",
+      "taskId": 6929140,
+      "ok": true,
+      "secs": 348
+    },
+    {
+      "t": "2026-11-12T21:25:05.190Z",
+      "kind": "img-to-3d",
+      "label": "gummy:model",
+      "taskId": 6929159,
+      "ok": true,
+      "secs": 377
+    },
+    {
+      "t": "2026-11-12T21:26:19.005Z",
+      "kind": "rig",
+      "label": "gummy:rig",
+      "taskId": 6929455,
+      "ok": true,
+      "secs": 70
+    },
+    {
+      "t": "2026-11-12T21:26:43.218Z",
+      "kind": "retarget",
+      "label": "gummy:anims",
+      "taskId": 6929473,
+      "ok": true,
+      "secs": 18
+    },
+    {
+      "t": "2026-11-12T21:28:33.670Z",
+      "kind": "export",
+      "label": "pencil:print",
+      "taskId": 6929531,
+      "ok": true,
+      "secs": 35
+    },
+    {
+      "t": "2026-11-12T21:29:13.852Z",
+      "kind": "export",
+      "label": "gummy:print",
+      "taskId": 6929542,
+      "ok": true,
+      "secs": 35
     }
   ],
   "prompts": [
@@ -497,6 +585,63 @@
     },
     {
       "taskId": 6928943
+    },
+    {
+      "taskId": 6929030,
+      "anims": [
+        "Idle_Loop",
+        "Crouch_Idle_Loop",
+        "Jog_Fwd_Loop",
+        "Sprint_Loop",
+        "Punch_Cross",
+        "Punch_Jab",
+        "Roll",
+        "Swim_Fwd_Loop",
+        "Dance_Loop",
+        "Yes"
+      ]
+    },
+    {
+      "taskId": 6929059,
+      "prompt": "Turn this crayon doodle into a cute collectible 3D vinyl toy figure with the same character, colours and proportions. Full body, standing in a T-pose with both arms straight out to the sides, legs apart, front view, plain white background, soft studio light."
+    },
+    {
+      "taskId": 6929140,
+      "prompt": "An open cardboard box of chunky wax crayons in rainbow colours, lying flat, cartoon style, single object",
+      "version": "G1"
+    },
+    {
+      "taskId": 6929159,
+      "version": "G1"
+    },
+    {
+      "taskId": 6929435,
+      "prompt": "A tall green metal desk lamp with a jointed arm and a round dome shade, cartoon style, single object",
+      "version": "G1"
+    },
+    {
+      "taskId": 6929455
+    },
+    {
+      "taskId": 6929473,
+      "anims": [
+        "Idle_Loop",
+        "Crouch_Idle_Loop",
+        "Jog_Fwd_Loop",
+        "Sprint_Loop",
+        "Punch_Cross",
+        "Punch_Jab",
+        "Roll",
+        "Swim_Fwd_Loop",
+        "Dance_Loop",
+        "Yes"
+      ]
+    },
+    {
+      "taskId": 6929531
+    },
+    {
+      "taskId": 6929542
     }
   ]
 }

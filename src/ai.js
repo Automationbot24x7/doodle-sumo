@@ -51,7 +51,7 @@ export class Bot {
       if (!inRange && this.hold < 0.2) inp.shoveHeld = false;
     } else if (inRange && facingDot > 0.5 && f.cool <= 0 && this.think <= 0) {
       inp.shoveDown = true; inp.shoveHeld = true;
-      this.wantCharge = 0.15 + Math.random() * (0.35 + 0.25 * this.level);
+      this.wantCharge = (foes.length === 1 ? 0.45 : 0.15) + Math.random() * (0.35 + 0.25 * this.level);
       this.hold = 0.15 + this.wantCharge;
       this.think = 0.25 + Math.random() * (0.6 - 0.15 * this.level);
     } else if (!inRange && td < 4 && td > 2 && f.dashCool <= 0 && Math.random() < dt * (0.3 + 0.4 * this.dashBias) * this.level && edgeDanger(f) < 0.3) {

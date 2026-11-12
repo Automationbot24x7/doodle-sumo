@@ -104,5 +104,57 @@
       "rig": 6927717,
       "anims": 6928259
     }
+  },
+  {
+    "id": "pencil",
+    "title": "Pip",
+    "blurb": "Sharp, skinny, slippery.",
+    "mass": 0.75,
+    "speed": 1.3,
+    "power": 0.85,
+    "anims": [
+      "Idle_Loop",
+      "Crouch_Idle_Loop",
+      "Jog_Fwd_Loop",
+      "Sprint_Loop",
+      "Punch_Cross",
+      "Punch_Jab",
+      "Roll",
+      "Swim_Fwd_Loop",
+      "Dance_Loop",
+      "Yes"
+    ],
+    "tasks": {
+      "toy": 6928337,
+      "model": 6928410,
+      "rig": 6928943,
+      "anims": 6929030
+    }
+  },
+  {
+    "id": "gummy",
+    "title": "Gummy",
+    "blurb": "Bounces back. Literally.",
+    "mass": 0.95,
+    "speed": 1.1,
+    "power": 1,
+    "anims": [
+      "Idle_Loop",
+      "Crouch_Idle_Loop",
+      "Jog_Fwd_Loop",
+      "Sprint_Loop",
+      "Punch_Cross",
+      "Punch_Jab",
+      "Roll",
+      "Swim_Fwd_Loop",
+      "Dance_Loop",
+      "Yes"
+    ],
+    "tasks": {
+      "toy": 6929059,
+      "model": 6929159,
+      "rig": 6929455,
+      "anims": 6929473
+    }
   }
 ]

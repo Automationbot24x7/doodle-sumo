@@ -7,7 +7,7 @@ export const LAYOUT = {
   books: { x: 5.8, z: 3.95, yaw: -0.4, h: 1.0, r: 0.95 },
   clock: { x: 5.9, z: -4.1, yaw: -0.6, h: 1.15, r: 0.6 },
   duck: { x: -6.1, z: 4.0, yaw: 0.9, h: 0.95, r: 0.55 },
-  crayons: { x: -2.6, z: -4.4, yaw: 0.12, h: 0.55, r: 0.75 },
+  crayons: { x: -2.6, z: -4.3, yaw: 0.12, h: 0.85, r: 0.8 },
   lamp: { x: 7.9, z: -5.6, yaw: -2.3, h: 6.0, r: 0, off: true },
   // traps, driven through the joints Lux3D articulation produced (URDF)
   stapler: { x: -5.2, z: 0.2, yaw: Math.PI, h: 0.95, r: 0, hazard: { kind: 'staple', zone: { x: -3.85, z: 0.2, hw: 1.4, hd: 0.65 }, period: [7, 11], warn: 1.5 } },
