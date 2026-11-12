@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<defs><filter id="crayon" x="-5%" y="-5%" width="110%" height="110%">
+<feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="19" result="n"/>
+<feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G" result="d"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" seed="3" result="grain"/>
+<feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.4 1.25" result="g2"/>
+<feComposite in="d" in2="g2" operator="in"/></filter></defs>
+<rect width="1024" height="1024" fill="#ffffff"/>
+<g filter="url(#crayon)" stroke="#2b2b33" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+
+<path d="M380 450 Q280 445 165 465 Q152 495 166 515 Q280 500 385 515 Z" fill="#f7f1e3"/>
+<path d="M644 450 Q744 445 859 465 Q872 495 858 515 Q744 500 639 515 Z" fill="#f7f1e3"/>
+<circle cx="150" cy="490" r="34" fill="#f7f1e3"/><circle cx="874" cy="490" r="34" fill="#f7f1e3"/>
+<path d="M438 720 L426 880 L480 880 L478 720 Z" fill="#f7f1e3"/>
+<path d="M586 720 L598 880 L544 880 L546 720 Z" fill="#f7f1e3"/>
+<path d="M410 874 Q402 910 450 910 L490 908 Q494 880 480 874 Z" fill="#2b2b33"/>
+<path d="M614 874 Q622 910 574 910 L534 908 Q530 880 544 874 Z" fill="#2b2b33"/>
+
+<path d="M360 300 L664 300 L648 720 Q645 745 615 745 L409 745 Q379 745 376 720 Z" fill="#7fc4e8"/>
+<ellipse cx="512" cy="300" rx="152" ry="30" fill="#5a3a22"/>
+<path d="M664 380 Q760 390 755 500 Q750 590 655 600 L658 560 Q715 550 717 495 Q718 430 662 425 Z" fill="#7fc4e8"/>
+<path d="M440 270 Q420 230 445 200 Q470 170 450 135 M512 262 Q495 220 520 190 Q545 160 525 120 M584 270 Q565 230 590 200 Q615 170 595 140" fill="none" stroke="#9aa0a6" stroke-width="10"/>
+<path d="M400 650 L624 650" fill="none" stroke="#ffffff" stroke-width="12"/>
+<text x="512" y="700" font-family="Comic Sans MS, Comic Sans, cursive" font-size="44" text-anchor="middle" fill="#2b2b33" stroke="none">#1</text>
+<circle cx="459.5" cy="450" r="13.65" fill="#2b2b33"/><circle cx="564.5" cy="450" r="13.65" fill="#2b2b33"/><circle cx="432.2" cy="485.7" r="15.75" fill="#f59b9b" stroke="none"/><circle cx="591.8" cy="485.7" r="15.75" fill="#f59b9b" stroke="none"/><path d="M486.8 494.1 Q512 519.3 537.2 494.1" fill="none" stroke-width="8"/><path d="M436.4 412.2 L480.5 424.8" fill="none" stroke-width="10"/><path d="M587.6 412.2 L543.5 424.8" fill="none" stroke-width="10"/></g></svg>

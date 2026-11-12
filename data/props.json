@@ -1,0 +1,22 @@
+[
+  {
+    "id": "stapler",
+    "title": "Stapler",
+    "prompt": "A chunky red office stapler, closed, toy-like rounded shapes, simple clean colours, single object",
+    "motion": "Keep the base fixed on the table. Add a hinge at the back so the top arm swings open about 40 degrees and then snaps shut quickly, repeating.",
+    "role": "hazard",
+    "urdf": true,
+    "joints": [
+      {
+        "name": "top_arm_joint",
+        "type": "revolute",
+        "lower": 0,
+        "upper": 0.698
+      }
+    ],
+    "tasks": {
+      "model": 6923834,
+      "articulate": 6924418
+    }
+  }
+]

@@ -1,0 +1,28 @@
+[
+  {
+    "id": "tofu",
+    "title": "Big Tofu",
+    "blurb": "Gentle giant. Very soft. Very heavy.",
+    "mass": 1.6,
+    "speed": 0.85,
+    "power": 1.15,
+    "anims": [
+      "Idle_Loop",
+      "Crouch_Idle_Loop",
+      "Jog_Fwd_Loop",
+      "Sprint_Loop",
+      "Punch_Cross",
+      "Punch_Jab",
+      "Roll",
+      "Swim_Fwd_Loop",
+      "Dance_Loop",
+      "Yes"
+    ],
+    "tasks": {
+      "toy": 6922333,
+      "model": 6922383,
+      "rig": 6923023,
+      "anims": 6923985
+    }
+  }
+]

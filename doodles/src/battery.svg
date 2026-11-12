@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+<defs><filter id="crayon" x="-5%" y="-5%" width="110%" height="110%">
+<feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="23" result="n"/>
+<feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G" result="d"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" seed="3" result="grain"/>
+<feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.4 1.25" result="g2"/>
+<feComposite in="d" in2="g2" operator="in"/></filter></defs>
+<rect width="1024" height="1024" fill="#ffffff"/>
+<g filter="url(#crayon)" stroke="#2b2b33" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+
+<path d="M380 450 Q280 445 165 465 Q152 495 166 515 Q280 500 385 515 Z" fill="#b8bcc4"/>
+<path d="M644 450 Q744 445 859 465 Q872 495 858 515 Q744 500 639 515 Z" fill="#b8bcc4"/>
+<circle cx="150" cy="490" r="34" fill="#b8bcc4"/><circle cx="874" cy="490" r="34" fill="#b8bcc4"/>
+<path d="M444 720 L432 880 L486 880 L484 720 Z" fill="#b8bcc4"/>
+<path d="M580 720 L592 880 L538 880 L540 720 Z" fill="#b8bcc4"/>
+<path d="M416 874 Q408 910 456 910 L496 908 Q500 880 486 874 Z" fill="#2b2b33"/>
+<path d="M608 874 Q616 910 568 910 L528 908 Q524 880 538 874 Z" fill="#2b2b33"/>
+
+<rect x="440" y="215" width="144" height="60" rx="16" fill="#c9a24a"/>
+<path d="M370 270 L654 270 L654 735 Q654 750 636 750 L388 750 Q370 750 370 735 Z" fill="#2b2b33"/>
+<path d="M370 270 L654 270 L654 470 L370 470 Z" fill="#f2b632"/>
+<text x="512" y="660" font-family="Arial Black, Arial" font-size="120" text-anchor="middle" fill="#f2b632" stroke="none">+</text>
+<path d="M512 215 L512 150 M480 150 L544 150" fill="none" stroke-width="10"/><circle cx="512" cy="135" r="20" fill="#e2453c"/>
+<rect x="420" y="330" width="184" height="80" rx="30" fill="#ffffff"/>
+<circle cx="470" cy="370" r="20" fill="#3d7be0"/><circle cx="554" cy="370" r="20" fill="#3d7be0"/>
+<path d="M484 440 L540 440" fill="none" stroke-width="10"/>
+</g></svg>

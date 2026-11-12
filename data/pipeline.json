@@ -1,0 +1,134 @@
+{
+  "built": "2026-11-12T20:40:11.864Z",
+  "tasks": [
+    {
+      "t": "2026-11-12T20:12:41.870Z",
+      "kind": "multimodal-to-image",
+      "label": "tofu:toy",
+      "taskId": 6922333,
+      "ok": true,
+      "secs": 36
+    },
+    {
+      "t": "2026-11-12T20:19:33.714Z",
+      "kind": "img-to-3d",
+      "label": "tofu:model",
+      "taskId": 6922383,
+      "ok": true,
+      "secs": 403
+    },
+    {
+      "t": "2026-11-12T20:20:56.255Z",
+      "kind": "rig",
+      "label": "tofu:rig",
+      "taskId": 6923023,
+      "ok": true,
+      "secs": 63
+    },
+    {
+      "t": "2026-11-12T20:21:22.787Z",
+      "kind": "retarget",
+      "label": "tofu:anims",
+      "taskId": 6923169,
+      "ok": true,
+      "secs": 9
+    },
+    {
+      "t": "2026-11-12T20:30:36.844Z",
+      "kind": "retarget",
+      "label": "tofu:anims",
+      "taskId": 6923985,
+      "ok": true,
+      "secs": 17
+    },
+    {
+      "t": "2026-11-12T20:32:14.249Z",
+      "kind": "multimodal-to-image",
+      "label": "eraser:toy",
+      "taskId": 6924165,
+      "ok": true,
+      "secs": 35
+    },
+    {
+      "t": "2026-11-12T20:34:08.295Z",
+      "kind": "text-to-3d",
+      "label": "stapler:model",
+      "taskId": 6923834,
+      "ok": true,
+      "secs": 345
+    },
+    {
+      "t": "2026-11-12T20:36:08.556Z",
+      "kind": "articulate",
+      "label": "stapler:articulate",
+      "taskId": 6924418,
+      "ok": true,
+      "secs": 114
+    }
+  ],
+  "prompts": [
+    {
+      "taskId": 6922333,
+      "prompt": "Turn this crayon doodle into a cute collectible 3D vinyl toy figure with the same character, colours and proportions. Full body, standing in a T-pose with both arms straight out to the sides, legs apart, front view, plain white background, soft studio light."
+    },
+    {
+      "taskId": 6922383,
+      "version": "G1"
+    },
+    {
+      "taskId": 6923023
+    },
+    {
+      "taskId": 6923169,
+      "anims": [
+        "Idle_Loop",
+        "Walk_Loop",
+        "Jog_Fwd_Loop",
+        "Punch_Jab",
+        "Punch_Cross",
+        "Roll",
+        "Jump_Start",
+        "Dance_Loop",
+        "Idle_FoldArms_Loop",
+        "Yes"
+      ]
+    },
+    {
+      "taskId": 6923834,
+      "prompt": "A chunky red office stapler, closed, toy-like rounded shapes, simple clean colours, single object",
+      "version": "G1"
+    },
+    {
+      "taskId": 6923985,
+      "anims": [
+        "Idle_Loop",
+        "Crouch_Idle_Loop",
+        "Jog_Fwd_Loop",
+        "Sprint_Loop",
+        "Punch_Cross",
+        "Punch_Jab",
+        "Roll",
+        "Swim_Fwd_Loop",
+        "Dance_Loop",
+        "Yes"
+      ]
+    },
+    {
+      "taskId": 6924165,
+      "prompt": "Turn this crayon doodle into a cute collectible 3D vinyl toy figure with the same character, colours and proportions. Full body, standing in a T-pose with both arms straight out to the sides, legs apart, front view, plain white background, soft studio light."
+    },
+    {
+      "taskId": 6924211,
+      "version": "G1"
+    },
+    {
+      "taskId": 6924418,
+      "prompt": "Keep the base fixed on the table. Add a hinge at the back so the top arm swings open about 40 degrees and then snaps shut quickly, repeating."
+    },
+    {
+      "taskId": 6924815,
+      "prompt": "A small retro desk fan with a round wire cage, light blue body and white blades, cartoon toy style, single object",
+      "version": "G1"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Doodle Sumo Lab</title>
+<meta name="description" content="How every Doodle Sumo toy was made with Aholo Lux3D: doodle, toy concept, 3D model, skeleton, moves and articulated traps.">
+<link rel="icon" href="assets/ui/icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="src/lab.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<header class="top">
+  <a class="home" href="./">← Play Doodle Sumo</a>
+  <h1>How the toys were made</h1>
+  <p class="lede">Every fighter started as a crayon doodle. <b>Aholo Lux3D</b> turned each one into a toy concept, a textured 3D model, a skeleton and a set of moves. Every desk trap is a Lux3D model that Lux3D's articulation split into parts and joined with real hinges. Nothing was modelled, rigged or keyframed by hand.</p>
+  <ol class="pipe">
+    <li><b>Doodle</b><span>drawn as a flat crayon sketch</span></li>
+    <li><b>Toy concept</b><span>Lux3D multimodal image</span></li>
+    <li><b>3D model</b><span>Lux3D image-to-3D (G1, PBR)</span></li>
+    <li><b>Skeleton</b><span>Lux3D humanoid auto-rig</span></li>
+    <li><b>Moves</b><span>Lux3D animation retarget, 10 clips</span></li>
+    <li><b>Print file</b><span>Lux3D export to 3MF / STL</span></li>
+  </ol>
+  <div id="stats" class="stats"></div>
+</header>
+
+<main>
+  <h2>Fighters</h2>
+  <div id="fighters"></div>
+  <h2>Desk traps <small>(articulated by Lux3D: drag the slider to move the joint)</small></h2>
+  <div id="traps" class="traps"></div>
+  <h2>Desk props</h2>
+  <div id="props" class="propgrid"></div>
+  <h2>Every Lux3D task behind this game</h2>
+  <p class="note">Logged by the build pipeline (<code>pipeline/lux3d.mjs</code>) as each task ran. Result links expire after 2 hours, so only IDs and timings are shown.</p>
+  <div class="tablewrap"><table id="tasks"><thead><tr><th>When (UTC)</th><th>Step</th><th>Asset</th><th>Task ID</th><th>Seconds</th><th>Result</th></tr></thead><tbody></tbody></table></div>
+</main>
+<footer class="foot">Doodle Sumo · built for the Manycore Aholo Global 3D AI Hackathon · <a href="https://github.com/Automationbot24x7/doodle-sumo">source code</a></footer>
+<script type="module" src="src/lab.js"></script>
+</body>
+</html>

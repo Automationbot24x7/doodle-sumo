@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Doodle Sumo</title>
+<meta name="description" content="Crayon doodles become 3D sumo toys. Shove your rivals off a giant desk. Every model, skeleton and move made with Aholo Lux3D.">
+<meta property="og:title" content="Doodle Sumo">
+<meta property="og:description" content="Crayon doodles become 3D sumo toys. Shove your rivals off a giant desk.">
+<meta property="og:image" content="assets/ui/share.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/ui/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="src/style.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<canvas id="stage"></canvas>
+
+<!-- Title / select -->
+<section id="title" class="screen show">
+  <div class="paper">
+    <header class="brand">
+      <h1 class="logo"><span class="w1">Doodle</span> <span class="w2">Sumo</span></h1>
+      <p class="tag">Crayon doodles become 3D toys. Shove them off the desk.</p>
+    </header>
+    <h2 class="pick">Pick your doodle</h2>
+    <div id="roster" class="roster"></div>
+    <div class="actions">
+      <div class="mode">
+        <button class="chip on" data-mode="1">1 player</button>
+        <button class="chip" data-mode="2">2 players</button>
+      </div>
+      <button id="go" class="big">Fight! <small>Enter</small></button>
+    </div>
+    <p class="keys"><b>Move</b> WASD &nbsp; <b>Shove</b> J (hold to charge) &nbsp; <b>Dash</b> K &nbsp;·&nbsp; Player 2: arrows, <b>.</b> shove, <b>/</b> dash</p>
+    <footer class="made">Every doodle → 3D model → skeleton → move in this game was made with <b>Aholo Lux3D</b>. <a href="lab.html">See how it was made →</a></footer>
+  </div>
+</section>
+
+<!-- HUD -->
+<section id="hud" class="screen">
+  <div id="plates" class="plates"></div>
+  <div id="timer" class="timer"></div>
+  <div id="banner" class="banner"></div>
+  <div id="pops" class="pops"></div>
+  <button id="mute" class="icon" title="Sound on/off">♪</button>
+  <div id="touch" class="touch">
+    <div id="stick" class="stick"><div class="nub"></div></div>
+    <button id="tShove" class="tbtn">Shove</button>
+    <button id="tDash" class="tbtn dash">Dash</button>
+  </div>
+</section>
+
+<!-- Results -->
+<section id="results" class="screen">
+  <div class="paper small">
+    <h2 id="winTitle">Winner!</h2>
+    <p id="winLine" class="tag"></p>
+    <div class="flow" id="winFlow"></div>
+    <div class="actions">
+      <button id="again" class="big">Rematch <small>Enter</small></button>
+      <button id="menu" class="ghost">Pick another doodle</button>
+    </div>
+    <p class="print">Love this toy? <a id="print3mf" download>Download it for 3D printing (.3mf)</a> · <a id="printStl" download>.stl</a></p>
+  </div>
+</section>
+
+<div id="loading" class="loading show"><div class="pencil"></div><p id="loadTxt">Sharpening crayons…</p></div>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

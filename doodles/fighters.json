@@ -1,0 +1,8 @@
+{
+  "tofu":    { "title": "Big Tofu",        "blurb": "Gentle giant. Very soft. Very heavy.",          "mass": 1.6, "speed": 0.85, "power": 1.15 },
+  "eraser":  { "title": "Captain Eraser",  "blurb": "Rubs out the competition.",                     "mass": 1.1, "speed": 1.0,  "power": 1.05 },
+  "mug":     { "title": "Mugsy",           "blurb": "Fuelled by cold coffee and spite.",              "mass": 1.25, "speed": 0.95, "power": 1.1 },
+  "battery": { "title": "Volt",            "blurb": "Fully charged. Mostly.",                         "mass": 1.0, "speed": 1.15, "power": 1.0 },
+  "pencil":  { "title": "Pip",             "blurb": "Sharp, skinny, slippery.",                       "mass": 0.75, "speed": 1.3,  "power": 0.85 },
+  "gummy":   { "title": "Gummy",           "blurb": "Bounces back. Literally.",                       "mass": 0.95, "speed": 1.1,  "power": 1.0 }
+}

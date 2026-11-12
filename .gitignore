@@ -1,0 +1,8 @@
+Credentials/
+_notes/
+node_modules/
+pipeline/work/
+pipeline/log.jsonl
+dev/
+.env*
+*.log
