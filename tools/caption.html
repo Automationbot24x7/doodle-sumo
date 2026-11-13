@@ -10,7 +10,7 @@
 <script>
 const q = new URLSearchParams(location.search);
 document.fonts.ready.then(() => {});
-if (q.get('big')) document.body.innerHTML = `<div class="big">${q.get('big')}</div>`;
+if (q.get('big')) document.body.innerHTML = `<div class="big" style="font-size:${q.get('fs') || 120}px;top:${q.get('top') || 74}%">${q.get('big')}</div>`;
 else document.body.innerHTML = `<div class="lt"><span class="chip">${q.get('chip') || 'LUX3D'}</span><span class="txt">${q.get('t')}</span></div>`;
 document.fonts.ready.then(() => setTimeout(() => (window.done = true), 300));
 </script></body></html>

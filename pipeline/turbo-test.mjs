@@ -1,0 +1,23 @@
+// Speed/quality test: can the fast G1-Turbo model be rigged and animated? (for a live "draw your own" forge)
+import { writeFileSync, mkdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { upload, run, download, firstUrl, ROOT } from './lux3d.mjs';
+const id = process.argv[2] || 'tofu';
+const work = join(ROOT, 'pipeline', 'work', 'turbo'); mkdirSync(work, { recursive: true });
+const S = {}; const save = () => writeFileSync(join(work, `${id}.json`), JSON.stringify(S, null, 2));
+const t = () => Date.now();
+let t0 = t();
+S.toyUrl = await upload(join(ROOT, 'assets', 'fighters', id, 'toy.png')); S.uploadSecs = (t() - t0) / 1000; save();
+t0 = t();
+const m = await run('img-to-3d', { img: S.toyUrl, version: 'G1-Turbo', faceCount: 60000, outputFormat: ['zip', 'glb'] }, `turbo-${id}:model`);
+S.modelSecs = (t() - t0) / 1000; S.modelOutputs = m.outputs; S.glbUrl = firstUrl(m.outputs, '.glb'); save();
+await download(S.glbUrl, join(work, `${id}-model.glb`));
+t0 = t();
+const r = await run('rig', { modelUrl: S.glbUrl }, `turbo-${id}:rig`);
+S.rigSecs = (t() - t0) / 1000; S.rigUrl = firstUrl(r.outputs); save();
+t0 = t();
+const a = await run('retarget', { rigModelUrl: S.rigUrl, animationIds: ['Idle_Loop', 'Crouch_Idle_Loop', 'Jog_Fwd_Loop', 'Sprint_Loop', 'Punch_Cross', 'Punch_Jab', 'Roll', 'Swim_Fwd_Loop', 'Dance_Loop', 'Yes'], animationOutputMode: 'combined', outFormat: 'glb', animateInPlace: true }, `turbo-${id}:anims`);
+S.animSecs = (t() - t0) / 1000; S.animOutputs = a.outputs; save();
+const urls = [...new Set(JSON.stringify(JSON.parse(a.outputs[0])).split('"').filter((x) => x.startsWith('http')))];
+await download(urls[0], join(work, `${id}-animated.glb`));
+console.log(JSON.stringify({ upload: S.uploadSecs, model: S.modelSecs, rig: S.rigSecs, anims: S.animSecs }));

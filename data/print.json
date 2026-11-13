@@ -1,0 +1,96 @@
+{
+  "tallMm": 80,
+  "plaDensity": 1.24,
+  "fighters": {
+    "battery": {
+      "triangles": 55082,
+      "vertices": 27539,
+      "watertight": true,
+      "openEdges": 0,
+      "nonManifoldEdges": 0,
+      "upAxis": "z",
+      "sizeMm": [
+        80,
+        24.6,
+        80
+      ],
+      "volumeCm3": 38.1,
+      "plaGrams": 47
+    },
+    "eraser": {
+      "triangles": 51690,
+      "vertices": 25837,
+      "watertight": true,
+      "openEdges": 0,
+      "nonManifoldEdges": 0,
+      "upAxis": "x",
+      "sizeMm": [
+        80,
+        24.3,
+        71.6
+      ],
+      "volumeCm3": 40.2,
+      "plaGrams": 50
+    },
+    "gummy": {
+      "triangles": 53368,
+      "vertices": 26684,
+      "watertight": true,
+      "openEdges": 0,
+      "nonManifoldEdges": 0,
+      "upAxis": "x",
+      "sizeMm": [
+        80,
+        39.5,
+        78.2
+      ],
+      "volumeCm3": 43.1,
+      "plaGrams": 53
+    },
+    "mug": {
+      "triangles": 50604,
+      "vertices": 25298,
+      "watertight": true,
+      "openEdges": 0,
+      "nonManifoldEdges": 0,
+      "upAxis": "z",
+      "sizeMm": [
+        79.6,
+        32.6,
+        80
+      ],
+      "volumeCm3": 37.5,
+      "plaGrams": 47
+    },
+    "pencil": {
+      "triangles": 52966,
+      "vertices": 26478,
+      "watertight": true,
+      "openEdges": 0,
+      "nonManifoldEdges": 0,
+      "upAxis": "z",
+      "sizeMm": [
+        79.6,
+        17.7,
+        80
+      ],
+      "volumeCm3": 15.7,
+      "plaGrams": 19
+    },
+    "tofu": {
+      "triangles": 54272,
+      "vertices": 27130,
+      "watertight": true,
+      "openEdges": 0,
+      "nonManifoldEdges": 0,
+      "upAxis": "x",
+      "sizeMm": [
+        80,
+        37.6,
+        77.9
+      ],
+      "volumeCm3": 40.3,
+      "plaGrams": 50
+    }
+  }
+}

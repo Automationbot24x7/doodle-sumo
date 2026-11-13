@@ -1,0 +1,59 @@
+[
+  {
+    "id": "spike",
+    "name": "Spike",
+    "tasks": {
+      "toy": 6972748,
+      "model": 6972846,
+      "rig": 6973372,
+      "anims": 6973665
+    },
+    "secs": {
+      "toy": 35,
+      "model": 58,
+      "rig": 54,
+      "anims": 12
+    },
+    "tries": 0,
+    "createdAt": "2026-11-13T04:46:20.960Z",
+    "total": 159
+  },
+  {
+    "id": "whiskers-take-1",
+    "name": "Sir Whiskers (first take)",
+    "tasks": {
+      "toy": 7043494,
+      "model": 7043548,
+      "rig": 7044113,
+      "anims": 7044495
+    },
+    "secs": {
+      "toy": 35,
+      "model": 62,
+      "rig": 105,
+      "anims": 12
+    },
+    "tries": 0,
+    "createdAt": "2026-11-13T09:02:42.095Z",
+    "total": 214
+  },
+  {
+    "id": "sir-whiskers",
+    "name": "Sir Whiskers",
+    "tasks": {
+      "toy": 7053325,
+      "model": 7053372,
+      "rig": 7053628,
+      "anims": 7054091
+    },
+    "secs": {
+      "toy": 31,
+      "model": 59,
+      "rig": 94,
+      "anims": 12
+    },
+    "tries": 0,
+    "createdAt": "2026-11-13T09:34:01.582Z",
+    "total": 196
+  }
+]

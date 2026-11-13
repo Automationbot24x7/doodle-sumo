@@ -46,12 +46,15 @@ for (let i = 0; i < 80; i++) { if (await evaluate('document.readyState === "comp
 await sleep(800);
 
 const frames = [];
-onFrame = (p) => { const f = path.join(OUT, `f${String(frames.length).padStart(5, '0')}.jpg`); fs.writeFileSync(f, Buffer.from(p.data, 'base64')); frames.push({ f: path.basename(f), t: p.metadata.timestamp }); };
+let skip = 1, seen = 0;
+onFrame = (p) => { if (skip > 1 && seen++ % skip) return; const f = path.join(OUT, `f${String(frames.length).padStart(5, '0')}.jpg`); fs.writeFileSync(f, Buffer.from(p.data, 'base64')); frames.push({ f: path.basename(f), t: p.metadata.timestamp }); };
 if (AUDIO) await evaluate('window.__audioRec.start()');
 await cdp('Page.startScreencast', { format: 'jpeg', quality: 80, maxWidth: W, maxHeight: H, everyNthFrame: 1 });
-if (setup) await evaluate(fs.readFileSync(setup, 'utf8'));
+if (setup) await cdp('Runtime.evaluate', { expression: fs.readFileSync(setup, 'utf8') });   // not awaited: the take script runs alongside the recording
 const t0 = Date.now();
-while ((Date.now() - t0) / 1000 < +secs) await sleep(100);
+// the page may thin the recording (window.__captureSkip = N keeps every Nth frame) or end it early (window.__captureStop)
+while ((Date.now() - t0) / 1000 < +secs) { await sleep(200); const c = await evaluate('[window.__captureSkip || 1, !!window.__captureStop]').catch(() => null); if (c) { skip = c[0]; if (c[1]) break; } }
+const marks = await evaluate('JSON.stringify(window.__marks || [])').catch(() => '[]'); fs.writeFileSync(path.join(OUT, 'marks.json'), marks);
 await cdp('Page.stopScreencast');
 if (AUDIO) { const b64 = await evaluate('window.__audioRec.stop()'); fs.writeFileSync(path.join(OUT, 'audio.webm'), Buffer.from(b64, 'base64')); console.log('audio saved'); }
 await sleep(300);

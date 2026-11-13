@@ -23,12 +23,14 @@
   <ol class="pipe">
     <li><b>Doodle</b><span>drawn as a flat crayon sketch</span></li>
     <li><b>Toy concept</b><span>Lux3D multimodal image</span></li>
-    <li><b>3D model</b><span>Lux3D image-to-3D (G1, PBR)</span></li>
+    <li><b>3D model</b><span>Lux3D image-to-3D (G1 / G1-Turbo)</span></li>
     <li><b>Skeleton</b><span>Lux3D humanoid auto-rig</span></li>
     <li><b>Moves</b><span>Lux3D animation retarget, 10 clips</span></li>
     <li><b>Print file</b><span>Lux3D export to 3MF / STL</span></li>
   </ol>
   <div id="stats" class="stats"></div>
+  <div class="callout"><b>Draw your own.</b> The same chain runs live inside the game: press <a href="./">Draw your own</a> on the title screen, scribble a character, and Lux3D returns a toy concept, a G1-Turbo 3D model, a skeleton and ten moves in about three minutes. The new toy joins the roster in your browser and can be exported for 3D printing too.
+    <div class="forgerow" id="forgerow"></div></div>
 </header>
 
 <main>
@@ -44,6 +46,12 @@
       <div class="pair"><figure><img src="assets/iterations/mug-v1-toy.png" alt=""><figcaption>v1: Lux3D rig returned <code>RIG_ELIGIBILITY_FAILED</code>. The handle overlapped the right arm.</figcaption></figure>
       <figure><img src="assets/iterations/mug-v2-toy.png" alt=""><figcaption>v2: prompt asks for clearly separate arms and the handle clear of them. Rig and all 10 moves succeeded.</figcaption></figure></div>
       <p>Other changes: move set v2 swapped walk/jump for a sumo stance, a sprint and a swimming "flail" for falling off the desk; textures went from 4K PNG to 1024 px WebP with meshopt compression (about 15 MB to 0.8 MB per fighter).</p></div>
+  </div>
+  <div class="iters" style="margin-top:16px">
+    <div class="iter"><h3>G1 or G1-Turbo? Both, picked per toy</h3>
+      <div class="pair"><figure><img src="assets/iterations/tofu-g1-back.jpg" alt=""><img src="assets/iterations/tofu-turbo-back.jpg" alt=""><figcaption>Big Tofu from behind. G1 (left) smeared the hair; G1-Turbo (right) is clean, and took 71 s instead of 5 minutes.</figcaption></figure>
+      <figure><img src="assets/iterations/battery-g1-back.jpg" alt=""><img src="assets/iterations/battery-turbo-back.jpg" alt=""><figcaption>Volt from behind. Here G1 (left) wins: G1-Turbo (right) invented a second visor on the back.</figcaption></figure></div>
+      <p>Every fighter was generated with both Lux3D versions from the same toy image, rigged and animated, then compared. Big Tofu and Pip use G1-Turbo; the other four keep G1. The live "draw your own" forge uses G1-Turbo for speed.</p></div>
   </div>
   <h2>Desk traps <small>(articulated by Lux3D: drag the slider to move the joint)</small></h2>
   <div id="traps" class="traps"></div>

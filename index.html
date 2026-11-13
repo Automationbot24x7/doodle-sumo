@@ -14,6 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="src/style.css">
+<link rel="stylesheet" href="src/forge.css">
 <script type="importmap">
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -29,10 +30,11 @@
   <div class="paper">
     <header class="brand">
       <h1 class="logo"><span class="w1">Doodle</span> <span class="w2">Sumo</span></h1>
-      <p class="tag">Crayon doodles become 3D toys. Shove them off the desk.</p>
+      <p class="tag">Crayon doodles become 3D toys. Shove them off the desk. <b id="tagDraw">Draw your own.</b></p>
     </header>
     <h2 class="pick">Pick your doodle</h2>
     <div id="roster" class="roster"></div>
+    <p id="pickLine" class="pickline"></p>
     <div class="actions">
       <div class="mode">
         <button class="chip on" data-mode="1">1 player</button>
@@ -40,8 +42,8 @@
       </div>
       <button id="go" class="big">Fight! <small>Enter</small></button>
     </div>
-    <p class="keys"><b>Move</b> <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> &nbsp; <b>Shove</b> <kbd>J</kbd> hold to charge &nbsp; <b>Dash</b> <kbd>K</kbd> &nbsp;·&nbsp; <b>P2</b> <kbd>←↑↓→</kbd> <kbd>.</kbd> shove <kbd>/</kbd> dash</p>
-    <footer class="made">Every doodle → 3D model → skeleton → move in this game was made with <b>Aholo Lux3D</b>. <a href="lab.html">See how it was made →</a> &nbsp;·&nbsp; <a href="assets/video/doodle-sumo-demo.mp4" target="_blank">▶ Watch the 75-second video</a></footer>
+    <p class="keys"><b>Move</b> <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> &nbsp;<b>Shove</b> <kbd>J</kbd> hold to charge &nbsp;<b>Dash</b> <kbd>K</kbd><span class="p2keys"> &nbsp;·&nbsp; <b>P2</b> <kbd>←↑↓→</kbd> <kbd>.</kbd> shove <kbd>/</kbd> dash</span></p>
+    <footer class="made">Every toy, skeleton and move here was made with <b>Aholo Lux3D</b>. <a href="lab.html">How it was made →</a> &nbsp;·&nbsp; <a href="assets/video/doodle-sumo-demo.mp4" target="_blank">▶ Watch the video</a></footer>
   </div>
 </section>
 
@@ -72,6 +74,66 @@
     <p class="print">Love this toy? <a id="print3mf" download>Download it for 3D printing (.3mf)</a> · <a id="printStl" download>.stl</a></p>
   </div>
 </section>
+
+<!-- Forge: draw your own fighter, built live by Lux3D -->
+<section id="forge" class="screen" data-mode="draw">
+  <div class="paper forge">
+    <button id="fClose" class="x" title="Back to the roster">×</button>
+    <h2 class="ftitle">Draw your own fighter</h2>
+    <p class="tag">Aholo Lux3D turns your doodle into a 3D toy with a skeleton and ten moves, live. About 3 minutes.</p>
+    <div class="fcols">
+      <div class="fpadwrap">
+        <div class="fpad"><div id="fGuide" class="guide"></div><canvas id="fPad" width="768" height="768"></canvas></div>
+        <div id="fTools" class="ftools">
+          <div id="fSwatches" class="swatches"></div>
+          <div class="frow">
+            <span id="fSizes" class="sizes"><button data-s="9">thin</button><button data-s="20" class="on">mid</button><button data-s="42">fat</button></span>
+            <button id="fUndo" class="mini">Undo</button><button id="fClear" class="mini">Clear</button>
+            <label class="mini file">Use a photo<input id="fPhoto" type="file" accept="image/*"></label>
+          </div>
+        </div>
+      </div>
+      <div class="fside">
+        <div id="fDraw">
+          <label class="fname">Name <input id="fName" maxlength="18" placeholder="Sir Scribble" autocomplete="off"></label>
+          <ul class="tips">
+            <li>Draw <b>one character</b>: a head, a body, <b>arms out</b>, <b>two legs</b>.</li>
+            <li>Colour it in. Big simple shapes work best.</li>
+            <li>It can be anything: a robot, a carrot, your cat.</li>
+            <li>Drew it on paper? Tap <b>Use a photo</b>.</li>
+          </ul>
+          <button id="fGo" class="big">Bring it to life</button>
+          <p id="fQuota" class="note"></p>
+          <details id="fOwn"><summary>Use my own Aholo API key</summary>
+            <input id="fKey" type="password" placeholder="Aholo API key" autocomplete="off">
+            <p class="note">Kept in this browser tab only and sent to Lux3D through the forge relay.</p>
+          </details>
+          <p class="note">Your drawing is sent to Aholo Lux3D to build the toy. The toy is saved in this browser only.</p>
+        </div>
+        <div id="fProg" hidden>
+          <ol id="fSteps" class="steps">
+            <li data-s="toy"><i>1</i><b>Toy concept</b><small>Lux3D image</small><em></em></li>
+            <li data-s="model"><i>2</i><b>3D model</b><small>Lux3D image-to-3D</small><em></em></li>
+            <li data-s="rig"><i>3</i><b>Skeleton</b><small>Lux3D auto-rig</small><em></em></li>
+            <li data-s="anims"><i>4</i><b>Ten moves</b><small>Lux3D retarget</small><em></em></li>
+          </ol>
+          <img id="fToy" class="ftoy" alt="Lux3D toy concept" hidden>
+          <div id="fDone" hidden>
+            <h3><span id="fDoneName"></span> is alive!</h3>
+            <div id="fStats" class="stats"></div>
+            <p id="fTimes" class="note"></p>
+            <button id="fFight" class="big">Fight!</button>
+            <button id="fAgain" class="ghost">Draw another</button>
+          </div>
+          <button id="fWait" class="ghost">Play a round while it bakes</button>
+        </div>
+        <p id="fMsg" class="fmsg"></p>
+      </div>
+    </div>
+  </div>
+</section>
+<button id="fPill" class="pill" hidden><span></span></button>
+<div id="toast" class="toast"></div>
 
 <div id="loading" class="loading show"><div class="pencil"></div><p id="loadTxt">Sharpening crayons…</p></div>
 

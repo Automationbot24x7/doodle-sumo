@@ -8,6 +8,7 @@ const $ = (s, el = document) => el.querySelector(s);
 const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
 const NICE = { Idle_Loop: 'Idle', Crouch_Idle_Loop: 'Sumo stance', Jog_Fwd_Loop: 'Run', Sprint_Loop: 'Sprint', Punch_Cross: 'Shove', Punch_Jab: 'Jab', Roll: 'Dash roll', Swim_Fwd_Loop: 'Falling flail', Dance_Loop: 'Victory dance', Yes: 'Cheer' };
 const STEP = { 'multimodal-to-image': 'Toy concept image', 'img-to-3d': 'Image → 3D model', 'text-to-3d': 'Text → 3D model', rig: 'Humanoid auto-rig', retarget: 'Animation retarget', articulate: 'Articulation (joints)', export: 'Export 3MF / STL', 'material-transfer': 'Material transfer', 'world-gen': 'SpatialGen world' };
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const CREDITS = { 'multimodal-to-image': 12, 'img-to-3d': 20, 'text-to-3d': 20, rig: 15, retarget: 6, articulate: 28, export: 1, 'material-transfer': 7, 'world-gen': 10 };
 
 // One WebGL renderer draws every viewer; each frame is copied into that viewer's 2D canvas.
@@ -51,15 +52,16 @@ function loop() {
   requestAnimationFrame(loop);
 }
 
-async function fighterRow(f) {
+async function fighterRow(f, pr) {
   const row = document.createElement('section'); row.className = 'row';
   row.innerHTML = `<figure><img src="assets/fighters/${f.id}/doodle.png" alt="${f.title} doodle"><figcaption>1. Crayon doodle</figcaption></figure><div class="arr">→</div>
     <figure><img src="assets/fighters/${f.id}/toy.png" alt="${f.title} toy concept"><figcaption>2. Lux3D toy concept</figcaption></figure><div class="arr">→</div>
     <div class="viewer"><canvas></canvas><div class="side"><h3>${f.title}</h3><p>${f.blurb}</p>
       <div class="toggles"><button class="btn on" data-m="tex">3. Textured</button><button class="btn" data-m="wire">Mesh</button><button class="btn" data-m="skel">4. Skeleton</button></div>
       <div class="cap">5. Moves (Lux3D retarget)</div><div class="moves"></div>
-      <a class="dl" href="assets/print/${f.id}.3mf" download>6. Download for 3D printing (.3mf)</a>
-      <div class="ids">Lux3D tasks: toy ${f.tasks.toy} · model ${f.tasks.model} · rig ${f.tasks.rig} · moves ${f.tasks.anims}</div></div></div>`;
+      <a class="dl" href="assets/print/${f.id}.3mf" download>6. Download for 3D printing (.3mf)</a> <a class="dl" href="assets/print/${f.id}.stl" download>.stl</a>
+      <div class="printck">${pr ? `Print check: ${pr.watertight ? '<b class="ok">watertight ✓</b>' : `<b class="bad">${pr.openEdges} open edges</b>`} · ${(pr.triangles / 1000).toFixed(0)}k triangles · at 80 mm across: ${pr.volumeCm3} cm³, about ${pr.plaGrams} g of PLA` : ''}</div>
+      <div class="ids">Lux3D tasks: toy ${f.tasks.toy} · model ${f.tasks.model} (${f.version || 'G1'}) · rig ${f.tasks.rig} · moves ${f.tasks.anims}</div></div></div>`;
   $('#fighters').appendChild(row);
   const g = await loader.loadAsync(`assets/fighters/${f.id}/fighter.glb`);
   makeView($('canvas', row), (v) => {
@@ -84,7 +86,7 @@ async function fighterRow(f) {
 
 async function trapCard(p) {
   const el = document.createElement('div'); el.className = 'trap';
-  el.innerHTML = `<canvas></canvas><h3>${p.title}</h3><p class="prompt"><b>Model prompt:</b> ${p.prompt}</p><p class="prompt"><b>Motion prompt:</b> ${p.motion}</p><div class="sliders"></div><details><summary class="cap">Joint file from Lux3D (URDF)</summary><pre></pre></details><div class="ids">Lux3D tasks: model ${p.tasks.model} · articulation ${p.tasks.articulate}</div>`;
+  el.innerHTML = `<canvas></canvas><h3>${p.title}</h3><p class="prompt"><b>Model prompt:</b> ${p.prompt}</p><p class="prompt"><b>Motion prompt:</b> ${p.motion}</p><div class="sliders"></div><details><summary class="cap">Joint file from Lux3D (URDF)</summary><pre></pre></details><a class="dl" href="assets/props/${p.id}-lux3d-urdf.zip" download>Download the Lux3D URDF package (.zip)</a><div class="ids">Lux3D tasks: model ${p.tasks.model} · articulation ${p.tasks.articulate}</div>`;
   $('#traps').appendChild(el);
   const base = `assets/props/${p.id}/`;
   $('pre', el).textContent = await (await fetch(base + 'robot.urdf')).text();
@@ -111,14 +113,20 @@ async function propCard(p) {
 }
 
 (async () => {
-  const [fighters, props, pipe] = await Promise.all(['data/fighters.json', 'data/props.json', 'data/pipeline.json'].map((u) => fetch(u).then((r) => r.json())));
+  const [fighters, props, pipe, print] = await Promise.all(['data/fighters.json', 'data/props.json', 'data/pipeline.json', 'data/print.json'].map((u) => fetch(u).then((r) => r.json()).catch(() => ({}))));
   const ok = pipe.tasks.filter((t) => t.ok);
-  const credits = ok.reduce((s, t) => s + (CREDITS[t.kind] || 0), 0);
-  const secs = ok.reduce((s, t) => s + (t.secs || 0), 0);
-  $('#stats').innerHTML = `<div><b>${fighters.length}</b>fighters</div><div><b>${props.length}</b>props &amp; traps</div><div><b>${ok.length}</b>Lux3D tasks</div><div><b>${Math.round(secs / 60)}</b>minutes of Lux3D time</div><div><b>~${credits}</b>credits used</div>`;
-  $('#tasks tbody').innerHTML = pipe.tasks.slice().reverse().map((t) => `<tr><td>${t.t.slice(0, 16).replace('T', ' ')}</td><td>${STEP[t.kind] || t.kind}</td><td>${t.label}</td><td>${t.taskId ?? t.worldId ?? ''}</td><td>${t.secs ?? ''}</td><td class="${t.ok ? 'ok' : 'bad'}">${t.ok ? 'done' : 'failed'}</td></tr>`).join('');
+  const forge = await fetch('data/forge-demo.json').then((r) => r.json()).catch(() => []);
+  // G1-Turbo models cost 1 credit; each live forge run is 34 credits plus 1 for its print export
+  const credits = ok.reduce((s, t) => s + (t.version === 'G1-Turbo' ? 1 : CREDITS[t.kind] || 0), 0) + forge.length * 35 + 47;   // + 47: test runs of the hosted relay
+  const secs = ok.reduce((s, t) => s + (t.secs || 0), 0) + forge.reduce((s, r) => s + r.total, 0);
+  $('#stats').innerHTML = `<div><b>${fighters.length} + ${forge.length}</b>house + drawn fighters</div><div><b>${props.length}</b>props &amp; traps</div><div><b>${ok.length + forge.length * 5}</b>Lux3D tasks</div><div><b>${Math.round(secs / 60)}</b>minutes of Lux3D time</div><div><b>${credits}</b>credits used</div>`;
+  $('#tasks tbody').innerHTML = pipe.tasks.slice().reverse().map((t) => `<tr><td>${t.t.slice(0, 16).replace('T', ' ')}</td><td>${STEP[t.kind] || t.kind}${t.version === 'G1-Turbo' ? ' (Turbo)' : ''}</td><td>${t.label}</td><td>${t.taskId ?? t.worldId ?? ''}</td><td>${t.secs ?? ''}</td><td class="${t.ok ? 'ok' : 'bad'}">${t.ok ? 'done' : 'failed'}</td></tr>`).join('');
+  // two real runs of the live forge (doodles drawn on the in-game pad)
+  fetch('data/forge-demo.json').then((r) => r.json()).then((runs) => {
+    $('#forgerow').innerHTML = runs.map((r) => `<figure><img src="assets/forge-demo/${r.id}/doodle.png" alt=""><figcaption>${esc(r.name)}: drawn on the pad</figcaption></figure><figure><img src="assets/forge-demo/${r.id}/toy.png" alt=""><figcaption>Lux3D toy concept · rigged fighter ${Math.floor(r.total / 60)} min ${r.total % 60} s later<br>tasks ${Object.values(r.tasks).join(' · ')}</figcaption></figure>`).join('');
+  }).catch(() => {});
   requestAnimationFrame(loop);
-  for (const f of fighters) await fighterRow(f);
+  for (const f of fighters) await fighterRow(f, print.fighters?.[f.id]);
   for (const p of props.filter((p) => p.urdf)) await trapCard(p);
   for (const p of props.filter((p) => !p.urdf)) await propCard(p);
 })();

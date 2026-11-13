@@ -19,7 +19,7 @@
   <h1><span class="w1">Doodle</span> <span class="w2">Sumo</span></h1>
   <div class="row" id="row"></div>
   <div class="url">automationbot24x7.github.io/doodle-sumo</div>
-  <div class="tag">Play free in your browser · #Manycorehackathon</div>
+  <div class="tag" id="tag">Play free in your browser · #Manycorehackathon</div>
   <div class="made">Every toy, skeleton, move and trap joint made with Aholo Lux3D</div>
 </div>
 <script>
@@ -27,6 +27,10 @@
   const F = await (await fetch('../data/fighters.json')).json();
   const row = document.getElementById('row');
   F.forEach((f) => { const i = document.createElement('img'); i.src = `../assets/fighters/${f.id}/toy.png`; row.appendChild(i); });
+  // the toys drawn on the in-game pad and forged live
+  const D = await fetch('../data/forge-demo.json').then((r) => r.json()).catch(() => []);
+  D.forEach((d) => { const i = document.createElement('img'); i.src = `../assets/forge-demo/${d.id}/toy.png`; i.style.borderColor = '#3fae6a'; row.appendChild(i); });
+  const t = new URLSearchParams(location.search).get('tag'); if (t) document.getElementById('tag').textContent = t;
   await new Promise((r) => setTimeout(r, 400));
   [...row.children].forEach((img, i) => setTimeout(() => img.classList.add('in'), 120 * i));
   window.done = true;

@@ -1,0 +1,19 @@
+# Hosted forge relay (Cloudflare Workers, free plan).
+#   npx wrangler kv namespace create FORGE_KV      -> paste the id below
+#   npx wrangler secret put AHOLO_KEY              -> the shared Aholo key for the capped free forges
+#   npx wrangler deploy
+# Then put the worker URL in src/config.js (PUBLIC_RELAY).
+name = "doodle-sumo-forge"
+main = "worker.mjs"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+[[kv_namespaces]]
+binding = "FORGE_KV"
+id = "5580b2557e0844ccb4ae68be466547fe"
+
+[vars]
+PER_DAY = "10"
+TOTAL = "40"
+PER_VISITOR = "2"
+ORIGINS = "https://automationbot24x7.github.io"

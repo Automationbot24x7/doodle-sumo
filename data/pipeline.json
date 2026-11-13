@@ -1,5 +1,5 @@
 {
-  "built": "2026-11-12T22:22:10.998Z",
+  "built": "2026-11-13T04:55:22.875Z",
   "tasks": [
     {
       "t": "2026-11-12T20:12:41.870Z",
@@ -15,7 +15,8 @@
       "label": "tofu:model",
       "taskId": 6922383,
       "ok": true,
-      "secs": 403
+      "secs": 403,
+      "version": "G1"
     },
     {
       "t": "2026-11-12T20:20:56.255Z",
@@ -55,7 +56,8 @@
       "label": "stapler:model",
       "taskId": 6923834,
       "ok": true,
-      "secs": 345
+      "secs": 345,
+      "version": "G1"
     },
     {
       "t": "2026-11-12T20:36:08.556Z",
@@ -71,7 +73,8 @@
       "label": "fan:model",
       "taskId": 6924815,
       "ok": true,
-      "secs": 359
+      "secs": 359,
+      "version": "G1"
     },
     {
       "t": "2026-11-12T20:45:50.207Z",
@@ -79,7 +82,8 @@
       "label": "eraser:model",
       "taskId": 6924211,
       "ok": true,
-      "secs": 814
+      "secs": 814,
+      "version": "G1"
     },
     {
       "t": "2026-11-12T20:46:24.442Z",
@@ -127,7 +131,8 @@
       "label": "jack:model",
       "taskId": 6925740,
       "ok": true,
-      "secs": 254
+      "secs": 254,
+      "version": "G1"
     },
     {
       "t": "2026-11-12T20:53:49.180Z",
@@ -143,7 +148,8 @@
       "label": "mug:model",
       "taskId": 6925965,
       "ok": true,
-      "secs": 314
+      "secs": 314,
+      "version": "G1"
     },
     {
       "t": "2026-11-12T20:56:28.329Z",
@@ -151,7 +157,8 @@
       "label": "tofu:direct-from-doodle",
       "taskId": 6926288,
       "ok": true,
-      "secs": 244
+      "secs": 244,
+      "version": "G1"
     },
     {
       "t": "2026-11-12T20:59:19.999Z",
@@ -183,7 +190,8 @@
       "label": "pencilcup:model",
       "taskId": 6926478,
       "ok": true,
-      "secs": 439
+      "secs": 439,
+      "version": "G1"
     },
     {
       "t": "2026-11-12T21:05:32.647Z",
@@ -191,7 +199,8 @@
       "label": "battery:model",
       "taskId": 6927114,
       "ok": true,
-      "secs": 323
+      "secs": 323,
+      "version": "G1"
     },
     {
       "t": "2026-11-12T21:05:48.842Z",
@@ -207,7 +216,8 @@
       "label": "books:model",
       "taskId": 6927385,
       "ok": true,
-      "secs": 311
+      "secs": 311,
+      "version": "G1"
     },
     {
       "t": "2026-11-12T21:09:34.407Z",
@@ -239,7 +249,8 @@
       "label": "mug:model",
       "taskId": 6927759,
       "ok": true,
-      "secs": 350
+      "secs": 350,
+      "version": "G1"
     },
     {
       "t": "2026-11-12T21:12:51.200Z",
@@ -263,7 +274,8 @@
       "label": "clock:model",
       "taskId": 6928067,
       "ok": true,
-      "secs": 370
+      "secs": 370,
+      "version": "G1"
     },
     {
       "t": "2026-11-12T21:14:27.964Z",
@@ -287,7 +299,8 @@
       "label": "pencil:model",
       "taskId": 6928410,
       "ok": true,
-      "secs": 310
+      "secs": 310,
+      "version": "G1"
     },
     {
       "t": "2026-11-12T21:16:55.086Z",
@@ -319,7 +332,8 @@
       "label": "duck:model",
       "taskId": 6928728,
       "ok": true,
-      "secs": 249
+      "secs": 249,
+      "version": "G1"
     },
     {
       "t": "2026-11-12T21:18:46.399Z",
@@ -335,7 +349,8 @@
       "label": "crayons:model",
       "taskId": 6929140,
       "ok": true,
-      "secs": 348
+      "secs": 348,
+      "version": "G1"
     },
     {
       "t": "2026-11-12T21:25:05.190Z",
@@ -343,7 +358,8 @@
       "label": "gummy:model",
       "taskId": 6929159,
       "ok": true,
-      "secs": 377
+      "secs": 377,
+      "version": "G1"
     },
     {
       "t": "2026-11-12T21:26:19.005Z",
@@ -383,7 +399,174 @@
       "label": "lamp:model",
       "taskId": 6929435,
       "ok": true,
-      "secs": 289
+      "secs": 289,
+      "version": "G1"
+    },
+    {
+      "t": "2026-11-13T04:22:09.039Z",
+      "kind": "img-to-3d",
+      "label": "turbo-tofu:model",
+      "taskId": 6964062,
+      "ok": true,
+      "secs": 71,
+      "version": "G1-Turbo"
+    },
+    {
+      "t": "2026-11-13T04:23:29.731Z",
+      "kind": "rig",
+      "label": "turbo-tofu:rig",
+      "taskId": 6964284,
+      "ok": true,
+      "secs": 72
+    },
+    {
+      "t": "2026-11-13T04:23:48.409Z",
+      "kind": "retarget",
+      "label": "turbo-tofu:anims",
+      "taskId": 6964833,
+      "ok": true,
+      "secs": 18
+    },
+    {
+      "t": "2026-11-13T04:26:47.155Z",
+      "kind": "img-to-3d",
+      "label": "turbo-eraser:model",
+      "taskId": 6965556,
+      "ok": true,
+      "secs": 80,
+      "version": "G1-Turbo"
+    },
+    {
+      "t": "2026-11-13T04:27:49.683Z",
+      "kind": "rig",
+      "label": "turbo-eraser:rig",
+      "taskId": 6965840,
+      "ok": true,
+      "secs": 53
+    },
+    {
+      "t": "2026-11-13T04:28:08.303Z",
+      "kind": "retarget",
+      "label": "turbo-eraser:anims",
+      "taskId": 6966337,
+      "ok": true,
+      "secs": 18
+    },
+    {
+      "t": "2026-11-13T04:29:55.822Z",
+      "kind": "img-to-3d",
+      "label": "turbo-mug:model",
+      "taskId": 6966564,
+      "ok": true,
+      "secs": 80,
+      "version": "G1-Turbo"
+    },
+    {
+      "t": "2026-11-13T04:32:26.002Z",
+      "kind": "rig",
+      "label": "turbo-mug:rig",
+      "taskId": 6967214,
+      "ok": true,
+      "secs": 142
+    },
+    {
+      "t": "2026-11-13T04:32:35.975Z",
+      "kind": "retarget",
+      "label": "turbo-mug:anims",
+      "taskId": 6967754,
+      "ok": true,
+      "secs": 9
+    },
+    {
+      "t": "2026-11-13T04:33:52.618Z",
+      "kind": "img-to-3d",
+      "label": "turbo-battery:model",
+      "taskId": 6967845,
+      "ok": true,
+      "secs": 62,
+      "version": "G1-Turbo"
+    },
+    {
+      "t": "2026-11-13T04:37:01.783Z",
+      "kind": "rig",
+      "label": "turbo-battery:rig",
+      "taskId": 6968399,
+      "ok": true,
+      "secs": 177
+    },
+    {
+      "t": "2026-11-13T04:37:20.291Z",
+      "kind": "retarget",
+      "label": "turbo-battery:anims",
+      "taskId": 6969535,
+      "ok": true,
+      "secs": 18
+    },
+    {
+      "t": "2026-11-13T04:38:45.819Z",
+      "kind": "img-to-3d",
+      "label": "turbo-pencil:model",
+      "taskId": 6969696,
+      "ok": true,
+      "secs": 62,
+      "version": "G1-Turbo"
+    },
+    {
+      "t": "2026-11-13T04:40:56.761Z",
+      "kind": "rig",
+      "label": "turbo-pencil:rig",
+      "taskId": 6970555,
+      "ok": true,
+      "secs": 62
+    },
+    {
+      "t": "2026-11-13T04:41:15.491Z",
+      "kind": "retarget",
+      "label": "turbo-pencil:anims",
+      "taskId": 6970970,
+      "ok": true,
+      "secs": 18
+    },
+    {
+      "t": "2026-11-13T04:42:33.571Z",
+      "kind": "img-to-3d",
+      "label": "turbo-gummy:model",
+      "taskId": 6971272,
+      "ok": true,
+      "secs": 62,
+      "version": "G1-Turbo"
+    },
+    {
+      "t": "2026-11-13T04:43:44.421Z",
+      "kind": "rig",
+      "label": "turbo-gummy:rig",
+      "taskId": 6971684,
+      "ok": true,
+      "secs": 62
+    },
+    {
+      "t": "2026-11-13T04:44:02.913Z",
+      "kind": "retarget",
+      "label": "turbo-gummy:anims",
+      "taskId": 6971956,
+      "ok": true,
+      "secs": 18
+    },
+    {
+      "t": "2026-11-13T04:48:37.413Z",
+      "kind": "export",
+      "label": "tofu:print",
+      "taskId": 6973382,
+      "ok": true,
+      "secs": 36
+    },
+    {
+      "t": "2026-11-13T04:50:12.682Z",
+      "kind": "export",
+      "label": "pencil:print",
+      "taskId": 6973946,
+      "ok": true,
+      "secs": 36
     }
   ],
   "prompts": [
@@ -650,6 +833,144 @@
     },
     {
       "taskId": 6929542
+    },
+    {
+      "taskId": 6964062,
+      "version": "G1-Turbo"
+    },
+    {
+      "taskId": 6964284
+    },
+    {
+      "taskId": 6964833,
+      "anims": [
+        "Idle_Loop",
+        "Crouch_Idle_Loop",
+        "Jog_Fwd_Loop",
+        "Sprint_Loop",
+        "Punch_Cross",
+        "Punch_Jab",
+        "Roll",
+        "Swim_Fwd_Loop",
+        "Dance_Loop",
+        "Yes"
+      ]
+    },
+    {
+      "taskId": 6965556,
+      "version": "G1-Turbo"
+    },
+    {
+      "taskId": 6965840
+    },
+    {
+      "taskId": 6966337,
+      "anims": [
+        "Idle_Loop",
+        "Crouch_Idle_Loop",
+        "Jog_Fwd_Loop",
+        "Sprint_Loop",
+        "Punch_Cross",
+        "Punch_Jab",
+        "Roll",
+        "Swim_Fwd_Loop",
+        "Dance_Loop",
+        "Yes"
+      ]
+    },
+    {
+      "taskId": 6966564,
+      "version": "G1-Turbo"
+    },
+    {
+      "taskId": 6967214
+    },
+    {
+      "taskId": 6967754,
+      "anims": [
+        "Idle_Loop",
+        "Crouch_Idle_Loop",
+        "Jog_Fwd_Loop",
+        "Sprint_Loop",
+        "Punch_Cross",
+        "Punch_Jab",
+        "Roll",
+        "Swim_Fwd_Loop",
+        "Dance_Loop",
+        "Yes"
+      ]
+    },
+    {
+      "taskId": 6967845,
+      "version": "G1-Turbo"
+    },
+    {
+      "taskId": 6968399
+    },
+    {
+      "taskId": 6969535,
+      "anims": [
+        "Idle_Loop",
+        "Crouch_Idle_Loop",
+        "Jog_Fwd_Loop",
+        "Sprint_Loop",
+        "Punch_Cross",
+        "Punch_Jab",
+        "Roll",
+        "Swim_Fwd_Loop",
+        "Dance_Loop",
+        "Yes"
+      ]
+    },
+    {
+      "taskId": 6969696,
+      "version": "G1-Turbo"
+    },
+    {
+      "taskId": 6970555
+    },
+    {
+      "taskId": 6970970,
+      "anims": [
+        "Idle_Loop",
+        "Crouch_Idle_Loop",
+        "Jog_Fwd_Loop",
+        "Sprint_Loop",
+        "Punch_Cross",
+        "Punch_Jab",
+        "Roll",
+        "Swim_Fwd_Loop",
+        "Dance_Loop",
+        "Yes"
+      ]
+    },
+    {
+      "taskId": 6971272,
+      "version": "G1-Turbo"
+    },
+    {
+      "taskId": 6971684
+    },
+    {
+      "taskId": 6971956,
+      "anims": [
+        "Idle_Loop",
+        "Crouch_Idle_Loop",
+        "Jog_Fwd_Loop",
+        "Sprint_Loop",
+        "Punch_Cross",
+        "Punch_Jab",
+        "Roll",
+        "Swim_Fwd_Loop",
+        "Dance_Loop",
+        "Yes"
+      ]
+    },
+    {
+      "taskId": 6973382
+    },
+    {
+      "taskId": 6973946
     }
   ]
 }

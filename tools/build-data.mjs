@@ -15,7 +15,7 @@ for (const [id, c] of Object.entries(cfg)) {
   const sf = join(ROOT, 'pipeline', 'work', id, 'state.json');
   if (!existsSync(sf) || !existsSync(join(ROOT, 'assets', 'fighters', id, 'fighter.glb'))) continue;
   const s = JSON.parse(readFileSync(sf, 'utf8'));
-  fighters.push({ id, ...c, anims: s.animNames, tasks: { toy: s.toyTask, model: s.modelTask, rig: s.rigTask, anims: s.animTask } });
+  fighters.push({ id, ...c, version: s.version || 'G1', anims: s.animNames, tasks: { toy: s.toyTask, model: s.modelTask, rig: s.rigTask, anims: s.animTask, print: s.printTask } });
 }
 writeFileSync(join(ROOT, 'data', 'fighters.json'), JSON.stringify(fighters, null, 2));
 
@@ -38,7 +38,8 @@ for (const [id, c] of Object.entries(propCfg)) {
 writeFileSync(join(ROOT, 'data', 'props.json'), JSON.stringify(props, null, 2));
 
 // Public task log: no URLs (they expire / are signed), just what ran, how long, and the outcome.
-const done = log.filter((e) => e.status === 3 || e.status === 4).map((e) => ({ t: e.t, kind: e.kind, label: e.label, taskId: e.taskId ?? e.worldId, ok: e.status === 3, secs: e.secs }));
+const versions = Object.fromEntries(log.filter((e) => e.status === 'created').map((e) => [e.taskId, e.body?.version]));
+const done = log.filter((e) => e.status === 3 || e.status === 4).map((e) => ({ t: e.t, kind: e.kind, label: e.label, taskId: e.taskId ?? e.worldId, ok: e.status === 3, secs: e.secs, version: versions[e.taskId] }));
 const prompts = log.filter((e) => e.status === 'created').map((e) => ({ taskId: e.taskId, prompt: e.body?.prompt, version: e.body?.version, anims: e.body?.animationIds }));
 writeFileSync(join(ROOT, 'data', 'pipeline.json'), JSON.stringify({ built: new Date().toISOString(), tasks: done, prompts }, null, 2));
 console.log(`fighters ${fighters.length}, props ${props.length}, tasks ${done.length}`);
