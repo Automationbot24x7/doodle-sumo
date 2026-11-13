@@ -10,29 +10,29 @@ ENDVO = 'f8' if END == 'end2' else 'n8'
 
 # (capture, start, duration of source, use game audio, hold-last-frame seconds, [(vo id, offset in segment)], speed)
 SEG = [
-    ('match23', 46.9,  3.0, True,  0.0, [], 1),                       # cold open: final showdown, a rival flies off, the cat wins
+    ('match35', 57.7,  3.4, True,  0.0, [], 1),                       # cold open: the cat grabs the bat, HOME RUN, wins the match
     ('forge2',   4.4, 14.0, False, 0.0, [('f1', 0.5)], 2.6),          # the doodle is drawn on the in-game pad (shown 2.6x)
     ('forge2',  18.4,  4.0, True,  0.0, [('g1', 0.9)], 1),            # "Bring it to life": the doodle lands on the desk
     ('forge2',  54.3,  4.2, True,  0.0, [], 1),                       # Lux3D toy concept arrives
     ('forge2', 117.4,  5.0, True,  0.0, [('g2', 1.2)], 1),            # Lux3D 3D model arrives
     ('forge2', 222.2, 11.2, True,  0.0, [('g3', 0.8), ('g4', 6.8)], 1),  # rigged: its skeleton, then its moves
-    ('match23',  5.2,  9.2, True,  0.0, [('f3', 0.3)], 1),            # round 1
-    ('match23', 14.4, 10.0, True,  0.0, [('n4', 0.3)], 1),            # fan gust, showdown, jack-in-the-box, round win
-    ('match23', 40.6,  9.3, True,  0.0, [('n5', 2.4)], 1),            # round 3: stapler, ring-outs, match point
-    ('match23', 52.6, 10.8, True,  0.0, [('f6', 2.2)], 1),            # champion dance, results, print file
+    ('match35',  5.0,  9.0, True,  0.0, [('f3', 0.3)], 1),            # round 1
+    ('match35', 14.0, 10.9, True,  0.0, [('n4', 0.2)], 1),            # fan gust, ring-out, dumbbell pickup, jack-in-the-box, round win
+    ('match35', 54.2,  8.4, True,  0.0, [('p1', 0.9)], 1),            # round 3: a bat drops in, SLUGGER, HOME RUN, match point
+    ('match35', 62.8, 11.2, True,  0.0, [('f6', 2.2)], 1),            # champion dance, results, print file
     ('lab2',     0.0, 12.6, False, 1.0, [('n7', 0.5)], 1),            # Lab page close-up
     (END,        0.0,  0.03, False, 6.0, [(ENDVO, 0.7)], 1),
 ]
 # (overlay png, segment index, offset in segment (output seconds), duration)
 OVER = [
-    ('open2', 0, 0.4, 2.5),
+    ('open2', 0, 0.5, 2.6),
     ('cap-pad', 1, 0.6, 3.8),
     ('cap-toy', 3, 0.9, 3.0), ('cap-model', 4, 1.1, 3.5),
     ('cap-rig', 5, 0.8, 2.4), ('cap-moves', 5, 3.7, 3.6),
-    ('cap-room', 6, 0.8, 2.6),
-    ('cap-fan', 7, 0.7, 2.5), ('cap-jack', 7, 5.6, 2.8),
-    ('cap-stapler', 8, 1.3, 2.6), ('cap-flail', 8, 6.7, 2.3),
-    ('cap-print2', 9, 4.2, 4.6),
+    ('cap-room', 6, 0.8, 2.6), ('cap-stapler', 6, 5.0, 2.6),
+    ('cap-fan', 7, 0.5, 2.2), ('cap-flail', 7, 2.9, 2.2), ('cap-jack', 7, 6.5, 2.8),
+    ('cap-pick', 8, 4.3, 3.6),
+    ('cap-print2', 9, 4.4, 4.6),
     ('cap-lab', 10, 5.0, 3.6),
 ]
 

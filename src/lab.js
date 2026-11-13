@@ -118,7 +118,7 @@ async function propCard(p) {
   const ok = pipe.tasks.filter((t) => t.ok);
   const forge = await fetch('data/forge-demo.json').then((r) => r.json()).catch(() => []);
   // G1-Turbo models cost 1 credit; each live forge run is 34 credits plus 1 for its print export
-  const credits = ok.reduce((s, t) => s + (t.version === 'G1-Turbo' ? 1 : CREDITS[t.kind] || 0), 0) + forge.length * 35 + 47;   // + 47: test runs of the hosted relay
+  const credits = ok.reduce((s, t) => s + (t.version === 'G1-Turbo' ? (t.kind === 'text-to-3d' ? 13 : 1) : CREDITS[t.kind] || 0), 0) + forge.length * 35 + 47;   // + 47: test runs of the hosted relay
   const secs = ok.reduce((s, t) => s + (t.secs || 0), 0) + forge.reduce((s, r) => s + r.total, 0);
   $('#stats').innerHTML = `<div><b>${fighters.length} + ${forge.length}</b>house + drawn fighters</div><div><b>${props.length}</b>props &amp; traps</div><div><b>${ok.length + forge.length * 5}</b>Lux3D tasks</div><div><b>${Math.round(secs / 60)}</b>minutes of Lux3D time</div><div><b>${credits}</b>credits used</div>`;
   $('#tasks tbody').innerHTML = pipe.tasks.slice().reverse().map((t) => `<tr><td>${t.t.slice(0, 16).replace('T', ' ')}</td><td>${STEP[t.kind] || t.kind}${t.version === 'G1-Turbo' ? ' (Turbo)' : ''}</td><td>${t.label}</td><td>${t.taskId ?? t.worldId ?? ''}</td><td>${t.secs ?? ''}</td><td class="${t.ok ? 'ok' : 'bad'}">${t.ok ? 'done' : 'failed'}</td></tr>`).join('');
