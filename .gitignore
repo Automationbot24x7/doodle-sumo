@@ -6,5 +6,5 @@ pipeline/log.jsonl
 dev/
 .env*
 *.log
-video/
+/video/
 .wrangler/
