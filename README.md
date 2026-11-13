@@ -18,6 +18,7 @@ Built for the **Manycore Aholo Global 3D AI Hackathon** (#Manycorehackathon).
 - **Draw your own fighter.** Scribble a character on the crayon pad (or use a photo of a paper drawing) and press *Bring it to life*. Lux3D returns a toy concept image, a 3D model, a skeleton and ten moves, live, and each result appears on the desk as it lands. The new toy joins the roster in your browser, gets its weight, speed and power from its shape, and can be downloaded for 3D printing.
 - Or pick one of the six house doodles: Big Tofu, Captain Eraser, Mugsy, Volt, Pip or Gummy.
 - Four toys drop onto a kid's desk. Shove (hold to charge) and dash-roll to push everyone else off the edge. Last toy standing wins the round; first to two rounds wins.
+- **Pickups drop in mid-fight:** a baseball bat (your next three shoves are home runs), a roller skate (speed) and a dumbbell (bigger, heavier, hard to shove). The toy that grabs one holds it in its hand: the item is attached to the right-hand bone of the skeleton Lux3D gave it.
 - The desk fights back: a stapler snaps shut, a desk fan blows gusts across the desk, and a jack-in-the-box winds up and blasts everyone nearby.
 - The winner dances, and you can download that toy as a 3D-print file (.3mf / .stl).
 - 1 player against three bots, or 2 players on one keyboard. Touch controls on phones.
@@ -43,7 +44,7 @@ Every 3D asset in the game came out of Aholo Lux3D through its API. Nothing was 
 
 **Desk traps** (`pipeline/prop.mjs`): Lux3D text-to-3D makes the object. Lux3D articulation then takes a plain-language motion prompt ("add a hinge at the back so the top arm snaps shut") and returns a URDF: separate part meshes joined by real joints with axes and limits. The game loads the URDF (`src/urdf.js`) and drives the stapler's hinge, the fan's rotor and the jack-in-the-box lid and crank directly through those joints. The original Lux3D URDF packages can be downloaded from the Lab page.
 
-**Desk props**: pencil cup, book stack, alarm clock, rubber duck, crayon box and lamp, all made with Lux3D text-to-3D.
+**Desk props and pickups**: pencil cup, book stack, alarm clock, rubber duck, crayon box and lamp, plus the bat, roller skate and dumbbell pickups, all made with Lux3D text-to-3D.
 
 **The room**: a 360° bedroom from Aholo SpatialGen world generation.
 

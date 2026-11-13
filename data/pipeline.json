@@ -1,5 +1,5 @@
 {
-  "built": "2026-11-13T04:55:22.875Z",
+  "built": "2026-11-13T14:37:07.562Z",
   "tasks": [
     {
       "t": "2026-11-12T20:12:41.870Z",
@@ -567,6 +567,33 @@
       "taskId": 6973946,
       "ok": true,
       "secs": 36
+    },
+    {
+      "t": "2026-11-13T14:32:48.220Z",
+      "kind": "text-to-3d",
+      "label": "bat:model",
+      "taskId": 7122519,
+      "ok": true,
+      "secs": 123,
+      "version": "G1-Turbo"
+    },
+    {
+      "t": "2026-11-13T14:34:44.521Z",
+      "kind": "text-to-3d",
+      "label": "skate:model",
+      "taskId": 7122910,
+      "ok": true,
+      "secs": 97,
+      "version": "G1-Turbo"
+    },
+    {
+      "t": "2026-11-13T14:36:49.585Z",
+      "kind": "text-to-3d",
+      "label": "dumbbell:model",
+      "taskId": 7123410,
+      "ok": true,
+      "secs": 106,
+      "version": "G1-Turbo"
     }
   ],
   "prompts": [
@@ -971,6 +998,21 @@
     },
     {
       "taskId": 6973946
+    },
+    {
+      "taskId": 7122519,
+      "prompt": "A chunky toy wooden baseball bat with a red taped grip, short and thick, rounded cartoon shapes, simple clean colours, single object",
+      "version": "G1-Turbo"
+    },
+    {
+      "taskId": 7122910,
+      "prompt": "A single retro roller skate boot, bright yellow with a blue stripe and four red wheels, chunky toy-like rounded shapes, simple clean colours, single object",
+      "version": "G1-Turbo"
+    },
+    {
+      "taskId": 7123410,
+      "prompt": "A chunky toy dumbbell, short purple handle with two big round dark grey weights, rounded cartoon shapes, simple clean colours, single object",
+      "version": "G1-Turbo"
     }
   ]
 }

@@ -15,7 +15,7 @@ let seq = 0; const pending = new Map();
 ws.addEventListener('message', (e) => { const m = JSON.parse(e.data); if (m.id && pending.has(m.id)) { pending.get(m.id)(m); pending.delete(m.id); } });
 const cdp = (method, params = {}) => new Promise((res, rej) => { const id = ++seq; pending.set(id, (m) => (m.error ? rej(new Error(method + ': ' + m.error.message)) : res(m.result))); ws.send(JSON.stringify({ id, method, params })); });
 const ev = async (x) => (await cdp('Runtime.evaluate', { expression: x, awaitPromise: true, returnByValue: true })).result?.value;
-await cdp('Page.enable');
+await cdp('Page.enable'); await cdp('Network.enable'); await cdp('Network.setCacheDisabled', { cacheDisabled: true });
 for (const j of jobs) {
   await cdp('Emulation.setDeviceMetricsOverride', { width: j.w || 1280, height: j.h || 720, deviceScaleFactor: j.scale || 1, mobile: false });
   await cdp('Emulation.setDefaultBackgroundColorOverride', j.transparent ? { color: { r: 0, g: 0, b: 0, a: 0 } } : {});

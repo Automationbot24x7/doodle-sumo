@@ -38,7 +38,7 @@ ws.addEventListener('message', (e) => {
 const cdp = (method, params = {}) => new Promise((res, rej) => { const id = ++seq; pending.set(id, (m) => (m.error ? rej(new Error(`${method}: ${m.error.message}`)) : res(m.result))); ws.send(JSON.stringify({ id, method, params })); });
 const evaluate = async (expr) => (await cdp('Runtime.evaluate', { expression: expr, awaitPromise: true, returnByValue: true })).result?.value;
 
-await cdp('Page.enable'); await cdp('Runtime.enable');
+await cdp('Page.enable'); await cdp('Network.enable'); await cdp('Network.setCacheDisabled', { cacheDisabled: true }); await cdp('Runtime.enable');
 await cdp('Emulation.setDeviceMetricsOverride', { width: Math.round(W / ZOOM), height: Math.round(H / ZOOM), deviceScaleFactor: ZOOM, mobile: false });
 await cdp('Page.navigate', { url });
 await sleep(1500);

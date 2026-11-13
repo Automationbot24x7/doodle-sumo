@@ -1,50 +1,83 @@
 {
   "stapler": {
-    "title": "Stapler", "role": "hazard",
+    "title": "Stapler",
+    "role": "hazard",
     "prompt": "A chunky red office stapler, closed, toy-like rounded shapes, simple clean colours, single object",
     "style": "cartoon",
     "motion": "Keep the base fixed on the table. Add a hinge at the back so the top arm swings open about 40 degrees and then snaps shut quickly, repeating."
   },
   "fan": {
-    "title": "Desk fan", "role": "hazard",
+    "title": "Desk fan",
+    "role": "hazard",
     "prompt": "A small retro desk fan with a round wire cage, light blue body and white blades, cartoon toy style, single object",
     "style": "cartoon",
     "motion": "Keep the base and the stand fixed. The fan blades and their hub rotate continuously around the central axle."
   },
   "jack": {
-    "title": "Jack-in-the-box", "role": "hazard",
+    "title": "Jack-in-the-box",
+    "role": "hazard",
     "prompt": "A colourful toy jack-in-the-box: a square tin box with a crank handle on the side and a closed hinged lid on top, cartoon style, single object",
     "style": "cartoon",
     "motion": "Keep the box fixed. The lid on top is hinged at the back edge and flips open about 110 degrees, then closes. The crank handle on the side rotates around its axle."
   },
   "pencilcup": {
-    "title": "Pencil cup", "role": "decor",
+    "title": "Pencil cup",
+    "role": "decor",
     "prompt": "A round pencil cup holder full of colourful pencils and wax crayons standing upright, cartoon toy style, single object",
     "style": "cartoon"
   },
   "books": {
-    "title": "Book stack", "role": "decor",
+    "title": "Book stack",
+    "role": "decor",
     "prompt": "A small stack of three chunky hardcover school books lying flat, bright red, blue and yellow covers, cartoon style, single object",
     "style": "cartoon"
   },
   "clock": {
-    "title": "Alarm clock", "role": "decor",
+    "title": "Alarm clock",
+    "role": "decor",
     "prompt": "A round red twin-bell alarm clock with little feet, cartoon toy style, single object",
     "style": "cartoon"
   },
   "duck": {
-    "title": "Rubber duck", "role": "decor",
+    "title": "Rubber duck",
+    "role": "decor",
     "prompt": "A classic yellow rubber duck bath toy with an orange beak, single object",
     "style": "cartoon"
   },
   "crayons": {
-    "title": "Crayon box", "role": "decor",
+    "title": "Crayon box",
+    "role": "decor",
     "prompt": "An open cardboard box of chunky wax crayons in rainbow colours, lying flat, cartoon style, single object",
     "style": "cartoon"
   },
   "lamp": {
-    "title": "Desk lamp", "role": "decor",
+    "title": "Desk lamp",
+    "role": "decor",
     "prompt": "A tall green metal desk lamp with a jointed arm and a round dome shade, cartoon style, single object",
     "style": "cartoon"
+  },
+  "bat": {
+    "title": "Baseball bat",
+    "role": "pickup",
+    "buff": "power",
+    "prompt": "A chunky toy wooden baseball bat with a red taped grip, short and thick, rounded cartoon shapes, simple clean colours, single object",
+    "style": "cartoon",
+    "version": "G1-Turbo"
+  },
+  "skate": {
+    "title": "Roller skate",
+    "role": "pickup",
+    "buff": "speed",
+    "prompt": "A single retro roller skate boot, bright yellow with a blue stripe and four red wheels, chunky toy-like rounded shapes, simple clean colours, single object",
+    "style": "cartoon",
+    "version": "G1-Turbo"
+  },
+  "dumbbell": {
+    "title": "Dumbbell",
+    "role": "pickup",
+    "buff": "heavy",
+    "prompt": "A chunky toy dumbbell, short purple handle with two big round dark grey weights, rounded cartoon shapes, simple clean colours, single object",
+    "style": "cartoon",
+    "version": "G1-Turbo"
   }
 }

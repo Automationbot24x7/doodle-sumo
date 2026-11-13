@@ -104,10 +104,11 @@ async function trapCard(p) {
   });
 }
 
+const BUFF = { power: 'Bat: the next three shoves hit almost twice as hard.', speed: 'Skate: runs 50% faster for 8 seconds.', heavy: 'Dumbbell: bigger and more than twice as heavy for 8 seconds.' };
 async function propCard(p) {
   const el = document.createElement('div'); el.className = 'prop';
-  el.innerHTML = `<canvas></canvas><h4>${p.title}</h4><p>${p.prompt}</p><div class="ids">Lux3D task ${p.tasks.model}</div>`;
-  $('#props').appendChild(el);
+  el.innerHTML = `<canvas></canvas><h4>${p.title}</h4>${p.buff ? `<p><b>${BUFF[p.buff]}</b></p>` : ''}<p>${p.prompt}</p><div class="ids">Lux3D task ${p.tasks.model}${p.version === 'G1-Turbo' ? ' (G1-Turbo)' : ''}</div>`;
+  $(p.role === 'pickup' ? '#pickups' : '#props').appendChild(el);
   const g = await loader.loadAsync(`assets/props/${p.id}.glb`);
   makeView($('canvas', el), (v) => { v.scene.add(g.scene); frameObject(v, g.scene, 0.95); });
 }

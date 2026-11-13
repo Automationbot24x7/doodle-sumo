@@ -7,7 +7,7 @@
     const st = D.state; const me = st.fighters.find((f) => f.isPlayer);
     if (!me || st.phase !== 'fight' || !me.alive || me.falling) { ['KeyW','KeyA','KeyS','KeyD','KeyJ'].forEach((k) => key(k, false)); brain = null; return; }
     if (!brain || brain.f !== me) brain = new D.Bot(me, 1.4);
-    const now = performance.now(); const inp = brain.input(st.fighters, D.hazardsList, (now - last) / 1000); last = now;
+    const now = performance.now(); const inp = brain.input(st.fighters, D.hazardsList, (now - last) / 1000, D.pickupsList); last = now;
     key('KeyD', inp.x > 0.3); key('KeyA', inp.x < -0.3); key('KeyS', inp.z > 0.3); key('KeyW', inp.z < -0.3);
     key('KeyJ', !!(inp.shoveDown || inp.shoveHeld));
     if (inp.dash) { key('KeyK', true); setTimeout(() => key('KeyK', false), 60); }

@@ -33,7 +33,7 @@ for (const [id, c] of Object.entries(propCfg)) {
       return { name: m[1], type: m[2], lower: lim ? +lim[1] : null, upper: lim ? +lim[2] : null };
     });
   }
-  props.push({ id, title: c.title || id, prompt: c.prompt, motion: c.motion || null, role: c.role || 'decor', urdf, joints, tasks: { model: s.modelTask, articulate: s.artTask } });
+  props.push({ id, title: c.title || id, prompt: c.prompt, motion: c.motion || null, role: c.role || 'decor', buff: c.buff, version: c.version || 'G1', urdf, joints, tasks: { model: s.modelTask, articulate: s.artTask } });
 }
 writeFileSync(join(ROOT, 'data', 'props.json'), JSON.stringify(props, null, 2));
 

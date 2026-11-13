@@ -10,6 +10,7 @@ import { loadProp, placeProps, updateHazards, resetHazards } from './props.js';
 import { listCustom, deleteCustom } from './store.js';
 import { initForge, openForge, forging, RELAY } from './forge.js';
 import { createForgeStage } from './stage.js';
+import { createPickups, BUFFS } from './pickups.js';
 
 const $ = (s) => document.querySelector(s);
 const canvas = $('#stage');
@@ -84,7 +85,7 @@ async function loadAll() {
   // fighters this visitor drew and forged earlier (kept in this browser)
   for (const rec of mine.sort((a, b) => a.createdAt - b.createdAt)) { try { await registerCustom(rec); } catch (e) { console.warn('custom fighter', rec.id, e); } tick(); }
 }
-let colliders = [], hazards = [];
+let colliders = [], hazards = [], pickups = { list: [], update() {}, reset() {} };
 const rand = (a, b) => a + Math.random() * (b - a);
 const srcOf = (def, kind) => def.src?.[kind] || `assets/fighters/${def.id}/${kind}.png`;
 
@@ -325,18 +326,26 @@ function startMatch() {
 function newRound() {
   state.round++; state.t = 0; state.showdown = false; state.spectating = false; state.skip = false;
   state.fighters.forEach((f, i) => { const [x, z] = SPAWNS[i]; f.reset(new THREE.Vector3(x, 0, z), Math.atan2(-x, -z)); });
-  resetHazards(hazards);
+  resetHazards(hazards); pickups.reset(state.fighters);
   state.phase = 'countdown'; state.phaseT = 0; updatePlates();
-  banner(`Round ${state.round}`, state.round === 1 && !DEMO ? 'Hold J to charge a big slap' : 'Shove them off the desk!');
+  banner(`Round ${state.round}`, state.round === 1 && !DEMO ? 'Hold J to charge a big slap' : state.round === 2 ? 'Grab the items that drop in!' : 'Shove them off the desk!');
 }
 function banner(txt, sub = '') { const b = $('#banner'); b.innerHTML = txt + (sub ? `<small>${sub}</small>` : ''); b.classList.add('on'); clearTimeout(banner.t); banner.t = setTimeout(() => b.classList.remove('on'), 1100); }
 function buildPlates() {
-  $('#plates').innerHTML = state.fighters.map((f) => `<div class="plate ${f.isPlayer ? 'p' + (f.slot + 1) : ''}" data-s="${f.slot}" style="border-color:${f.color}"><img src="${srcOf(f.def, 'doodle')}"><div><div class="who">${f.isPlayer ? 'PLAYER ' + (f.slot + 1) : 'CPU'}</div><div class="n">${esc(f.name)}</div><div class="pips"><i></i><i></i></div></div></div>`).join('');
+  $('#plates').innerHTML = state.fighters.map((f) => `<div class="plate ${f.isPlayer ? 'p' + (f.slot + 1) : ''}" data-s="${f.slot}" style="border-color:${f.color}"><img src="${srcOf(f.def, 'doodle')}"><div><div class="who">${f.isPlayer ? 'PLAYER ' + (f.slot + 1) : 'CPU'}</div><div class="n">${esc(f.name)}</div><div class="pips"><i></i><i></i><span class="buff"></span></div></div></div>`).join('');
 }
 function outStamp(f) {
   const el = document.createElement('div'); el.className = 'outstamp';
   el.innerHTML = `<img src="${srcOf(f.def, 'doodle')}" alt=""><b>OUT!</b><span>${esc(f.name)}</span>`;
   $('#pops').appendChild(el); setTimeout(() => el.remove(), 1500);
+}
+// which item each toy is holding, on its name plate
+function buffChips() {
+  for (const f of state.fighters) {
+    const b = f.buff, txt = !b ? '' : `${BUFFS[b.kind].chip} ${BUFFS[b.kind].hits ? '×' + b.hits : Math.ceil(b.t) + 's'}`;
+    if (txt === f._chip) continue; f._chip = txt;
+    const el = document.querySelector(`.plate[data-s="${f.slot}"] .buff`); if (el) { el.textContent = txt; el.style.background = b ? BUFFS[b.kind].color : ''; el.classList.toggle('on', !!b); }
+  }
 }
 function updatePlates() {
   state.fighters.forEach((f) => { const el = document.querySelector(`.plate[data-s="${f.slot}"]`); if (!el) return; el.classList.toggle('out', !f.alive || f.falling); el.querySelectorAll('.pips i').forEach((p, i) => p.classList.toggle('w', i < state.wins[f.slot])); });
@@ -366,7 +375,7 @@ function step(dt) {
     let inp;
     if (state.phase !== 'fight') inp = { x: 0, z: 0 };
     else if (f.isPlayer && !DEMO) inp = playerInput(f.slot);
-    else inp = state.bots[i].input(F, hazards, dt);
+    else inp = state.bots[i].input(F, hazards, dt, pickups.list);
     f.control(inp, dt, { sfx: quiet });
   });
   // attacks land ~0.13 s after release
@@ -378,14 +387,16 @@ function step(dt) {
         v2.set(b.pos.x - a.pos.x, 0, b.pos.z - a.pos.z); const d = v2.length();
         if (d > reach + b.radius) continue; v2.normalize();
         if (fwd.dot(v2) < Math.cos(1.15)) continue;
-        const ch = a.attackCharge; const imp = (5 + 11 * ch * ch + 2.5 * ch) * a.power * (state.boost || 1) / Math.sqrt(b.mass * 1.15);
+        const ch = a.attackCharge; const slug = a.buff?.kind === 'power';   // holding the bat
+        const imp = (5 + 11 * ch * ch + 2.5 * ch) * a.power * (state.boost || 1) * (slug ? 1.9 : 1) / Math.sqrt(b.mass * 1.15);
+        if (slug) a.buff.hits--;
         const dir = v2.clone().lerp(fwd, 0.35).normalize();
         b.vel.addScaledVector(dir, imp); b.stun = 0.25 + 0.45 * ch; b.squash = 0.25 + ch * 0.2; b.lastHitBy = a; b.charging = false;
         a.vel.addScaledVector(fwd, -1.2);
         hit = true;
         const at = new THREE.Vector3((a.pos.x + b.pos.x) / 2, b.height * 0.6, (a.pos.z + b.pos.z) / 2);
         spawn(starTex, at, ch > 0.5 ? 7 : 3, 1, 3 + ch * 3, 0.32, 0.35 + ch * 0.25);
-        if (ch > 0.55) { quiet.bigSlap(); shake = 0.35; hitStop = 0.09; pop(pick1(popWords.big), at, 'yel'); }
+        if (ch > 0.55 || slug) { quiet.bigSlap(); shake = slug ? 0.5 : 0.35; hitStop = 0.09; pop(slug ? 'HOME RUN!' : pick1(popWords.big), at, slug ? 'red' : 'yel'); }
         else { quiet.slap(0.6 + ch); shake = Math.max(shake, 0.12); hitStop = Math.max(hitStop, 0.03); if (Math.random() < 0.5) pop(pick1(popWords.small), at, 'small'); }
       }
       if (!hit && a.isPlayer) quiet.whoosh();
@@ -416,6 +427,7 @@ function step(dt) {
     }
   }
   tickHazards(dt);
+  pickups.update(dt, F, state.phase === 'fight'); buffChips();
   // edges
   for (const f of F) {
     if (!f.alive || f.falling) continue;
@@ -488,6 +500,7 @@ function tickHazards(dt) {
 const pick1 = (a) => a[Math.floor(Math.random() * a.length)];
 
 function endMatch(champ) {
+  pickups.reset([]);
   state.phase = 'results'; state.champ = champ; champ.arrived = false; champ.won = true;
   $('#winTitle').textContent = champ.isPlayer ? (mode === 2 ? `Player ${champ.slot + 1} wins!` : 'You win!') : `${champ.name} wins!`;
   $('#winLine').textContent = champ.isPlayer ? `${champ.name} is the desk champion.` : 'Better luck next time. Rematch?';
@@ -580,9 +593,10 @@ function frame() {
   resize();
   try { await Promise.all([loadAll(), loadRoom()]); } catch (e) { $('#loadTxt').textContent = 'Could not load the toys: ' + e.message; throw e; }
   ({ colliders, hazards } = placeProps(PROPS, propGltfs, world, blobTex)); makeThumbs(); buildRoster();
+  pickups = createPickups({ world, loaded: propGltfs, colliders, blobTex, fx: hazardFx });
   startAttract();
   initForge({
-    enter() { state.attract = false; state.forging = true; state.phase = 'forge'; state.fighters.forEach((f) => world.remove(f.group)); state.fighters = []; state.bots = []; fstage.group.visible = true; },
+    enter() { pickups.reset(state.fighters); state.attract = false; state.forging = true; state.phase = 'forge'; state.fighters.forEach((f) => world.remove(f.group)); state.fighters = []; state.bots = []; fstage.group.visible = true; },
     leave() { if (!forging()) fstage.clear(); toMenu(); },
     stage: (kind, data) => fstage.show(kind, data),
     async addFighter(rec) { const def = await registerCustom(rec); makeThumbs([def]); buildRoster(); return def; },
@@ -592,5 +606,5 @@ function frame() {
   });
   $('#loading').classList.remove('show');
   renderer.setAnimationLoop(frame);
-  window.__doodle = { state, scene, camera, FIGHTERS, PROPS, hazards, Bot, get hazardsList() { return hazards; }, endMatch: (i = 0) => endMatch(state.fighters[i]), fstage };
+  window.__doodle = { state, scene, camera, FIGHTERS, PROPS, hazards, Bot, get hazardsList() { return hazards; }, get pickupsList() { return pickups.list; }, get pickups() { return pickups; }, endMatch: (i = 0) => endMatch(state.fighters[i]), fstage };
 })();

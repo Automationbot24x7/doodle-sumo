@@ -127,3 +127,7 @@ body.two .p2keys { display: inline; }
 .toast { position: fixed; left: 50%; bottom: 70px; transform: translate(-50%, 20px); z-index: 7; background: var(--ink); color: #fff; font: 800 15px var(--ui); padding: 9px 18px; border-radius: 12px; opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; max-width: 90vw; text-align: center; }
 .toast.on { opacity: 1; transform: translate(-50%, 0); }
 #fFight { font-size: 26px; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; padding: 6px 18px 4px; }
+
+/* pickups: the item a toy is holding, on its name plate */
+.plate .buff { display: none; margin-left: 4px; padding: 0 6px; border-radius: 8px; color: #fff; font: 900 10.5px var(--ui); line-height: 15px; white-space: nowrap; }
+.plate .buff.on { display: inline-block; }

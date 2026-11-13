@@ -5,6 +5,7 @@
     "prompt": "A chunky red office stapler, closed, toy-like rounded shapes, simple clean colours, single object",
     "motion": "Keep the base fixed on the table. Add a hinge at the back so the top arm swings open about 40 degrees and then snaps shut quickly, repeating.",
     "role": "hazard",
+    "version": "G1",
     "urdf": true,
     "joints": [
       {
@@ -25,6 +26,7 @@
     "prompt": "A small retro desk fan with a round wire cage, light blue body and white blades, cartoon toy style, single object",
     "motion": "Keep the base and the stand fixed. The fan blades and their hub rotate continuously around the central axle.",
     "role": "hazard",
+    "version": "G1",
     "urdf": true,
     "joints": [
       {
@@ -45,6 +47,7 @@
     "prompt": "A colourful toy jack-in-the-box: a square tin box with a crank handle on the side and a closed hinged lid on top, cartoon style, single object",
     "motion": "Keep the box fixed. The lid on top is hinged at the back edge and flips open about 110 degrees, then closes. The crank handle on the side rotates around its axle.",
     "role": "hazard",
+    "version": "G1",
     "urdf": true,
     "joints": [
       {
@@ -71,6 +74,7 @@
     "prompt": "A round pencil cup holder full of colourful pencils and wax crayons standing upright, cartoon toy style, single object",
     "motion": null,
     "role": "decor",
+    "version": "G1",
     "urdf": false,
     "joints": [],
     "tasks": {
@@ -83,6 +87,7 @@
     "prompt": "A small stack of three chunky hardcover school books lying flat, bright red, blue and yellow covers, cartoon style, single object",
     "motion": null,
     "role": "decor",
+    "version": "G1",
     "urdf": false,
     "joints": [],
     "tasks": {
@@ -95,6 +100,7 @@
     "prompt": "A round red twin-bell alarm clock with little feet, cartoon toy style, single object",
     "motion": null,
     "role": "decor",
+    "version": "G1",
     "urdf": false,
     "joints": [],
     "tasks": {
@@ -107,6 +113,7 @@
     "prompt": "A classic yellow rubber duck bath toy with an orange beak, single object",
     "motion": null,
     "role": "decor",
+    "version": "G1",
     "urdf": false,
     "joints": [],
     "tasks": {
@@ -119,6 +126,7 @@
     "prompt": "An open cardboard box of chunky wax crayons in rainbow colours, lying flat, cartoon style, single object",
     "motion": null,
     "role": "decor",
+    "version": "G1",
     "urdf": false,
     "joints": [],
     "tasks": {
@@ -131,10 +139,53 @@
     "prompt": "A tall green metal desk lamp with a jointed arm and a round dome shade, cartoon style, single object",
     "motion": null,
     "role": "decor",
+    "version": "G1",
     "urdf": false,
     "joints": [],
     "tasks": {
       "model": 6929435
+    }
+  },
+  {
+    "id": "bat",
+    "title": "Baseball bat",
+    "prompt": "A chunky toy wooden baseball bat with a red taped grip, short and thick, rounded cartoon shapes, simple clean colours, single object",
+    "motion": null,
+    "role": "pickup",
+    "buff": "power",
+    "version": "G1-Turbo",
+    "urdf": false,
+    "joints": [],
+    "tasks": {
+      "model": 7122519
+    }
+  },
+  {
+    "id": "skate",
+    "title": "Roller skate",
+    "prompt": "A single retro roller skate boot, bright yellow with a blue stripe and four red wheels, chunky toy-like rounded shapes, simple clean colours, single object",
+    "motion": null,
+    "role": "pickup",
+    "buff": "speed",
+    "version": "G1-Turbo",
+    "urdf": false,
+    "joints": [],
+    "tasks": {
+      "model": 7122910
+    }
+  },
+  {
+    "id": "dumbbell",
+    "title": "Dumbbell",
+    "prompt": "A chunky toy dumbbell, short purple handle with two big round dark grey weights, rounded cartoon shapes, simple clean colours, single object",
+    "motion": null,
+    "role": "pickup",
+    "buff": "heavy",
+    "version": "G1-Turbo",
+    "urdf": false,
+    "joints": [],
+    "tasks": {
+      "model": 7123410
     }
   }
 ]

@@ -5,7 +5,7 @@ import { DESK } from './fighter.js';
 export class Bot {
   constructor(f, level = 1) { this.f = f; this.level = level; this.target = null; this.retarget = 0; this.hold = 0; this.think = 0; this.wantCharge = 0.4; this.dashBias = Math.random(); }
 
-  input(all, hazards, dt) {
+  input(all, hazards, dt, pickups) {
     const f = this.f, inp = { x: 0, z: 0, shoveDown: false, shoveHeld: false, dash: false };
     if (!f.alive || f.falling) return inp;
     this.retarget -= dt; this.think -= dt;
@@ -26,6 +26,9 @@ export class Bot {
     const tdx = t.pos.x - f.pos.x, tdz = t.pos.z - f.pos.z, td = Math.hypot(tdx, tdz);
     // when close, go straight at the target
     if (td < f.radius + t.radius + 1.2 || d < 0.35 || (foes.length === 1 && td < 3.2)) { dx = tdx; dz = tdz; }
+    // a pickup on the desk is worth a detour, unless a rival is right on top of us
+    const pk = !f.buff && pickups?.length ? pickups[0] : null; let going = false;
+    if (pk) { const px = pk.x - f.pos.x, pz = pk.z - f.pos.z; if (Math.hypot(px, pz) < 6.5 && td > 1.3) { dx = px; dz = pz; going = true; } }
     let mx = dx, mz = dz; const ml = Math.hypot(mx, mz) || 1; mx /= ml; mz /= ml;
     // edge avoidance
     const m = 1.4;
@@ -39,7 +42,7 @@ export class Bot {
       if (Math.abs(hx) < h.zone.hw + 0.8 && Math.abs(hz) < h.zone.hd + 0.8) { mx += Math.sign(hx || 1) * 1.5 * (h.zone.hw < h.zone.hd ? 1 : 0.3); mz += Math.sign(hz || 1) * 1.5 * (h.zone.hd <= h.zone.hw ? 1 : 0.3); }
     }
     const l2 = Math.hypot(mx, mz) || 1;
-    const sp = 0.55 + 0.25 * this.level;
+    const sp = going ? 1 : 0.55 + 0.25 * this.level;
     inp.x = (mx / l2) * sp; inp.z = (mz / l2) * sp;
 
     // attack logic

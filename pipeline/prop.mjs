@@ -26,7 +26,7 @@ if (all || want.has('model')) {
     const url = cfg.img.startsWith('http') ? cfg.img : await upload(join(ROOT, cfg.img));
     r = await run('img-to-3d', { img: url, version: 'G1', faceCount: cfg.faces || 30000, outputFormat: ['zip', 'glb'] }, `${name}:model`);
   } else {
-    r = await run('text-to-3d', { prompt: cfg.prompt, style: cfg.style || 'cartoon', version: 'G1', faceCount: cfg.faces || 30000, outputFormat: ['zip', 'glb'] }, `${name}:model`);
+    r = await run('text-to-3d', { prompt: cfg.prompt, style: cfg.style || 'cartoon', version: cfg.version || 'G1', faceCount: cfg.faces || 30000, outputFormat: ['zip', 'glb'] }, `${name}:model`);
   }
   S.modelTask = r.taskId; S.modelOutputs = r.outputs;
   S.glbUrl = firstUrl(r.outputs, '.glb'); S.zipUrl = firstUrl(r.outputs, '.zip'); save();
