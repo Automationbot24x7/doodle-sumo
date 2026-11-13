@@ -3,6 +3,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { loadURDF } from './urdf.js';
+import { lux3dStats } from './stats.js';
 
 const $ = (s, el = document) => el.querySelector(s);
 const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
@@ -20,7 +21,7 @@ function makeView(canvas, setup) {
   const scene = new THREE.Scene(); scene.environment = env;
   scene.add(new THREE.HemisphereLight('#fff', '#999', 1.2)); const d = new THREE.DirectionalLight('#fff', 1.8); d.position.set(2, 4, 3); scene.add(d);
   const cam = new THREE.PerspectiveCamera(32, 1, 0.01, 100);
-  const v = { canvas, ctx: canvas.getContext('2d'), scene, cam, yaw: 0.5, pitch: 0.25, dist: 3, target: new THREE.Vector3(), visible: false, spin: true, update: null };
+  const v = { canvas, ctx: canvas.getContext('2d'), scene, cam, yaw: 0.3, pitch: 0.18, dist: 3, target: new THREE.Vector3(), visible: false, spin: true, update: null };
   let drag = null;
   canvas.addEventListener('pointerdown', (e) => { drag = { x: e.clientX, y: e.clientY, yaw: v.yaw, pitch: v.pitch }; v.spin = false; canvas.setPointerCapture(e.pointerId); });
   canvas.addEventListener('pointermove', (e) => { if (!drag) return; v.yaw = drag.yaw - (e.clientX - drag.x) * 0.01; v.pitch = Math.max(-0.2, Math.min(1.2, drag.pitch + (e.clientY - drag.y) * 0.01)); });
@@ -41,7 +42,7 @@ function loop() {
     const w = v.canvas.clientWidth, h = v.canvas.clientHeight; if (!w || !h) continue;
     const pr = gl.getPixelRatio();
     if (v.canvas.width !== Math.round(w * pr)) { v.canvas.width = Math.round(w * pr); v.canvas.height = Math.round(h * pr); }
-    if (v.spin) v.yaw += dt * 0.5;
+    if (v.spin) v.yaw += dt * (v.spinSpeed ?? 0.5);
     v.update?.(dt);
     v.cam.aspect = w / h; v.cam.updateProjectionMatrix();
     v.cam.position.set(v.target.x + Math.sin(v.yaw) * Math.cos(v.pitch) * v.dist, v.target.y + Math.sin(v.pitch) * v.dist, v.target.z + Math.cos(v.yaw) * Math.cos(v.pitch) * v.dist);
@@ -67,10 +68,20 @@ async function fighterRow(f, pr) {
   makeView($('canvas', row), (v) => {
     const model = g.scene; v.scene.add(model);
     const mixer = new THREE.AnimationMixer(model); let cur;
-    const skel = new THREE.SkeletonHelper(model); skel.visible = false; skel.material.depthTest = false; skel.material.color = new THREE.Color('#e2453c'); v.scene.add(skel);
+    // the Lux3D skeleton, drawn boldly: a red ball on every joint, a red bar along every bone
+    const skel = new THREE.Group(); skel.visible = false; v.scene.add(skel);
+    const red = new THREE.MeshBasicMaterial({ color: '#e2453c', depthTest: false, transparent: true });
+    const ballGeo = new THREE.SphereGeometry(1, 10, 8), barGeo = new THREE.CylinderGeometry(1, 1, 1, 6);
+    const bones = []; model.traverse((o) => { if (o.isBone) bones.push(o); });
+    const parts = bones.map((b) => { const ball = new THREE.Mesh(ballGeo, red); ball.renderOrder = 6; skel.add(ball); let bar = null; if (b.parent?.isBone) { bar = new THREE.Mesh(barGeo, red); bar.renderOrder = 5; skel.add(bar); } return { b, ball, bar }; });
+    const UP = new THREE.Vector3(0, 1, 0), va = new THREE.Vector3(), vb = new THREE.Vector3(), vc = new THREE.Vector3();
+    const size = new THREE.Box3().setFromObject(model).getSize(new THREE.Vector3()).y;
+    const drawSkel = () => { if (!skel.visible) return; model.updateMatrixWorld(true); const r = size * 0.018;
+      for (const { b, ball, bar } of parts) { b.getWorldPosition(va); ball.position.copy(va); ball.scale.setScalar(r);
+        if (bar) { b.parent.getWorldPosition(vb); bar.position.copy(va).add(vb).multiplyScalar(0.5); bar.scale.set(r * 0.45, Math.max(1e-4, va.distanceTo(vb)), r * 0.45); bar.quaternion.setFromUnitVectors(UP, vc.copy(va).sub(vb).normalize()); } } };
     const mats = []; model.traverse((o) => { if (o.isMesh) mats.push([o, o.material]); });
     const wire = new THREE.MeshBasicMaterial({ color: '#3d7be0', wireframe: true });
-    const ghost = new THREE.MeshBasicMaterial({ color: '#c9daf2', transparent: true, opacity: 0.25, depthWrite: false });
+    const ghost = new THREE.MeshBasicMaterial({ color: '#7fa8ee', transparent: true, opacity: 0.35, depthWrite: false });
     const play = (i) => { cur?.stop(); cur = mixer.clipAction(g.animations[i]).play(); row.querySelectorAll('.moves .btn').forEach((b, j) => b.classList.toggle('on', i === j)); };
     (f.anims || []).forEach((id, i) => { const b = document.createElement('button'); b.className = 'btn'; b.textContent = NICE[id] || id; b.onclick = () => play(i); $('.moves', row).appendChild(b); });
     row.querySelectorAll('.toggles .btn').forEach((b) => b.onclick = () => {
@@ -78,9 +89,10 @@ async function fighterRow(f, pr) {
       const m = b.dataset.m; skel.visible = m === 'skel';
       mats.forEach(([o, mat]) => (o.material = m === 'tex' ? mat : m === 'wire' ? wire : ghost));
     });
-    play(Math.max(0, (f.anims || []).indexOf('Crouch_Idle_Loop')));
-    mixer.update(0); frameObject(v, model, 1.55);
-    v.update = (dt) => mixer.update(dt);
+    play(Math.max(0, (f.anims || []).indexOf('Idle_Loop')));
+    mixer.update(0); frameObject(v, model, 1.25);
+    v.spinSpeed = 0.25;
+    v.update = (dt) => { mixer.update(dt); drawSkel(); };
   });
 }
 
@@ -115,17 +127,15 @@ async function propCard(p) {
 
 (async () => {
   const [fighters, props, pipe, print] = await Promise.all(['data/fighters.json', 'data/props.json', 'data/pipeline.json', 'data/print.json'].map((u) => fetch(u).then((r) => r.json()).catch(() => ({}))));
-  const ok = pipe.tasks.filter((t) => t.ok);
-  const forge = await fetch('data/forge-demo.json').then((r) => r.json()).catch(() => []);
-  // G1-Turbo models cost 1 credit; each live forge run is 34 credits plus 1 for its print export
-  const credits = ok.reduce((s, t) => s + (t.version === 'G1-Turbo' ? (t.kind === 'text-to-3d' ? 13 : 1) : CREDITS[t.kind] || 0), 0) + forge.length * 35 + 47;   // + 47: test runs of the hosted relay
-  const secs = ok.reduce((s, t) => s + (t.secs || 0), 0) + forge.reduce((s, r) => s + r.total, 0);
-  $('#stats').innerHTML = `<div><b>${fighters.length} + ${forge.length}</b>house + drawn fighters</div><div><b>${props.length}</b>props &amp; traps</div><div><b>${ok.length + forge.length * 5}</b>Lux3D tasks</div><div><b>${Math.round(secs / 60)}</b>minutes of Lux3D time</div><div><b>${credits}</b>credits used</div>`;
-  $('#tasks tbody').innerHTML = pipe.tasks.slice().reverse().map((t) => `<tr><td>${t.t.slice(0, 16).replace('T', ' ')}</td><td>${STEP[t.kind] || t.kind}${t.version === 'G1-Turbo' ? ' (Turbo)' : ''}</td><td>${t.label}</td><td>${t.taskId ?? t.worldId ?? ''}</td><td>${t.secs ?? ''}</td><td class="${t.ok ? 'ok' : 'bad'}">${t.ok ? 'done' : 'failed'}</td></tr>`).join('');
-  // two real runs of the live forge (doodles drawn on the in-game pad)
-  fetch('data/forge-demo.json').then((r) => r.json()).then((runs) => {
-    $('#forgerow').innerHTML = runs.map((r) => `<figure><img src="assets/forge-demo/${r.id}/doodle.png" alt=""><figcaption>${esc(r.name)}: drawn on the pad</figcaption></figure><figure><img src="assets/forge-demo/${r.id}/toy.png" alt=""><figcaption>Lux3D toy concept · rigged fighter ${Math.floor(r.total / 60)} min ${r.total % 60} s later<br>tasks ${Object.values(r.tasks).join(' · ')}</figcaption></figure>`).join('');
-  }).catch(() => {});
+  const [forge, credits] = await Promise.all(['data/forge-demo.json', 'data/credits.json'].map((u) => fetch(u).then((r) => r.json()).catch(() => null)));
+  const st = lux3dStats(pipe, fighters, forge || [], credits);
+  $('#stats').innerHTML = `<div><b>${st.house} + ${st.drawn}</b>house + drawn fighters</div><div><b>${st.runs}</b>live forge runs</div><div><b>${props.length}</b>props, traps &amp; pickups</div><div><b>${st.tasks}</b>Lux3D tasks</div><div><b>${st.minutes}</b>minutes of Lux3D time</div>${st.creditsUsed != null ? `<div><b>${st.creditsUsed}</b>credits used</div>` : ''}`;
+  const forgeRows = (forge || []).flatMap((r) => Object.entries(r.tasks || {}).map(([k, id]) => `<tr><td>${String(r.createdAt || '').slice(0, 16).replace('T', ' ')}</td><td>Live forge: ${{ toy: 'toy concept image', model: 'image → 3D (Turbo)', rig: 'humanoid auto-rig', anims: 'animation retarget', print: 'export 3MF / STL' }[k] || k}</td><td>${esc(r.name)}</td><td>${id}</td><td>${r.secs?.[k] ?? ''}</td><td class="${r.state === 'done' || r.secs?.[k] ? 'ok' : 'bad'}">${r.secs?.[k] || k === 'print' ? 'done' : r.state}</td></tr>`));
+  $('#tasks tbody').innerHTML = forgeRows.join('') + pipe.tasks.slice().reverse().map((t) => `<tr><td>${t.t.slice(0, 16).replace('T', ' ')}</td><td>${STEP[t.kind] || t.kind}${t.version === 'G1-Turbo' ? ' (Turbo)' : ''}</td><td>${t.label}</td><td>${t.taskId ?? t.worldId ?? ''}</td><td>${t.secs ?? ''}</td><td class="${t.ok ? 'ok' : 'bad'}">${t.ok ? 'done' : 'failed'}</td></tr>`).join('');
+  const mmss = (s) => `${Math.floor(s / 60)} min ${s % 60} s`;
+  $('#forgerow').innerHTML = (forge || []).filter((r) => r.kind === 'demo').map((r) => `<figure><img src="assets/forge-demo/${r.id}/doodle.png" alt=""><figcaption>${esc(r.name)}: drawn on the pad</figcaption></figure><figure><img src="assets/forge-demo/${r.id}/toy.png" alt=""><figcaption>Lux3D toy concept · rigged fighter ${mmss(r.total)} later</figcaption></figure>`).join('');
+  const stress = (forge || []).filter((r) => r.kind === 'stress');
+  if (stress.length) $('#stress').innerHTML = `<h3>We tried to break the forge</h3><p class="note">${stress.length} deliberately messy doodles, each sent through the same live forge: ${stress.filter((r) => r.state === 'done').length} became playable fighters.</p><div class="stressgrid">` + stress.map((r) => `<figure><div><img src="assets/forge-demo/${r.id}/doodle.png" alt="">${r.state === 'done' ? `<img src="assets/forge-demo/${r.id}/toy.png" alt="">` : ''}</div><figcaption><b>${esc(r.name)}</b> · ${r.state === 'done' ? `rigged in ${mmss(r.total)}${r.tries ? ' (second try)' : ''}` : `not rigged (${esc(r.error || r.state)})`}</figcaption></figure>`).join('') + '</div>';
   requestAnimationFrame(loop);
   for (const f of fighters) await fighterRow(f, print.fighters?.[f.id]);
   for (const p of props.filter((p) => p.urdf)) await trapCard(p);

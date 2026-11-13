@@ -25,6 +25,7 @@ const relay = createRelay({
   key, store,
   md5: async (bytes) => createHash('md5').update(bytes).digest('hex'),
   limits: { perDay: +(process.env.PER_DAY || 50), total: +(process.env.TOTAL || 500), perVisitor: +(process.env.PER_VISITOR || 50) },
+  judgeToken: process.env.JUDGE_TOKEN || '',
   log: (o) => console.log(new Date().toISOString(), JSON.stringify(o)),
 });
 

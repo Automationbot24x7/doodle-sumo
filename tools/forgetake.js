@@ -9,7 +9,7 @@
   // start from the house roster: remove toys forged in earlier takes (through the normal delete button)
   window.confirm = () => true; for (const d of [...document.querySelectorAll('.card .del')]) { d.click(); await sleep(300); }
   await sleep(1000);
-  $('#drawCard').click(); mark('forge-open'); await load('/tools/draw-doodle.js'); await sleep(1200);
+  $('#drawBtn').click(); mark('forge-open'); await load('/tools/draw-doodle.js'); await sleep(1200);
   mark('draw'); await window.drawDoodle(q.get('doodle') || 'cat', 1.5); mark('drawn');
   await sleep(500);
   const name = q.get('name') || 'Sir Whiskers', inp = $('#fName'); inp.focus();
@@ -26,8 +26,9 @@
     if ($('#forge').dataset.mode === 'draw' && i > 50) { mark('FAILED ' + $('#fMsg').textContent); window.__captureStop = true; return; }
   }
   window.__captureSkip = 1; mark('alive'); await sleep(11000);
-  mark('fight'); $('#fFight').click(); await load('/tools/autopilot.js');
-  for (let i = 0; i < 2400; i++) { await sleep(100); if (window.__doodle.state.phase === 'results') break; }
-  mark('results ' + $('#winTitle').textContent); await sleep(10000); mark('end');
-  window.__captureStop = true;
+  // back to the roster: the new toy has its own card and stats
+  $('#fClose').click(); await sleep(900);
+  const card = [...document.querySelectorAll('.card[data-id]')].find((c) => c.dataset.id.startsWith('my-'));
+  card?.scrollIntoView({ block: 'nearest' }); await sleep(500); card?.click(); mark('roster'); await sleep(3200);
+  mark('end'); window.__captureStop = true;
 })();

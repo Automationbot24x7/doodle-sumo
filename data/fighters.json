@@ -168,5 +168,71 @@
       "anims": 6929473,
       "print": 6929542
     }
+  },
+  {
+    "id": "whiskers",
+    "title": "Sir Whiskers",
+    "blurb": "Drawn on the in-game pad, forged live by Lux3D.",
+    "drawn": true,
+    "version": "G1-Turbo",
+    "run": "sir-whiskers",
+    "secs": {
+      "toy": 31,
+      "model": 59,
+      "rig": 94,
+      "anims": 12
+    },
+    "anims": [
+      "Idle_Loop",
+      "Crouch_Idle_Loop",
+      "Jog_Fwd_Loop",
+      "Sprint_Loop",
+      "Punch_Cross",
+      "Punch_Jab",
+      "Roll",
+      "Swim_Fwd_Loop",
+      "Dance_Loop",
+      "Yes"
+    ],
+    "tasks": {
+      "toy": 7053325,
+      "model": 7053372,
+      "rig": 7053628,
+      "anims": 7054091,
+      "print": 7143419
+    }
+  },
+  {
+    "id": "spike",
+    "title": "Spike",
+    "blurb": "Drawn on the in-game pad, forged live by Lux3D.",
+    "drawn": true,
+    "version": "G1-Turbo",
+    "run": "spike",
+    "secs": {
+      "toy": 35,
+      "model": 58,
+      "rig": 54,
+      "anims": 12
+    },
+    "anims": [
+      "Idle_Loop",
+      "Crouch_Idle_Loop",
+      "Jog_Fwd_Loop",
+      "Sprint_Loop",
+      "Punch_Cross",
+      "Punch_Jab",
+      "Roll",
+      "Swim_Fwd_Loop",
+      "Dance_Loop",
+      "Yes"
+    ],
+    "tasks": {
+      "toy": 6972748,
+      "model": 6972846,
+      "rig": 6973372,
+      "anims": 6973665,
+      "print": 7143598
+    }
   }
 ]

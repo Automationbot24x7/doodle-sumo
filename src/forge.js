@@ -24,7 +24,10 @@ let hooks = {}, job = null, timer = null, pad = null, busy = false, lastStepShow
 const saved = () => { try { return JSON.parse(localStorage.getItem('forgeJob') || 'null'); } catch { return null; } };
 const persist = () => { try { job ? localStorage.setItem('forgeJob', JSON.stringify(job)) : localStorage.removeItem('forgeJob'); } catch { /* storage full or blocked */ } };
 const ownKey = () => ($('#fKey')?.value || sessionStorage.getItem('aholoKey') || '').trim();
-const headers = () => { const k = ownKey(); return { 'content-type': 'application/json', ...(k ? { 'x-aholo-key': k } : {}) }; };
+try { if (QS.get('judge')) localStorage.setItem('judgeToken', QS.get('judge')); } catch { /* storage blocked */ }
+const judgeToken = () => { try { return QS.get('judge') || localStorage.getItem('judgeToken') || ''; } catch { return QS.get('judge') || ''; } };
+const headers = () => { const k = ownKey(), j = judgeToken(); return { 'content-type': 'application/json', ...(k ? { 'x-aholo-key': k } : {}), ...(j ? { 'x-judge': j } : {}) }; };
+let replaying = false, clockT = null;
 export const forging = () => !!job;
 
 // ---------- drawing pad (crayon strokes on a transparent layer over white paper)
@@ -46,6 +49,9 @@ function setupPad() {
     g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
   }
   const snap = () => { st.undo.push(g.getImageData(0, 0, cv.width, cv.height)); if (st.undo.length > 14) st.undo.shift(); };
+  const tip = $('#fTip');
+  const moveTip = (e) => { const r = cv.getBoundingClientRect(); tip.style.left = (e.clientX - r.left) + 'px'; tip.style.top = (e.clientY - r.top) + 'px'; tip.style.color = st.erase ? '#fff' : st.color; tip.classList.toggle('on', !busy); };
+  cv.addEventListener('pointermove', moveTip); cv.addEventListener('pointerdown', moveTip); cv.addEventListener('pointerleave', () => tip.classList.remove('on'));
   cv.addEventListener('pointerdown', (e) => { if (busy) return; e.preventDefault(); try { cv.setPointerCapture(e.pointerId); } catch { /* synthetic pointer */ } snap(); st.last = pos(e); seg(st.last, st.last); st.used = true; $('#fGuide').classList.add('dim'); });
   cv.addEventListener('pointermove', (e) => { if (!st.last) return; const p = pos(e); seg(st.last, p); st.last = p; });
   const up = () => { st.last = null; }; cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
@@ -100,11 +106,15 @@ async function refreshQuota() {
   if (!RELAY) { q.innerHTML = 'The live forge needs a relay that holds an Aholo key. To use it, get the code from GitHub, run <code>node relay/local.mjs</code> with your own Aholo key and open the game on localhost (see the README). You can still draw here.'; go.disabled = true; return; }
   try {
     const s = await (await fetch(RELAY + '/status', { headers: headers() })).json();
-    go.disabled = false;
-    if (s.ownKey) q.textContent = 'Using your own Aholo key (about 34 credits per fighter).';
-    else if (s.open && s.leftForYou > 0) q.textContent = `Free: ${s.leftToday} forge${s.leftToday === 1 ? '' : 's'} left today for everyone, ${s.leftForYou} for you.`;
-    else { q.textContent = s.leftToday > 0 ? 'You have used your free forges for today. Add your own Aholo key below to keep going.' : 'Today\'s free forges are used up. Add your own Aholo key below, or come back tomorrow.'; go.disabled = true; $('#fOwn').open = true; }
-  } catch { q.textContent = 'The forge relay is not answering right now. Try again in a minute.'; go.disabled = true; }
+    go.disabled = false; $('#fReplay').classList.remove('hot');
+    const who = s.judge ? 'Judges\' reserved forges' : 'Free forges';
+    if (s.ownKey) q.textContent = 'Using your own Aholo key (about 35 credits per fighter).';
+    else if (s.open && s.leftForYou > 0) q.textContent = `${who}: ${s.leftForYou} left for you today` + (s.leftTotal != null ? ` (${s.leftTotal} left in total).` : '.');
+    else {
+      q.textContent = s.leftTotal <= 0 ? `${who} are all used up. Watch a real forge run below, play Spike or Sir Whiskers (drawn on this pad), or add your own Aholo key.` : s.leftToday > 0 ? 'You have used your free forges for today. Watch a real forge run below, or add your own Aholo key to keep going.' : 'Today\'s free forges are used up. Watch a real forge run below, add your own Aholo key, or come back tomorrow.';
+      go.disabled = true; $('#fOwn').open = true; $('#fReplay').classList.add('hot');
+    }
+  } catch { q.textContent = 'The forge relay is not reachable from here right now. You can still watch a real forge run below.'; go.disabled = true; $('#fReplay').classList.add('hot'); }
 }
 
 export function openForge() {
@@ -119,16 +129,24 @@ async function begin() {
   const name = ($('#fName').value.trim() || NAMES[Math.floor(Math.random() * NAMES.length)]).slice(0, 18);
   $('#fName').value = name;
   const doodle = pad.export(); const k = ownKey(); if (k) sessionStorage.setItem('aholoKey', k);
+  const t0 = Date.now(); clock(t0);   // the clock starts when the button is pressed, upload included
   mode('run'); paintSteps({ step: 'toy', state: 'running' }); say('Sending your doodle to Lux3D…'); hooks.stage?.('doodle', doodle);
   try {
     const r = await fetch(RELAY + '/forge', { method: 'POST', headers: headers(), body: JSON.stringify({ image: doodle, name }) });
     const v = await r.json();
     if (v.error) throw Object.assign(new Error(v.error.message || 'The forge said no.'), { code: v.error.code });
-    job = { id: v.id, name, doodle, startedAt: Date.now(), own: !!k }; persist(); lastStepShown = ''; update(v); loop();
-  } catch (e) { mode('draw'); say(e.message || 'Could not reach the forge.', true); hooks.stage?.('reset'); refreshQuota(); }
+    job = { id: v.id, name, doodle, startedAt: t0, own: !!k }; persist(); lastStepShown = ''; update(v); loop();
+  } catch (e) { clock(0); mode('draw'); say(e.message || 'Could not reach the forge.', true); hooks.stage?.('reset'); refreshQuota(); }
 }
 
 function loop() { clearTimeout(timer); timer = setTimeout(tick, 3500); }
+// wall-clock time since the button was pressed (the real time, so a recording cannot hide the wait)
+function clock(start, speed = 1, label = '') {
+  clearInterval(clockT); const el = $('#fClock');
+  if (!start) { el.textContent = ''; return; }
+  const draw = () => { const s = Math.floor(((Date.now() - start) * speed) / 1000); el.innerHTML = `⏱ ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}<small>${label || 'since you pressed the button'}</small>`; };
+  draw(); clockT = setInterval(draw, 250);
+}
 async function tick() {
   if (!job) return;
   try {
@@ -158,15 +176,15 @@ function update(v) {
   }
 }
 function fail(err) {
-  clearTimeout(timer); const keep = job?.doodle; job = null; persist(); pill('');
-  mode('draw'); say(err.message || 'Lux3D could not finish this one. Try a simpler drawing.', true); hooks.stage?.('reset');
+  clearTimeout(timer); clock(0); const keep = job?.doodle; job = null; persist(); pill('');
+  mode('draw'); say((err.message || 'Lux3D could not finish this one. Try a simpler drawing.') + ' This one did not use up a free forge.', true); hooks.stage?.('reset');
   if (keep && pad && !pad.st.used) pad.load(keep);
   refreshQuota();
 }
 
 const blob = async (url) => { const r = await fetch(url); if (!r.ok) throw new Error('download ' + r.status); return r.blob(); };
 async function finish(v) {
-  clearTimeout(timer); say(TALK.download[0]); pill(`Unboxing ${job.name}…`, 'run');
+  clearTimeout(timer); clearInterval(clockT); say(TALK.download[0]); pill(`Unboxing ${job.name}…`, 'run');
   try {
     const [glb, toy, doodle] = await Promise.all([blob(v.outputs.fighter), blob(v.outputs.toy), blob(job.doodle)]);
     const rec = {
@@ -207,16 +225,41 @@ async function printFiles(done, rec) {
   } catch { /* print files are a bonus */ }
 }
 
+// A real forge run, replayed from its saved Lux3D outputs at 10x speed (for judges who will not draw, or when the forge is out).
+async function replay() {
+  if (busy || job || replaying) return;
+  const runs = await fetch('data/forge-demo.json').then((r) => r.json()).catch(() => []);
+  const r = runs.find((x) => x.id === 'sir-whiskers'); const def = hooks.def?.('whiskers');
+  if (!r || !def) { say('The replay is not available right now.', true); return; }
+  const base = 'assets/forge-demo/sir-whiskers/', K = 10, wait = (s) => new Promise((ok) => setTimeout(ok, (s * 1000) / K));
+  replaying = true; pad.load(base + 'doodle.png'); $('#fName').value = r.name; mode('run'); $('#fWait').hidden = true;
+  hooks.stage?.('doodle', base + 'doodle.png'); clock(Date.now(), K, `replay of a real run, ${K}× speed`);
+  say('Replaying a real forge run: these are its real Lux3D outputs and times.');
+  const steps = { step: 'toy', state: 'running', secs: {} }; paintSteps(steps);
+  const phases = [['toy', () => { $('#fToy').src = base + 'toy.png'; $('#fToy').hidden = false; hooks.stage?.('toy', base + 'toy.png'); }],
+    ['model', () => hooks.stage?.('model', base + 'model.glb')], ['rig', () => hooks.stage?.('rig')], ['anims', () => {}]];
+  for (const [s, show] of phases) {
+    await wait(r.secs[s] + 3); if (!replaying) return;
+    steps.secs[s] = r.secs[s]; const next = STEPS[STEPS.indexOf(s) + 1]; steps.step = next || 'done'; steps.state = next ? 'running' : 'done';
+    paintSteps(steps); show();
+  }
+  clearInterval(clockT); replaying = false;
+  hooks.stage?.('ready', def); showDone({ id: def.id, title: def.title }, def, { secs: r.secs });
+  $('#fTimes').textContent += ' (Replay of a real run. Sir Whiskers is in everyone\'s roster.)';
+}
+
 export function initForge(h) {
   hooks = h; pad = setupPad();
   $('#fGo').onclick = begin;
-  $('#fClose').onclick = () => { closeForge(); if (!job && $('#forge').dataset.mode === 'done') pill(''); };
+  $('#fReplay').onclick = () => replay();
+  document.querySelectorAll('.examples button').forEach((b) => b.onclick = () => { if (!busy) { pad.load(b.dataset.ex); say(''); } });
+  $('#fClose').onclick = () => { replaying = false; closeForge(); if (!job && $('#forge').dataset.mode === 'done') pill(''); };
   $('#fWait').onclick = () => closeForge();
-  $('#fAgain').onclick = () => { pill(''); pad.st.used = false; $('#fPad').getContext('2d').clearRect(0, 0, 768, 768); $('#fGuide').classList.remove('dim'); $('#fName').value = ''; $('#fToy').hidden = true; hooks.stage?.('reset'); mode('draw'); refreshQuota(); };
+  $('#fAgain').onclick = () => { pill(''); replaying = false; clock(0); $('#fWait').hidden = false; pad.st.used = false; $('#fPad').getContext('2d').clearRect(0, 0, 768, 768); $('#fGuide').classList.remove('dim'); $('#fName').value = ''; $('#fToy').hidden = true; hooks.stage?.('reset'); mode('draw'); refreshQuota(); };
   $('#fPill').onclick = () => openForge();
   $('#fKey').onchange = () => { const k = ownKey(); if (k) sessionStorage.setItem('aholoKey', k); refreshQuota(); };
   const k = sessionStorage.getItem('aholoKey'); if (k) $('#fKey').value = k;
   // a forge that was running when the page was closed carries on
   const old = saved();
-  if (old && RELAY && Date.now() - old.startedAt < 60 * 60e3) { job = old; mode('run'); pill(`Forging ${job.name}…`, 'run'); loop(); } else persist();
+  if (old && RELAY && Date.now() - old.startedAt < 60 * 60e3) { job = old; mode('run'); clock(job.startedAt); pill(`Forging ${job.name}…`, 'run'); loop(); } else persist();
 }

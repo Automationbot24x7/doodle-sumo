@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Doodle Sumo Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  @page { size: 1920px 1080px; margin: 0; }
+  :root { --paper: #fbf8f1; --ink: #2b2b33; --ink-2: #5d5d6b; --red: #e2453c; --blue: #3d7be0; --yellow: #f6c431; --green: #3fae6a; --line: #c9daf2; --hand: 'Gaegu', cursive; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #ddd; font-family: 'Nunito', sans-serif; color: var(--ink); }
+  .slide { width: 1920px; height: 1080px; position: relative; overflow: hidden; page-break-after: always; break-after: page; padding: 62px 96px 70px 140px;
+    background: linear-gradient(90deg, transparent 96px, rgba(226,69,60,.35) 96px, rgba(226,69,60,.35) 99px, transparent 99px), repeating-linear-gradient(180deg, transparent 0 47px, var(--line) 47px 48px), var(--paper); }
+  h1 { font-family: var(--hand); font-size: 170px; line-height: .86; margin: 0; }
+  h2 { font-family: var(--hand); font-size: 84px; line-height: 1; margin: 0 0 16px; }
+  h2 em { font-style: normal; color: var(--red); }
+  h3 { font-family: var(--hand); font-size: 44px; margin: 0; line-height: 1; }
+  p, li { font-size: 29px; line-height: 1.42; margin: 0 0 14px; }
+  ul { margin: 0; padding-left: 34px; }
+  .muted { color: var(--ink-2); }
+  .num { position: absolute; right: 56px; bottom: 26px; font-family: var(--hand); font-size: 34px; color: var(--ink-2); }
+  .tag { position: absolute; left: 140px; bottom: 30px; font-size: 19px; color: var(--ink-2); font-weight: 800; letter-spacing: .06em; }
+  .w1 { color: var(--blue); display: inline-block; transform: rotate(-4deg); } .w2 { color: var(--red); display: inline-block; transform: rotate(3deg); }
+  .row { display: flex; gap: 30px; align-items: flex-start; }
+  .card { background: #fff; border: 4px solid var(--ink); border-radius: 22px; box-shadow: 7px 8px 0 var(--ink); padding: 18px 20px; }
+  .shot { border: 4px solid var(--ink); border-radius: 18px; box-shadow: 7px 8px 0 var(--ink); display: block; object-fit: cover; background: #fff; }
+  figure { margin: 0; } figcaption { font-size: 22px; font-weight: 800; margin-top: 10px; line-height: 1.25; } figcaption small { display: block; font-size: 18px; color: var(--ink-2); font-weight: 700; }
+  .strip { display: grid; gap: 18px; }
+  .strip img { width: 100%; display: block; border: 4px solid var(--ink); border-radius: 16px; background: #fff; object-fit: cover; box-shadow: 5px 6px 0 var(--ink); }
+  .pipe { display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px; margin-top: 18px; }
+  .pipe figure { text-align: center; }
+  .pipe img { width: 100%; aspect-ratio: 1; object-fit: contain; background: #fff; border: 4px solid var(--ink); border-radius: 16px; box-shadow: 5px 6px 0 var(--ink); }
+  .grid8 { display: grid; grid-template-columns: repeat(8, 1fr); gap: 12px; }
+  .grid8 .col { text-align: center; }
+  .grid8 img { width: 100%; height: 196px; object-fit: contain; background: #fff; border: 3px solid var(--ink); border-radius: 14px; margin-bottom: 8px; display: block; }
+  .grid8 b { font-family: var(--hand); font-size: 30px; line-height: 1; display: block; }
+  .grid8 small { font-size: 16px; font-weight: 800; color: var(--ink-2); }
+  .grid8 .mine img { border-color: var(--green); }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  .stats .card { padding: 12px 18px; } .stats .card b { display: block; font-family: var(--hand); font-size: 80px; color: var(--blue); line-height: .9; } .stats .card span { font-size: 21px; font-weight: 800; }
+  table { border-collapse: collapse; font-size: 23px; width: 100%; background: #fff; }
+  td, th { text-align: left; padding: 7px 12px; border-bottom: 2px solid #e6e1d4; white-space: nowrap; } th { font-weight: 900; background: #f1ede2; }
+  code, pre { font-family: Consolas, monospace; }
+  pre { font-size: 18.5px; line-height: 1.38; background: #f1ede2; border-radius: 12px; padding: 14px 18px; margin: 0; white-space: pre-wrap; }
+  .big-link { font-size: 38px; font-weight: 900; color: var(--blue); }
+  .ok { color: var(--green); font-weight: 900; }
+  .chip { display: inline-block; background: var(--red); color: #fff; font-weight: 900; font-size: 20px; border-radius: 10px; padding: 3px 12px; letter-spacing: .04em; vertical-align: middle; }
+  .iter { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+  .iter .card { padding: 12px 18px; } .iter h3 { font-size: 36px; margin-bottom: 6px; } .iter p { font-size: 20px; margin: 6px 0 0; line-height: 1.32; }
+  .pair { display: flex; gap: 12px; } .pair img { height: 178px; flex: none; width: 100%; min-width: 0; object-fit: contain; background: #fff; border: 3px solid var(--ink); border-radius: 12px; }
+  .pair figure { flex: 1; min-width: 0; display: flex; flex-direction: column; } .pair figcaption { font-size: 17px; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- 1 Cover -->
+<section class="slide" style="padding-top:70px">
+  <div class="row" style="gap:56px">
+    <div style="flex:1">
+      <h1><span class="w1">Doodle</span><br><span class="w2">Sumo</span></h1>
+      <p style="font-size:46px;margin-top:30px;font-family:var(--hand);font-weight:700;line-height:1.1">Draw a doodle. Three minutes later it is a 3D toy with a skeleton and ten moves. Then shove your rivals off a giant desk.</p>
+      <p class="muted" style="font-size:27px">Every fighter, skeleton, move, trap joint and print file is made by <b>Aholo Lux3D</b>, including the ones players draw themselves.</p>
+      <p style="margin-top:22px"><span class="big-link" style="font-size:33px;white-space:nowrap">automationbot24x7.github.io/doodle-sumo</span></p>
+      <p class="muted" style="font-size:23px">Rajeev Bhandari · team Forge (solo) · Manycore Aholo Global 3D AI Hackathon · #Manycorehackathon</p>
+    </div>
+    <div style="width:1010px"><img class="shot" src="img/hero.jpg" style="width:1010px;height:568px">
+      <div class="strip" style="grid-template-columns:repeat(4,1fr);margin-top:22px"><img src="img/forge-pad.jpg" style="height:176px"><img src="img/forge-toy.jpg" style="height:176px"><img src="img/forge-model.jpg" style="height:176px"><img src="img/forge-alive.jpg" style="height:176px"></div>
+      <p class="muted" style="font-size:21px;margin-top:12px;font-weight:800">A cat drawn on the in-game pad → Lux3D toy concept → Lux3D 3D model → rigged and dancing, <span id="catTime">3 min 34 s</span> later.</p></div>
+  </div>
+  <div class="num">1</div>
+</section>
+
+<!-- 2 Idea -->
+<section class="slide">
+  <h2>The idea: <em>every doodle wants to be a toy</em></h2>
+  <div class="row" style="gap:46px">
+    <div style="flex:1">
+      <p>Everyone draws little characters in the margins of a notebook. <b>Doodle Sumo</b> turns them into collectible 3D toys and drops them onto the desk they were drawn on.</p>
+      <ul>
+        <li><b>Draw your own fighter.</b> A crayon pad in the game (or a photo of a paper drawing). One button sends it through four Lux3D steps, live.</li>
+        <li><b>Party sumo.</b> Four toys, one desk. Shove, charge a big slap, dash-roll, and grab the bat, skate or dumbbell that drops in. Last toy standing wins the round; first to two wins.</li>
+        <li><b>The desk fights back.</b> A stapler, a fan and a jack-in-the-box move through real joints that Lux3D articulation created.</li>
+        <li><b>Paper → pixels → print.</b> Every toy, drawn ones included, exports as a watertight 3MF / STL.</li>
+        <li>Runs in any browser. 1 player vs bots, 2 players on one keyboard, touch on phones.</li>
+      </ul>
+      <p class="muted" style="font-size:23px;margin-top:18px">Lux3D is not only how the assets were made. It is the game's content engine: the roster grows every time someone draws.</p>
+    </div>
+    <div style="width:860px"><img class="shot" src="img/game-action.jpg" style="width:860px;height:484px">
+      <img class="shot" src="img/title.jpg" style="width:860px;height:330px;margin-top:24px;object-position:left top"></div>
+  </div>
+  <div class="tag">DOODLE SUMO · PROJECT REPORT</div><div class="num">2</div>
+</section>
+
+<!-- 3 Live forge -->
+<section class="slide">
+  <h2>Draw your own: <em>Lux3D, live in the game</em></h2>
+  <p class="muted" style="font-size:25px;margin-bottom:10px">Screenshots of one real run. Each Lux3D result appears on the desk as it lands; the seconds are the real task times.</p>
+  <div class="strip" style="grid-template-columns:repeat(5,1fr)" id="forgeStrip"></div>
+  <div class="row" style="margin-top:22px;gap:34px">
+    <div style="flex:1.25">
+      <ul>
+        <li style="font-size:25px">The browser never holds an API key. A 200-line relay (<code>relay/core.mjs</code>) takes the drawing, runs the four Lux3D tasks in order, retries once with a stricter toy prompt if the auto-rig refuses, and returns the result links.</li>
+        <li style="font-size:25px">The toy is stored in the player's browser (IndexedDB), joins the roster, and its weight, speed and power come from its shape: chunky toys are heavy, skinny ones are quick.</li>
+        <li style="font-size:25px">A Lux3D 3MF / STL export is fetched in the background, so a drawn toy can be printed too.</li>
+      </ul>
+    </div>
+    <div class="card" style="flex:1;padding:12px 16px"><table id="forgeTable" style="font-size:22px"></table>
+      <p class="muted" style="font-size:19px;margin:8px 0 0">Every live forge run so far. One fighter costs about 34 credits (12 toy image, 1 G1-Turbo model, 15 rig, 6 moves).</p></div>
+  </div>
+  <div class="tag">DOODLE SUMO · PROJECT REPORT</div><div class="num">3</div>
+</section>
+
+<!-- 4 Pipeline -->
+<section class="slide">
+  <h2>How Lux3D makes a fighter <em>(nothing by hand)</em></h2>
+  <p class="muted" style="margin:0;font-size:25px">Six Lux3D API calls, chained by <code>pipeline/fighter.mjs</code> for the house roster and by the relay for drawn toys. Big Tofu, start to finish:</p>
+  <div class="pipe" id="pipe"></div>
+  <div class="row" style="margin-top:22px;gap:30px">
+    <pre style="flex:1.2">toy   = run('multimodal-to-image', { img: doodle, prompt: TOY_PROMPT })
+model = run('img-to-3d', { img: toy, version: 'G1-Turbo' })      // or 'G1'
+rig   = run('rig', { modelUrl: model.glb })
+moves = run('retarget', { rigModelUrl: rig, animateInPlace: true, animationIds: [
+  'Idle_Loop','Crouch_Idle_Loop','Jog_Fwd_Loop','Sprint_Loop','Punch_Cross',
+  'Punch_Jab','Roll','Swim_Fwd_Loop','Dance_Loop','Yes'] })
+print = run('export', { modelUrl: model.glb, outputFormat: ['stl','3mf'] })</pre>
+    <div style="flex:1"><p style="font-size:24px"><b>Ten moves per toy:</b> idle, sumo stance, run, sprint, shove, jab, dash roll, victory dance, cheer, and Lux3D's swim clip reused as a comic flail when a toy flies off the desk.</p>
+      <p style="font-size:24px"><b>Timing:</b> toy image about 35 s, G1-Turbo model about 1 min (G1: 5 to 14 min), rig 1 to 2 min, ten moves under 20 s.</p></div>
+  </div>
+  <div class="tag">DOODLE SUMO · PROJECT REPORT</div><div class="num">4</div>
+</section>
+
+<!-- 5 Roster -->
+<section class="slide">
+  <h2>Six house doodles, <em>plus whatever you draw</em></h2>
+  <p class="muted" style="margin:0 0 12px;font-size:24px">Top: the doodle. Middle: Lux3D toy concept. Bottom: the rigged Lux3D model in the game. The two green ones were drawn on the in-game pad and forged live.</p>
+  <div class="grid8" id="roster"></div>
+  <div class="tag">DOODLE SUMO · PROJECT REPORT</div><div class="num">5</div>
+</section>
+
+<!-- 6 Iterations -->
+<section class="slide">
+  <h2>Iterations: <em>what we changed and why</em></h2>
+  <div class="iter">
+    <div class="card"><h3>1. Doodle straight to 3D vs. toy concept first</h3>
+      <div class="pair"><figure><img src="img/compare-direct-side.jpg"><figcaption>Doodle → 3D directly: a flat cut-out (side view)</figcaption></figure><figure><img src="img/compare-toy-side.jpg"><figcaption>Doodle → Lux3D toy image → 3D (side view)</figcaption></figure></div>
+      <p>A flat sketch gives Lux3D no depth cues. A Lux3D image step ("vinyl toy in a T-pose") first gives a rounded, rig-friendly body with the same character.</p></div>
+    <div class="card"><h3>2. G1 or G1-Turbo? Both, picked per toy</h3>
+      <div class="pair"><figure><img src="../assets/iterations/tofu-g1-back.jpg"><figcaption>Big Tofu, G1: smeared hair</figcaption></figure><figure><img src="../assets/iterations/tofu-turbo-back.jpg"><figcaption>G1-Turbo: clean, 71 s</figcaption></figure><figure><img src="../assets/iterations/battery-g1-back.jpg"><figcaption>Volt, G1: clean back</figcaption></figure><figure><img src="../assets/iterations/battery-turbo-back.jpg"><figcaption>G1-Turbo: invented a visor</figcaption></figure></div>
+      <p>All six fighters were generated, rigged and animated with both versions from the same toy image. Big Tofu and Pip now use G1-Turbo; the other four keep G1. The live forge uses G1-Turbo.</p></div>
+    <div class="card"><h3>3. Mugsy v1 was rejected by the auto-rig</h3>
+      <div class="pair"><figure><img src="../assets/iterations/mug-v1-toy.png"><figcaption>v1: <code>RIG_ELIGIBILITY_FAILED</code>, the handle touched the arm</figcaption></figure><figure><img src="../assets/iterations/mug-v2-toy.png"><figcaption>v2 prompt: separate arms, handle at the back. Rigged.</figcaption></figure></div>
+      <p>That lesson became the forge's toy prompt ("nothing may touch or overlap the arms") and its automatic second try.</p></div>
+    <div class="card"><h3>4. Moves v2, and 15 MB → 0.8 MB per fighter</h3>
+      <p style="font-size:21px">Move set v1 (walk, jog, jump, folded arms…) had no way to show a toy flying off the desk. v2 swaps in <b>Crouch_Idle</b> (sumo stance), <b>Sprint</b> and <b>Swim_Fwd</b> as the falling flail; re-targeting cost 6 credits.</p>
+      <p style="font-size:21px">Lux3D's rigged GLBs carry 2K to 4K PNG textures. The pipeline resizes to 1024 px WebP, resamples keyframes and applies meshopt compression, so six fighters load in seconds. Drawn toys are downscaled in the browser when they arrive.</p>
+      <p style="font-size:21px">The title screen, results camera and video were also reworked after two outside critiques of readability.</p></div>
+  </div>
+  <div class="tag">DOODLE SUMO · PROJECT REPORT</div><div class="num">6</div>
+</section>
+
+<!-- 7 Traps -->
+<section class="slide">
+  <h2>Desk traps: <em>Lux3D articulation → real joints</em></h2>
+  <p class="muted" style="margin:0 0 14px;font-size:25px">Lux3D text-to-3D makes the object. Lux3D articulation reads a plain-language motion prompt and returns a <b>URDF</b>, the robotics format: separate part meshes joined by joints with axes and limits. The game loads the URDF (<code>src/urdf.js</code>, 36 lines) and drives the joints directly, so the stapler really hinges and the fan really spins.</p>
+  <div class="row" style="gap:24px" id="traps"></div>
+  <p class="muted" style="font-size:22px;margin-top:16px">The original Lux3D URDF packages are downloadable from the Lab page, where each joint also has a slider.</p>
+  <div class="tag">DOODLE SUMO · PROJECT REPORT</div><div class="num">7</div>
+</section>
+
+<!-- 8 World & props -->
+<section class="slide">
+  <h2>The desk, the room <em>and the pickups</em></h2>
+  <div class="row" style="gap:40px">
+    <div style="flex:1">
+      <p style="font-size:26px">Desk props are Lux3D text-to-3D models; toys bounce off them. The bedroom is a 360° world from <b>Aholo SpatialGen</b>, generated from one text prompt.</p>
+      <div class="grid8" id="propsGrid" style="grid-template-columns:repeat(6,1fr);gap:10px"></div>
+      <p style="margin-top:18px"><b>Pickups</b> drop onto the desk mid-fight, also Lux3D text-to-3D (G1-Turbo). The toy that grabs one holds it on the <b>right-hand bone of its Lux3D skeleton</b>, so even a toy drawn two minutes ago can swing a bat.</p>
+      <div class="grid8" id="pickGrid" style="grid-template-columns:repeat(3,1fr);gap:12px"></div>
+    </div>
+    <div style="width:960px"><img class="shot" src="img/game-wide.jpg" style="width:960px;height:540px">
+      <img class="shot" src="../assets/world/pano.jpg" style="width:960px;height:250px;margin-top:22px"></div>
+  </div>
+  <div class="tag">DOODLE SUMO · PROJECT REPORT</div><div class="num">8</div>
+</section>
+
+<!-- 9 Gameplay -->
+<section class="slide">
+  <h2>Gameplay highlights</h2>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px 24px">
+    <figure><img class="shot" src="img/g1.jpg" style="width:100%;height:322px"><figcaption>A drawn cat (P1) squares up to the house toys</figcaption></figure>
+    <figure><img class="shot" src="img/g2.jpg" style="width:100%;height:322px"><figcaption>A bat drops in: SLUGGER! It sits on the Lux3D hand bone</figcaption></figure>
+    <figure><img class="shot" src="img/g3.jpg" style="width:100%;height:322px"><figcaption>Dumbbell in hand; the jack-in-the-box trap warns, then fires</figcaption></figure>
+    <figure><img class="shot" src="img/g4.jpg" style="width:100%;height:322px"><figcaption>Off the edge: the Lux3D swim clip as a flail</figcaption></figure>
+    <figure><img class="shot" src="img/g5.jpg" style="width:100%;height:322px"><figcaption>HOME RUN! The bat's three shoves hit almost twice as hard</figcaption></figure>
+    <figure><img class="shot" src="img/g6.jpg" style="width:100%;height:322px"><figcaption>The champion dances; doodle → toy → model → skeleton, and the print file</figcaption></figure>
+  </div>
+  <div class="tag">DOODLE SUMO · PROJECT REPORT</div><div class="num">9</div>
+</section>
+
+<!-- 10 Print -->
+<section class="slide">
+  <h2>Paper → pixels → print, <em>checked</em></h2>
+  <div class="row" style="gap:36px">
+    <div style="flex:1.1">
+      <p style="font-size:25px">Each fighter's model goes through Lux3D multi-format export to <b>3MF and STL</b>. <code>tools/print-check.mjs</code> then reads every STL and tests what a slicer needs: every edge shared by exactly two triangles (watertight), plus volume and size.</p>
+      <div class="card" style="padding:10px 14px"><table id="printTable"></table></div>
+      <p class="muted" style="font-size:20px;margin-top:12px">Volume and plastic are for a toy scaled to 80 mm across, solid PLA at 1.24 g/cm³. Nothing has been printed yet; the files are on the results screen and the Lab page.</p>
+    </div>
+    <div style="flex:1"><div class="strip" style="grid-template-columns:repeat(3,1fr)" id="printStrip"></div>
+      <p class="muted" style="font-size:20px;margin-top:12px;font-weight:800">The exported STL meshes (grey), rendered from the files players download.</p></div>
+  </div>
+  <div class="tag">DOODLE SUMO · PROJECT REPORT</div><div class="num">10</div>
+</section>
+
+<!-- 11 Lab + numbers -->
+<section class="slide">
+  <h2>Proof: the Lab page and the task log</h2>
+  <div class="row" style="gap:40px">
+    <div style="flex:1">
+      <p style="font-size:26px">The <b>Lab page</b> shows every fighter's doodle, toy concept, live 3D model (textured / mesh / skeleton) and all ten moves, the print check, each trap's URDF with a slider on every joint, the G1 vs G1-Turbo comparison, and every Lux3D task ID behind the game.</p>
+      <div class="stats" id="stats" style="grid-template-columns:repeat(2,1fr)"></div>
+      <p style="font-size:21px;margin-top:16px" id="creditLine"></p>
+    </div>
+    <img class="shot" src="img/lab.jpg" style="width:900px;height:700px;object-position:left top">
+  </div>
+  <div class="tag">DOODLE SUMO · PROJECT REPORT</div><div class="num">11</div>
+</section>
+
+<!-- 12 Tech -->
+<section class="slide">
+  <h2>How it is built</h2>
+  <div class="row" style="gap:40px">
+    <div style="flex:1.05">
+      <ul>
+        <li style="font-size:26px"><b>Game:</b> three.js in the browser, a static site on GitHub Pages. Circle physics, knockback, hit-stop, slow-motion ring-outs, a camera that frames the fight.</li>
+        <li style="font-size:26px"><b>Forge:</b> crayon pad → relay → Lux3D → IndexedDB. The relay is the only server piece; it keeps the key, caps free forges per day and per visitor, and accepts a visitor's own Aholo key instead.</li>
+        <li style="font-size:26px"><b>Pipeline</b> (Node, no dependencies): upload → create task → poll → download, every task logged.</li>
+        <li style="font-size:26px"><b>URDF loader:</b> turns Lux3D articulation output into three.js joint pivots.</li>
+        <li style="font-size:26px"><b>Bots</b> line up behind a rival to push it toward the nearest edge, avoid edges and trap zones, and charge their shoves. A silent bot bout plays behind the title screen.</li>
+        <li style="font-size:26px"><b>Sound</b> is synthesised live with WebAudio: no audio files.</li>
+      </ul>
+    </div>
+    <div style="flex:1"><pre>// relay/core.mjs (shortened): one forge job
+POST /forge            { image: dataURL, name }
+  quota ok?  -> upload drawing to Aholo assets
+  -> create 'multimodal-to-image' (toy concept)
+
+GET  /forge/:id        (browser polls every 3.5 s)
+  task done?  -> save its URL, create the next task:
+     toy -> img-to-3d (G1-Turbo) -> rig -> retarget
+  rig refused? -> once more with a stricter toy prompt
+  Lux3D busy?  -> state 'queued', try on the next poll
+
+POST /forge/:id/print  -> multi-format-export (STL, 3MF)
+
+// src/main.js: stats from the toy's shape
+k = clamp((depth / height - 0.2) / 0.3, 0, 1)
+mass = 0.75 + 0.85k   speed = 1.3 - 0.45k   power = 0.85 + 0.3k</pre></div>
+  </div>
+  <div class="tag">DOODLE SUMO · PROJECT REPORT</div><div class="num">12</div>
+</section>
+
+<!-- 13 Try it -->
+<section class="slide">
+  <h2>Try it</h2>
+  <div class="row" style="gap:46px">
+    <div style="flex:1">
+      <p style="margin:0 0 10px"><span class="big-link" style="font-size:33px;white-space:nowrap">automationbot24x7.github.io/doodle-sumo</span><br><span class="muted" style="font-size:24px">Play in any desktop or mobile browser. WASD + J/K, or touch. <span id="forgeNote"></span></span></p>
+      <p><span class="big-link" style="font-size:28px">…/doodle-sumo/lab.html</span><br><span class="muted" style="font-size:24px">How every toy was made: live 3D viewers, joint sliders, print checks, task log.</span></p>
+      <p><span class="big-link" style="font-size:28px">github.com/Automationbot24x7/doodle-sumo</span><br><span class="muted" style="font-size:24px">Source code (MIT), the Lux3D pipeline and the forge relay.</span></p>
+      <h3 style="margin-top:10px;font-size:38px">Tools used</h3>
+      <p style="font-size:20.5px;margin:4px 0 8px"><b>Aholo Lux3D</b> (API): all 3D models, toy concept images, rigging, animation, articulation, print export. <b>Aholo SpatialGen</b>: the bedroom. three.js (rendering), glTF-Transform (compression), Cloudflare Workers (forge relay). Code written with the AI coding assistant Claude Code. Narration voice: Gemini TTS.</p>
+      <h3 style="font-size:38px">About the footage</h3>
+      <p style="font-size:20.5px;margin:4px 0 8px">Every frame here and in the video is the real game in Chrome, including a real Lux3D forge run (waits shown sped up). For the recording, the doodle's strokes were sent to the pad by a script and Player 1 was driven through the normal keyboard controls by a script (<code>tools/draw-doodle.js</code>, <code>tools/autopilot.js</code>).</p>
+      <h3 style="font-size:38px">Next</h3>
+      <p style="font-size:21px;margin-top:4px">Share codes so friends can fight each other's drawn toys; Lux3D material transfer for unlockable skins; the SpatialGen room as full 3D Gaussian splats.</p>
+    </div>
+    <img class="shot" src="img/results.jpg" style="width:860px;height:484px">
+  </div>
+  <div class="tag">DOODLE SUMO · PROJECT REPORT</div><div class="num">13</div>
+</section>
+
+<script>
+(async () => {
+  const get = (u) => fetch(u).then((r) => r.json());
+  const [F, P, T, PR, FD] = await Promise.all(['../data/fighters.json', '../data/props.json', '../data/pipeline.json', '../data/print.json', '../data/forge-demo.json'].map(get));
+  const mmss = (s) => `${Math.floor(s / 60)} min ${s % 60} s`;
+  const tofu = F.find((f) => f.id === 'tofu') || F[0];
+  const steps = [[`../assets/fighters/${tofu.id}/doodle.png`, 'Doodle', 'crayon sketch'], [`../assets/fighters/${tofu.id}/toy.png`, 'Toy concept', 'Lux3D multimodal image'], ['img/pipe-model.jpg', '3D model', 'Lux3D image-to-3D'], ['img/pipe-rig.jpg', 'Skeleton', 'Lux3D humanoid auto-rig'], ['img/pipe-moves.jpg', '10 moves', 'Lux3D animation retarget'], ['img/pipe-print.jpg', 'Print file', 'Lux3D 3MF / STL export']];
+  document.getElementById('pipe').innerHTML = steps.map(([src, a, b], i) => `<figure><img src="${src}"><figcaption>${i + 1}. ${a}<small>${b}</small></figcaption></figure>`).join('');
+  document.getElementById('roster').innerHTML = F.map((f) => `<div class="col"><img src="../assets/fighters/${f.id}/doodle.png"><img src="../assets/fighters/${f.id}/toy.png"><img src="img/model-${f.id}.jpg"><b>${f.title}</b><small>${f.version}</small></div>`).join('')
+    + FD.filter((r) => !/take/.test(r.id)).map((r) => `<div class="col mine"><img src="../assets/forge-demo/${r.id}/doodle.png"><img src="../assets/forge-demo/${r.id}/toy.png"><img src="img/model-${r.id}.jpg"><b>${r.name}</b><small>drawn · forged in ${mmss(r.total)}</small></div>`).join('');
+  const cat = FD.find((r) => r.id === 'sir-whiskers') || FD[FD.length - 1];
+  document.getElementById('catTime').textContent = mmss(cat.total);
+  const fs = [['img/forge-pad.jpg', 'Drawn on the crayon pad', 'inside the game'], ['img/forge-toy.jpg', 'Lux3D toy concept', `${cat.secs.toy} s`], ['img/forge-model.jpg', 'Lux3D 3D model (G1-Turbo)', `${cat.secs.model} s`], ['img/forge-skel.jpg', 'Lux3D auto-rig', `${cat.secs.rig} s`], ['img/forge-alive.jpg', 'Lux3D retarget: ten moves', `${cat.secs.anims} s`]];
+  document.getElementById('forgeStrip').innerHTML = fs.map(([src, a, b]) => `<figure><img src="${src}" style="height:300px;object-position:left center"><figcaption>${a}<small>${b}</small></figcaption></figure>`).join('');
+  document.getElementById('forgeTable').innerHTML = `<tr><th>Drawn toy</th><th>Toy</th><th>3D</th><th>Rig</th><th>Moves</th><th>Total</th></tr>` + FD.map((r) => `<tr><td><b>${r.name}</b></td><td>${r.secs.toy} s</td><td>${r.secs.model} s</td><td>${r.secs.rig} s</td><td>${r.secs.anims} s</td><td><b>${mmss(r.total)}</b></td></tr>`).join('') + `<tr><td colspan="6" style="font-size:16px;border:0;white-space:normal">Lux3D task IDs: ${FD.map((r) => `${r.name} ${Object.values(r.tasks).join(', ')}`).join(' · ')}</td></tr>`;
+  const traps = P.filter((p) => p.urdf);
+  document.getElementById('traps').innerHTML = traps.map((p) => `<div class="card" style="flex:1"><img src="img/trap-${p.id}.jpg" style="width:100%;height:330px;object-fit:contain;background:#f4f6fa;border-radius:12px"><h3>${p.title}</h3><p style="font-size:20px;margin:6px 0"><b>Motion prompt:</b> “${p.motion}”</p><pre style="font-size:18px">${p.joints.map((j) => `${j.name}: ${j.type}${j.upper != null ? ` ${(j.lower * 57.3).toFixed(0)}°…${(j.upper * 57.3).toFixed(0)}°` : ' (spins freely)'}`).join('\n')}</pre></div>`).join('');
+  document.getElementById('propsGrid').innerHTML = P.filter((p) => !p.urdf && p.role !== 'pickup').map((p) => `<div class="col"><img src="img/prop-${p.id}.jpg" style="height:104px"><small>${p.title}</small></div>`).join('');
+  const BUFF = { power: 'next 3 shoves are home runs', speed: '50% faster for 8 s', heavy: 'bigger, 2.3× heavier for 8 s' };
+  document.getElementById('pickGrid').innerHTML = P.filter((p) => p.role === 'pickup').map((p) => `<div class="col"><img src="img/prop-${p.id}.jpg" style="height:200px"><b style="font-size:28px">${p.title}</b><small>${BUFF[p.buff]}</small></div>`).join('');
+  document.getElementById('printTable').innerHTML = `<tr><th>Toy</th><th>Triangles</th><th>Watertight</th><th>Open edges</th><th>Volume</th><th>PLA</th></tr>` + F.map((f) => { const p = PR.fighters[f.id]; return `<tr><td><b>${f.title}</b></td><td>${p.triangles.toLocaleString('en-US')}</td><td class="ok">${p.watertight ? 'yes ✓' : 'no'}</td><td>${p.openEdges}</td><td>${p.volumeCm3} cm³</td><td>${p.plaGrams} g</td></tr>`; }).join('');
+  document.getElementById('printStrip').innerHTML = F.map((f) => `<figure><img src="img/print-${f.id}.jpg" style="height:270px;object-fit:contain"><figcaption style="font-size:19px;text-align:center">${f.title}.stl</figcaption></figure>`).join('');
+  const ok = T.tasks.filter((t) => t.ok);
+  const forgeTasks = FD.reduce((n, r) => n + Object.keys(r.tasks).length, 0);
+  const mins = Math.round((ok.reduce((s, t) => s + (t.secs || 0), 0) + FD.reduce((s, r) => s + r.total, 0)) / 60);
+  document.getElementById('stats').innerHTML = [[ok.length + forgeTasks, 'Aholo tasks'], [F.length + ' + ' + FD.length, 'house + drawn fighters'], [P.length, 'props & traps'], [mins, 'minutes of Lux3D time']].map(([n, l]) => `<div class="card"><b>${n}</b><span>${l}</span></div>`).join('');
+  document.getElementById('creditLine').innerHTML = window.CREDIT_LINE || '';
+  document.getElementById('forgeNote').innerHTML = window.FORGE_NOTE || '';
+  await Promise.all([...document.images].map((im) => im.complete ? 0 : new Promise((r) => { im.onload = im.onerror = r; })));
+  window.reportReady = true;
+})();
+</script>
+<script src="notes.js"></script>
+</body>
+</html>

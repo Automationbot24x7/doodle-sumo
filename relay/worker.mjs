@@ -17,7 +17,8 @@ export default {
     const relay = createRelay({
       key: env.AHOLO_KEY || '', store,
       md5: async (bytes) => hex(await crypto.subtle.digest('MD5', bytes)),
-      limits: { perDay: +(env.PER_DAY || 10), total: +(env.TOTAL || 40), perVisitor: +(env.PER_VISITOR || 2) },
+      limits: { perDay: +(env.PER_DAY || 10), total: +(env.TOTAL || 20), perVisitor: +(env.PER_VISITOR || 2), judgePerDay: +(env.JUDGE_PER_DAY || 20), judgeTotal: +(env.JUDGE_TOTAL || 30), judgePerVisitor: +(env.JUDGE_PER_VISITOR || 6) },
+      judgeToken: env.JUDGE_TOKEN || '',
       origins: (env.ORIGINS || 'https://automationbot24x7.github.io').split(','),
     });
     return relay.handle(req, { visitor });

@@ -6,12 +6,12 @@
 <title>Doodle Sumo Lab</title>
 <meta name="description" content="How every Doodle Sumo toy was made with Aholo Lux3D: doodle, toy concept, 3D model, skeleton, moves and articulated traps.">
 <link rel="icon" href="assets/ui/icon.png">
-<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<link href="vendor/fonts/fonts.css" rel="stylesheet">
 <link rel="stylesheet" href="src/lab.css">
 <script type="importmap">
 { "imports": {
-  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
-  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  "three": "./vendor/three/build/three.module.js",
+  "three/addons/": "./vendor/three/examples/jsm/"
 } }
 </script>
 </head>
@@ -31,6 +31,7 @@
   <div id="stats" class="stats"></div>
   <div class="callout"><b>Draw your own.</b> The same chain runs live inside the game: press <a href="./">Draw your own</a> on the title screen, scribble a character, and Lux3D returns a toy concept, a G1-Turbo 3D model, a skeleton and ten moves in about three minutes. The new toy joins the roster in your browser and can be exported for 3D printing too.
     <div class="forgerow" id="forgerow"></div></div>
+  <div id="stress" class="stress"></div>
 </header>
 
 <main>

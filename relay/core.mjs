@@ -17,7 +17,8 @@ const ETA = { toy: 40, model: 75, rig: 75, anims: 20 };   // typical seconds per
 const TOY_PROMPT =
   'Turn this hand-drawn doodle into a cute collectible 3D vinyl toy figure of the same character, keeping its colours, face and personality. ' +
   'Make it clearly humanoid: one head, a body, two separate arms held straight out to the sides in a T-pose, and two separate legs with feet, standing upright. ' +
-  'Nothing may touch or overlap the arms. Full body, front view, centred, plain white background, soft studio light.';
+  'Nothing may touch or overlap the arms. Smooth glossy vinyl surfaces: the crayon grain is only how it was drawn, not a texture. ' +
+  'Full body, front view, centred, plain white background, soft studio light.';
 const TOY_PROMPT_STRICT = TOY_PROMPT +
   ' Use simple smooth rounded shapes. The arms must be long, bare and clearly separated from the body and the head. No accessories, props, tail, cape or wings.';
 
@@ -42,8 +43,9 @@ function urlsIn(v, out = []) {
   return out;
 }
 
-export function createRelay({ key, store, md5, limits = {}, origins = [], now = () => Date.now(), log = () => {} }) {
-  const L = { perDay: 10, total: 40, perVisitor: 2, maxImage: 600_000, ...limits };
+export function createRelay({ key, store, md5, limits = {}, origins = [], judgeToken = '', now = () => Date.now(), log = () => {} }) {
+  // Two pools of free forges: the public one, and a reserved one for judges (requests carrying the judge token).
+  const L = { perDay: 10, total: 20, perVisitor: 2, judgePerDay: 20, judgeTotal: 30, judgePerVisitor: 6, maxImage: 600_000, ...limits };
 
   async function aholo(k, method, path, body) {
     const res = await fetch(API + path, { method, headers: { Authorization: k, ...(body ? { 'content-type': 'application/json' } : {}) }, body: body ? JSON.stringify(body) : undefined });
@@ -97,11 +99,21 @@ export function createRelay({ key, store, md5, limits = {}, origins = [], now = 
     return { id: rec.id, step: rec.step, state: rec.state, outputs: rec.outputs, tasks: rec.tasks, secs: rec.secs, tries: rec.tries, eta: Math.max(5, Math.round(left)), error: rec.error, anims: ANIMS };
   };
 
-  async function quota(visitor) {
-    const d = day(now());
-    const [today, total, mine] = await Promise.all([store.get(`q:${d}`), store.get('q:total'), store.get(`v:${d}:${visitor}`)]);
-    const leftToday = Math.max(0, Math.min(L.perDay - (today?.n || 0), L.total - (total?.n || 0)));
-    return { d, today: today?.n || 0, total: total?.n || 0, mine: mine?.n || 0, leftToday, leftForYou: Math.max(0, Math.min(leftToday, L.perVisitor - (mine?.n || 0))) };
+  const POOL = { q: { day: 'q', total: 'q:total', you: 'v', perDay: () => L.perDay, max: () => L.total, perYou: () => L.perVisitor },
+                 j: { day: 'j', total: 'j:total', you: 'jv', perDay: () => L.judgePerDay, max: () => L.judgeTotal, perYou: () => L.judgePerVisitor } };
+  const keys = (pool, d, visitor) => [`${POOL[pool].day}:${d}`, POOL[pool].total, `${POOL[pool].you}:${d}:${visitor}`];
+  async function quota(visitor, pool = 'q') {
+    const d = day(now()), P = POOL[pool];
+    const [today, total, mine] = await Promise.all(keys(pool, d, visitor).map((k) => store.get(k)));
+    const leftToday = Math.max(0, Math.min(P.perDay() - (today?.n || 0), P.max() - (total?.n || 0)));
+    return { pool, d, today: today?.n || 0, total: total?.n || 0, mine: mine?.n || 0, leftToday, leftTotal: Math.max(0, P.max() - (total?.n || 0)), leftForYou: Math.max(0, Math.min(leftToday, P.perYou() - (mine?.n || 0))) };
+  }
+  // a forge that fails does not use up anyone's free forges
+  async function refund(rec) {
+    if (rec.own || rec.refunded || !rec.pool) return;
+    rec.refunded = true;
+    const ks = keys(rec.pool, rec.day, rec.visitor);
+    await Promise.all(ks.map(async (k, i) => { const v = await store.get(k); if (v?.n > 0) await store.put(k, { n: v.n - 1 }, i === 1 ? undefined : 3 * 86400); }));
   }
 
   async function poll(k, rec) {
@@ -145,16 +157,18 @@ export function createRelay({ key, store, md5, limits = {}, origins = [], now = 
     const url = new URL(req.url);
     const origin = req.headers.get('origin') || '';
     const okOrigin = !origins.length || origins.includes(origin) || /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
-    const cors = { 'access-control-allow-origin': okOrigin && origin ? origin : origins[0] || '*', 'access-control-allow-headers': 'content-type,x-aholo-key', 'access-control-allow-methods': 'GET,POST,OPTIONS', 'access-control-max-age': '86400', vary: 'Origin' };
+    const cors = { 'access-control-allow-origin': okOrigin && origin ? origin : origins[0] || '*', 'access-control-allow-headers': 'content-type,x-aholo-key,x-judge', 'access-control-allow-methods': 'GET,POST,OPTIONS', 'access-control-max-age': '86400', vary: 'Origin' };
     if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
     const own = (req.headers.get('x-aholo-key') || '').trim();
+    const judge = !!judgeToken && (req.headers.get('x-judge') || '').trim() === judgeToken;
+    const pool = judge ? 'j' : 'q';
     const k = own || key;
     const visitor = ctx.visitor || 'local';
     const path = url.pathname.replace(/\/+$/, '') || '/';
     try {
       if (req.method === 'GET' && (path === '/status' || path === '/')) {
-        const q = await quota(visitor);
-        return json({ ok: true, open: !!key && q.leftToday > 0, leftToday: key ? q.leftToday : 0, leftForYou: key ? q.leftForYou : 0, minutes: 3.5, ownKey: !!own }, 200, cors);
+        const q = await quota(visitor, pool);
+        return json({ ok: true, open: !!key && q.leftToday > 0, leftToday: key ? q.leftToday : 0, leftForYou: key ? q.leftForYou : 0, leftTotal: key ? q.leftTotal : 0, judge, minutes: 4, ownKey: !!own }, 200, cors);
       }
       if (req.method === 'POST' && path === '/forge') {
         if (!okOrigin) return json({ error: { code: 'ORIGIN', message: 'This forge only works from the Doodle Sumo site.' } }, 403, cors);
@@ -162,19 +176,20 @@ export function createRelay({ key, store, md5, limits = {}, origins = [], now = 
         const body = await req.json().catch(() => ({}));
         let q;
         if (!own) {
-          q = await quota(visitor);
+          q = await quota(visitor, pool);
           if (q.leftToday <= 0) return json({ error: { code: 'QUOTA', message: 'Today\'s free forges are used up. Come back tomorrow, or use your own Aholo key.' } }, 429, cors);
           if (q.leftForYou <= 0) return json({ error: { code: 'QUOTA_YOU', message: 'You have used your free forges for today. Use your own Aholo key to keep going.' } }, 429, cors);
         }
         const id = [...crypto.getRandomValues(new Uint8Array(12))].map((b) => b.toString(16).padStart(2, '0')).join('');
-        const rec = { id, name: String(body.name || '').slice(0, 24), own: !!own, step: 'toy', state: 'queued', taskId: null, tries: 0, outputs: {}, tasks: {}, secs: {}, createdAt: now(), stepAt: now() };
+        const rec = { id, name: String(body.name || '').slice(0, 24), own: !!own, pool: own ? null : pool, day: q?.d, visitor, step: 'toy', state: 'queued', taskId: null, tries: 0, outputs: {}, tasks: {}, secs: {}, createdAt: now(), stepAt: now() };
         rec.outputs.doodle = await upload(k, body.image);
         if (!own) {                          // count the forge before any credits are spent
-          await Promise.all([store.put(`q:${q.d}`, { n: q.today + 1 }, 3 * 86400), store.put('q:total', { n: q.total + 1 }), store.put(`v:${q.d}:${visitor}`, { n: q.mine + 1 }, 3 * 86400)]);
+          const [kd, kt, kv] = keys(pool, q.d, visitor);
+          await Promise.all([store.put(kd, { n: q.today + 1 }, 3 * 86400), store.put(kt, { n: q.total + 1 }), store.put(kv, { n: q.mine + 1 }, 3 * 86400)]);
         }
-        rec.state = (await start(k, rec)) ? 'running' : 'queued';
+        try { rec.state = (await start(k, rec)) ? 'running' : 'queued'; } catch (e) { await refund(rec); throw e; }
         await store.put(`job:${id}`, rec, 86400);
-        log({ ev: 'forge', id, own: !!own, visitor });
+        log({ ev: 'forge', id, own: !!own, visitor, pool: rec.pool });
         return json(view(rec), 200, cors);
       }
       const m = /^\/forge\/([0-9a-f]{24})(\/print)?$/.exec(path);
@@ -196,6 +211,7 @@ export function createRelay({ key, store, md5, limits = {}, origins = [], now = 
         }
         const before = `${rec.step}|${rec.state}|${rec.taskId}`;
         await poll(k, rec);
+        if (rec.state === 'failed') await refund(rec);
         if (`${rec.step}|${rec.state}|${rec.taskId}` !== before) await store.put(`job:${rec.id}`, rec, 86400);
         return json(view(rec), 200, cors);
       }

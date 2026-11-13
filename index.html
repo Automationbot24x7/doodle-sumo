@@ -10,15 +10,13 @@
 <meta property="og:image" content="assets/ui/share.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/ui/icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nunito:wght@500;700;800;900&display=swap" rel="stylesheet">
+<link href="vendor/fonts/fonts.css" rel="stylesheet">
 <link rel="stylesheet" href="src/style.css">
 <link rel="stylesheet" href="src/forge.css">
 <script type="importmap">
 { "imports": {
-  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
-  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  "three": "./vendor/three/build/three.module.js",
+  "three/addons/": "./vendor/three/examples/jsm/"
 } }
 </script>
 </head>
@@ -40,7 +38,7 @@
         <button class="chip on" data-mode="1">1 player</button>
         <button class="chip" data-mode="2">2 players</button>
       </div>
-      <button id="go" class="big">Fight! <small>Enter</small></button>
+      <div class="gobtns"><button id="drawBtn" class="big draw">✎ Draw your own</button><button id="go" class="big">Fight! <small>Enter</small></button></div>
     </div>
     <p class="keys"><b>Move</b> <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> &nbsp;<b>Shove</b> <kbd>J</kbd> hold to charge &nbsp;<b>Dash</b> <kbd>K</kbd><span class="p2keys"> &nbsp;·&nbsp; <b>P2</b> <kbd>←↑↓→</kbd> <kbd>.</kbd> shove <kbd>/</kbd> dash</span></p>
     <footer class="made">Every toy, skeleton and move here was made with <b>Aholo Lux3D</b>. <a href="lab.html">How it was made →</a> &nbsp;·&nbsp; <a href="assets/video/doodle-sumo-demo.mp4" target="_blank">▶ Watch the video</a></footer>
@@ -80,10 +78,10 @@
   <div class="paper forge">
     <button id="fClose" class="x" title="Back to the roster">×</button>
     <h2 class="ftitle">Draw your own fighter</h2>
-    <p class="tag">Aholo Lux3D turns your doodle into a 3D toy with a skeleton and ten moves, live. About 3 minutes.</p>
+    <p class="tag">Aholo Lux3D turns your doodle into a 3D toy with a skeleton and ten moves, live. It takes 3 to 5 minutes, and you can play a round while it bakes.</p>
     <div class="fcols">
       <div class="fpadwrap">
-        <div class="fpad"><div id="fGuide" class="guide"></div><canvas id="fPad" width="768" height="768"></canvas></div>
+        <div class="fpad"><div id="fGuide" class="guide"></div><canvas id="fPad" width="768" height="768"></canvas><div id="fTip" class="ftip"></div></div>
         <div id="fTools" class="ftools">
           <div id="fSwatches" class="swatches"></div>
           <div class="frow">
@@ -102,8 +100,10 @@
             <li>It can be anything: a robot, a carrot, your cat.</li>
             <li>Drew it on paper? Tap <b>Use a photo</b>.</li>
           </ul>
+          <div class="examples"><span>Or start from a doodle we drew:</span><button data-ex="assets/forge-demo/sir-whiskers/doodle.png" title="Load this doodle"><img src="assets/forge-demo/sir-whiskers/doodle.png" alt="cat doodle"></button><button data-ex="assets/forge-demo/spike/doodle.png" title="Load this doodle"><img src="assets/forge-demo/spike/doodle.png" alt="cactus doodle"></button></div>
           <button id="fGo" class="big">Bring it to life</button>
           <p id="fQuota" class="note"></p>
+          <button id="fReplay" class="mini replay">▶ Watch a real forge run (replay)</button>
           <details id="fOwn"><summary>Use my own Aholo API key</summary>
             <input id="fKey" type="password" placeholder="Aholo API key" autocomplete="off">
             <p class="note">Kept in this browser tab only and sent to Lux3D through the forge relay.</p>
@@ -111,6 +111,7 @@
           <p class="note">Your drawing is sent to Aholo Lux3D to build the toy. The toy is saved in this browser only.</p>
         </div>
         <div id="fProg" hidden>
+          <div id="fClock" class="fclock"></div>
           <ol id="fSteps" class="steps">
             <li data-s="toy"><i>1</i><b>Toy concept</b><small>Lux3D image</small><em></em></li>
             <li data-s="model"><i>2</i><b>3D model</b><small>Lux3D image-to-3D</small><em></em></li>

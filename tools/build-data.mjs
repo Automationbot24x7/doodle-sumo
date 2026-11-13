@@ -17,6 +17,15 @@ for (const [id, c] of Object.entries(cfg)) {
   const s = JSON.parse(readFileSync(sf, 'utf8'));
   fighters.push({ id, ...c, version: s.version || 'G1', anims: s.animNames, tasks: { toy: s.toyTask, model: s.modelTask, rig: s.rigTask, anims: s.animTask, print: s.printTask } });
 }
+// toys drawn on the in-game pad and forged live (pipeline/work/forge/<run>/job.json), shared with every visitor
+const drawnCfg = existsSync(join(ROOT, 'doodles', 'drawn.json')) ? JSON.parse(readFileSync(join(ROOT, 'doodles', 'drawn.json'), 'utf8')) : {};
+for (const [id, c] of Object.entries(drawnCfg)) {
+  const jf = join(ROOT, 'pipeline', 'work', 'forge', c.run, 'job.json');
+  if (!existsSync(jf) || !existsSync(join(ROOT, 'assets', 'fighters', id, 'fighter.glb'))) continue;
+  const j = JSON.parse(readFileSync(jf, 'utf8'));
+  fighters.push({ id, title: c.title, blurb: c.blurb, drawn: true, version: 'G1-Turbo', run: c.run, secs: j.secs,
+    anims: ['Idle_Loop', 'Crouch_Idle_Loop', 'Jog_Fwd_Loop', 'Sprint_Loop', 'Punch_Cross', 'Punch_Jab', 'Roll', 'Swim_Fwd_Loop', 'Dance_Loop', 'Yes'], tasks: j.tasks });
+}
 writeFileSync(join(ROOT, 'data', 'fighters.json'), JSON.stringify(fighters, null, 2));
 
 const props = [];

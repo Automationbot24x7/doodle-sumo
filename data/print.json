@@ -77,6 +77,21 @@
       "volumeCm3": 15.7,
       "plaGrams": 19
     },
+    "spike": {
+      "triangles": 45826,
+      "vertices": 22915,
+      "watertight": true,
+      "openEdges": 0,
+      "nonManifoldEdges": 0,
+      "upAxis": "z",
+      "sizeMm": [
+        61.7,
+        25,
+        80
+      ],
+      "volumeCm3": 25.8,
+      "plaGrams": 32
+    },
     "tofu": {
       "triangles": 54272,
       "vertices": 27130,
@@ -91,6 +106,21 @@
       ],
       "volumeCm3": 40.3,
       "plaGrams": 50
+    },
+    "whiskers": {
+      "triangles": 43600,
+      "vertices": 21785,
+      "watertight": true,
+      "openEdges": 0,
+      "nonManifoldEdges": 0,
+      "upAxis": "z",
+      "sizeMm": [
+        70.4,
+        33.7,
+        80
+      ],
+      "volumeCm3": 42.7,
+      "plaGrams": 53
     }
   }
 }

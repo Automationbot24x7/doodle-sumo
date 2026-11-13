@@ -6,7 +6,8 @@
       "toy": 6972748,
       "model": 6972846,
       "rig": 6973372,
-      "anims": 6973665
+      "anims": 6973665,
+      "print": 7143598
     },
     "secs": {
       "toy": 35,
@@ -16,7 +17,53 @@
     },
     "tries": 0,
     "createdAt": "2026-11-13T04:46:20.960Z",
+    "kind": "demo",
+    "state": "done",
     "total": 159
+  },
+  {
+    "id": "sir-whiskers",
+    "name": "Sir Whiskers",
+    "tasks": {
+      "toy": 7053325,
+      "model": 7053372,
+      "rig": 7053628,
+      "anims": 7054091,
+      "print": 7143419
+    },
+    "secs": {
+      "toy": 31,
+      "model": 59,
+      "rig": 94,
+      "anims": 12
+    },
+    "tries": 0,
+    "createdAt": "2026-11-13T09:34:01.582Z",
+    "kind": "demo",
+    "state": "done",
+    "total": 196
+  },
+  {
+    "id": "mittens",
+    "name": "Mittens",
+    "tasks": {
+      "toy": 7152074,
+      "model": 7152260,
+      "rig": 7152517,
+      "anims": 7152765
+    },
+    "secs": {
+      "toy": 44,
+      "model": 65,
+      "rig": 61,
+      "anims": 13
+    },
+    "tries": 0,
+    "createdAt": "2026-11-13T16:44:00.000Z",
+    "kind": "demo",
+    "wall": 194,
+    "state": "done",
+    "total": 183
   },
   {
     "id": "whiskers-take-1",
@@ -35,25 +82,213 @@
     },
     "tries": 0,
     "createdAt": "2026-11-13T09:02:42.095Z",
+    "kind": "take",
+    "state": "done",
     "total": 214
   },
   {
-    "id": "sir-whiskers",
-    "name": "Sir Whiskers",
+    "id": "prickles",
+    "name": "Prickles (hosted relay test)",
     "tasks": {
-      "toy": 7053325,
-      "model": 7053372,
-      "rig": 7053628,
-      "anims": 7054091
+      "toy": 7120214,
+      "model": 7120340,
+      "rig": 7120594,
+      "anims": 7121363
     },
     "secs": {
-      "toy": 31,
-      "model": 59,
-      "rig": 94,
+      "toy": 30,
+      "model": 72,
+      "rig": 176,
       "anims": 12
     },
     "tries": 0,
-    "createdAt": "2026-11-13T09:34:01.582Z",
-    "total": 196
+    "createdAt": "2026-11-13T14:19:00.000Z",
+    "kind": "test",
+    "state": "done",
+    "total": 290
+  },
+  {
+    "id": "stress-stick",
+    "name": "stick",
+    "kind": "stress",
+    "state": "done",
+    "tries": 0,
+    "secs": {
+      "toy": 42,
+      "model": 58,
+      "rig": 140,
+      "anims": 12
+    },
+    "tasks": {
+      "toy": 7141854,
+      "model": 7142086,
+      "rig": 7142392,
+      "anims": 7143135
+    },
+    "error": null,
+    "total": 252,
+    "wall": 257,
+    "createdAt": "2026-11-13T16:00:00.000Z"
+  },
+  {
+    "id": "stress-outline",
+    "name": "outline",
+    "kind": "stress",
+    "state": "done",
+    "tries": 0,
+    "secs": {
+      "toy": 41,
+      "model": 64,
+      "rig": 64,
+      "anims": 17
+    },
+    "tasks": {
+      "toy": 7143313,
+      "model": 7143508,
+      "rig": 7143806,
+      "anims": 7144075
+    },
+    "error": null,
+    "total": 186,
+    "wall": 191,
+    "createdAt": "2026-11-13T16:00:00.000Z"
+  },
+  {
+    "id": "stress-bean",
+    "name": "bean",
+    "kind": "stress",
+    "state": "done",
+    "tries": 0,
+    "secs": {
+      "toy": 35,
+      "model": 58,
+      "rig": 99,
+      "anims": 17
+    },
+    "tasks": {
+      "toy": 7144250,
+      "model": 7144378,
+      "rig": 7144686,
+      "anims": 7145244
+    },
+    "error": null,
+    "total": 209,
+    "wall": 214,
+    "createdAt": "2026-11-13T16:00:00.000Z"
+  },
+  {
+    "id": "stress-tiny",
+    "name": "tiny",
+    "kind": "stress",
+    "state": "done",
+    "tries": 0,
+    "secs": {
+      "toy": 35,
+      "model": 64,
+      "rig": 81,
+      "anims": 12
+    },
+    "tasks": {
+      "toy": 7145473,
+      "model": 7145679,
+      "rig": 7146033,
+      "anims": 7146486
+    },
+    "error": null,
+    "total": 192,
+    "wall": 197,
+    "createdAt": "2026-11-13T16:00:00.000Z"
+  },
+  {
+    "id": "stress-car",
+    "name": "car",
+    "kind": "stress",
+    "state": "done",
+    "tries": 0,
+    "secs": {
+      "toy": 41,
+      "model": 110,
+      "rig": 58,
+      "anims": 12
+    },
+    "tasks": {
+      "toy": 7146663,
+      "model": 7146828,
+      "rig": 7147397,
+      "anims": 7147682
+    },
+    "error": null,
+    "total": 221,
+    "wall": 226,
+    "createdAt": "2026-11-13T16:00:00.000Z"
+  },
+  {
+    "id": "stress-ghost",
+    "name": "ghost",
+    "kind": "stress",
+    "state": "done",
+    "tries": 0,
+    "secs": {
+      "toy": 46,
+      "model": 64,
+      "rig": 151,
+      "anims": 12
+    },
+    "tasks": {
+      "toy": 7147880,
+      "model": 7148072,
+      "rig": 7148318,
+      "anims": 7148957
+    },
+    "error": null,
+    "total": 273,
+    "wall": 279,
+    "createdAt": "2026-11-13T16:00:00.000Z"
+  },
+  {
+    "id": "stress-scribble",
+    "name": "scribble",
+    "kind": "stress",
+    "state": "done",
+    "tries": 1,
+    "secs": {
+      "toy": 53,
+      "model": 58,
+      "rig": 81,
+      "anims": 12
+    },
+    "tasks": {
+      "toy": 7149664,
+      "model": 7149914,
+      "rig": 7150214,
+      "anims": 7150622
+    },
+    "error": null,
+    "total": 204,
+    "wall": 340,
+    "createdAt": "2026-11-13T16:00:00.000Z"
+  },
+  {
+    "id": "stress-dino",
+    "name": "dino",
+    "kind": "stress",
+    "state": "done",
+    "tries": 0,
+    "secs": {
+      "toy": 53,
+      "model": 58,
+      "rig": 64,
+      "anims": 12
+    },
+    "tasks": {
+      "toy": 7150779,
+      "model": 7150988,
+      "rig": 7151283,
+      "anims": 7151577
+    },
+    "error": null,
+    "total": 187,
+    "wall": 191,
+    "createdAt": "2026-11-13T16:00:00.000Z"
   }
 ]

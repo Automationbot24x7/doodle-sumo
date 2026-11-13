@@ -26,10 +26,10 @@
 (async () => {
   const F = await (await fetch('../data/fighters.json')).json();
   const row = document.getElementById('row');
-  F.forEach((f) => { const i = document.createElement('img'); i.src = `../assets/fighters/${f.id}/toy.png`; row.appendChild(i); });
+  F.filter((f) => !f.drawn).forEach((f) => { const i = document.createElement('img'); i.src = `../assets/fighters/${f.id}/toy.png`; row.appendChild(i); });
   // the toys drawn on the in-game pad and forged live
   const D = await fetch('../data/forge-demo.json').then((r) => r.json()).catch(() => []);
-  D.forEach((d) => { const i = document.createElement('img'); i.src = `../assets/forge-demo/${d.id}/toy.png`; i.style.borderColor = '#3fae6a'; row.appendChild(i); });
+  D.filter((d) => d.kind === 'demo').forEach((d) => { const i = document.createElement('img'); i.src = `../assets/forge-demo/${d.id}/toy.png`; i.style.borderColor = '#3fae6a'; row.appendChild(i); });
   const t = new URLSearchParams(location.search).get('tag'); if (t) document.getElementById('tag').textContent = t;
   await new Promise((r) => setTimeout(r, 400));
   [...row.children].forEach((img, i) => setTimeout(() => img.classList.add('in'), 120 * i));

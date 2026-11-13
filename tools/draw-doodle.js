@@ -66,6 +66,55 @@
       { c: C.pink, s: 42, p: ellipse(384, 118, 18, 14, 0, 6.4, 10) },
     ],
   };
+  // ---- deliberately messy test doodles (forge stress test): stick figure, outline only, no arms, tiny, non-humanoid...
+  const move = (strokes, k, dx, dy) => strokes.map((s) => ({ ...s, s: Math.max(9, Math.round(s.s * Math.max(k, 0.5))), p: s.p.map(([x, y]) => [x * k + dx, y * k + dy]) }));
+  DOODLES.stick = [
+    { c: C.ink, s: 9, p: ellipse(384, 190, 62, 62) },
+    { c: C.ink, s: 9, p: line(384, 252, 392, 470, 12) },
+    { c: C.ink, s: 9, p: line(386, 320, 230, 300, 8) }, { c: C.ink, s: 9, p: line(388, 320, 546, 296, 8) },
+    { c: C.ink, s: 9, p: line(392, 470, 318, 660, 10) }, { c: C.ink, s: 9, p: line(392, 470, 470, 662, 10) },
+    { c: C.ink, s: 20, p: line(362, 178, 363, 180, 2) }, { c: C.ink, s: 20, p: line(406, 178, 407, 180, 2) },
+    { c: C.ink, s: 9, p: ellipse(386, 212, 24, 14, 0.3, 2.5, 8) },
+  ];
+  DOODLES.outline = DOODLES.cat.filter((s) => s.c === C.ink);
+  DOODLES.bean = [   // a red bean with legs and a face, but no arms
+    { c: C.ink, s: 9, p: ellipse(384, 330, 150, 200) },
+    { c: C.red, s: 42, p: fill(384, 330, 144, 194, 26, 14) },
+    { c: C.ink, s: 9, p: poly([[330, 524], [326, 690], [282, 700], [372, 702], [370, 528]]) },
+    { c: C.ink, s: 9, p: poly([[400, 528], [402, 702], [492, 700], [446, 690], [442, 524]]) },
+    { c: C.ink, s: 20, p: line(340, 280, 341, 282, 2) }, { c: C.ink, s: 20, p: line(428, 280, 429, 282, 2) },
+    { c: C.ink, s: 9, p: ellipse(384, 340, 40, 22, 0.3, 2.5, 10) },
+  ];
+  DOODLES.tiny = move(DOODLES.cactus, 0.32, 40, 30);   // a small cactus squeezed into the top-left corner
+  DOODLES.car = [    // not a character at all
+    { c: C.ink, s: 9, p: poly([[150, 470], [170, 380], [270, 370], [330, 290], [500, 290], [560, 380], [640, 395], [640, 470], [150, 470]], 6) },
+    { c: C.blue, s: 42, p: fill(395, 400, 230, 70, 24, 10) },
+    { c: C.ink, s: 9, p: ellipse(260, 480, 52, 52) }, { c: C.ink, s: 9, p: ellipse(540, 480, 52, 52) },
+    { c: C.grey, s: 42, p: fill(260, 480, 46, 46, 20, 8) }, { c: C.grey, s: 42, p: fill(540, 480, 46, 46, 20, 8) },
+    { c: C.yellow, s: 20, p: poly([[345, 305], [395, 305], [395, 370], [300, 370], [345, 305]], 3) },
+  ];
+  DOODLES.ghost = [  // no legs, stubby arms
+    { c: C.ink, s: 9, p: [...ellipse(384, 300, 150, 170, 3.14, 3.14, 26), ...poly([[534, 300], [534, 600], [490, 560], [440, 610], [384, 560], [330, 610], [280, 560], [234, 600], [234, 300]], 4)] },
+    { c: C.purple, s: 42, p: fill(384, 380, 140, 210, 26, 16) },
+    { c: C.ink, s: 9, p: poly([[236, 400], [170, 380], [176, 430], [236, 440]]) }, { c: C.ink, s: 9, p: poly([[532, 400], [598, 380], [592, 430], [532, 440]]) },
+    { c: C.ink, s: 20, p: ellipse(340, 290, 14, 22, 0, 6.4, 10) }, { c: C.ink, s: 20, p: ellipse(428, 290, 14, 22, 0, 6.4, 10) },
+  ];
+  DOODLES.scribble = [   // a quick messy multicolour person, big loose zigzags
+    { c: C.orange, s: 20, p: [...ellipse(384, 170, 70, 70, 0, 7.4, 30), ...line(384, 240, 384, 470, 8)] },
+    { c: C.green, s: 42, p: [[300, 280], [470, 300], [290, 340], [480, 360], [300, 410], [470, 430]].flatMap((p, i, a) => (i ? line(a[i - 1][0], a[i - 1][1], p[0], p[1], 4) : [p])) },
+    { c: C.blue, s: 20, p: [...line(310, 300, 180, 250, 6), ...line(180, 250, 200, 240, 2)] }, { c: C.blue, s: 20, p: [...line(460, 300, 600, 340, 6), ...line(600, 340, 610, 320, 2)] },
+    { c: C.purple, s: 20, p: [...line(370, 470, 300, 680, 8), ...line(300, 680, 250, 690, 2)] }, { c: C.purple, s: 20, p: [...line(400, 470, 470, 680, 8), ...line(470, 680, 520, 676, 2)] },
+    { c: C.ink, s: 20, p: line(360, 160, 361, 161, 2) }, { c: C.ink, s: 20, p: line(408, 162, 409, 163, 2) },
+  ];
+  DOODLES.dino = [   // a green dinosaur: big tail, tiny arms
+    { c: C.ink, s: 9, p: poly([[300, 600], [280, 420], [300, 300], [330, 220], [420, 170], [520, 200], [540, 250], [470, 270], [450, 330], [470, 470], [560, 560], [700, 600], [470, 600], [460, 700], [420, 700], [410, 610], [360, 610], [350, 700], [306, 700], [300, 600]], 5) },
+    { c: C.green, s: 42, p: fill(400, 420, 110, 200, 26, 12) },
+    { c: C.green, s: 42, p: [...line(420, 230, 500, 220, 4), ...line(480, 560, 650, 590, 6)] },
+    { c: C.ink, s: 9, p: line(452, 360, 520, 380, 4) }, { c: C.ink, s: 9, p: line(450, 400, 518, 410, 4) },
+    { c: C.ink, s: 20, p: line(470, 215, 471, 217, 2) },
+    { c: C.yellow, s: 20, p: [[330, 260], [300, 300], [330, 330], [300, 380], [330, 420]].flatMap((p, i, a) => (i ? line(a[i - 1][0], a[i - 1][1], p[0], p[1], 3) : [p])) },
+  ];
+  window.DOODLE_NAMES = Object.keys(DOODLES);
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   window.drawDoodle = async (which = 'cat', speed = 1) => {
     const cv = document.querySelector('#fPad'), sw = document.querySelector('#fSwatches');

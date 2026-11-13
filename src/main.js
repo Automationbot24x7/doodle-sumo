@@ -83,6 +83,8 @@ async function loadAll() {
     ...PROPS.map(async (p) => { try { propGltfs[p.id] = await loadProp(p, loader); } catch (e) { console.warn('prop', p.id, e); } tick(); }),
   ]);
   // fighters this visitor drew and forged earlier (kept in this browser)
+  // toys drawn on the pad and forged live, shipped with the site: their stats come from their shape, like any drawn toy
+  for (const f of FIGHTERS) if (f.drawn && !f.mass) Object.assign(f, shapeStats(gltfs[f.id].scene));
   for (const rec of mine.sort((a, b) => a.createdAt - b.createdAt)) { try { await registerCustom(rec); } catch (e) { console.warn('custom fighter', rec.id, e); } tick(); }
 }
 let colliders = [], hazards = [], pickups = { list: [], update() {}, reset() {} };
@@ -167,7 +169,7 @@ function buildRoster() {
   const box = $('#roster'); box.innerHTML = '';
   for (const f of FIGHTERS) {
     const el = document.createElement('button'); el.className = 'card'; el.dataset.id = f.id;
-    el.innerHTML = `<span class="badge">P1</span>${f.custom ? '<span class="mine">yours</span><span class="del" title="Delete this toy">×</span>' : ''}<div class="imgs"><img class="toy3d" src="${thumbs[f.id]?.card || srcOf(f, 'toy')}" alt="${esc(f.title)}"><img class="sticker" src="${srcOf(f, 'doodle')}" alt="original doodle"></div>
+    el.innerHTML = `<span class="badge">P1</span>${f.custom ? '<span class="mine">yours</span><span class="del" title="Delete this toy">×</span>' : f.drawn ? '<span class="mine drawn">drawn live</span>' : ''}<div class="imgs"><img class="toy3d" src="${thumbs[f.id]?.card || srcOf(f, 'toy')}" alt="${esc(f.title)}"><img class="sticker" src="${srcOf(f, 'doodle')}" alt="original doodle"></div>
       <div class="nm">${esc(f.title)}</div>
       <div class="stats"><span>Weight</span><span class="bar"><i style="width:${Math.round(f.mass / 1.6 * 100)}%"></i></span><span>Speed</span><span class="bar"><i style="width:${Math.round(f.speed / 1.3 * 100)}%"></i></span><span>Power</span><span class="bar"><i style="width:${Math.round(f.power / 1.15 * 100)}%"></i></span></div>`;
     el.onclick = (e) => {
@@ -177,10 +179,11 @@ function buildRoster() {
     };
     box.appendChild(el);
   }
-  const draw = document.createElement('button'); draw.className = 'card draw'; draw.id = 'drawCard';
+  /* the roster's own 'Draw your own' card was replaced by the big button next to Fight! */
+  if (false) { const draw = document.createElement('button'); draw.className = 'card draw'; draw.id = 'drawCard';
   draw.innerHTML = `<div class="imgs"><svg viewBox="0 0 64 64" fill="none" stroke="#3d7be0" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 52l4-14L42 12l10 10-26 26z" fill="#fff7d1"/><path d="M36 18l10 10M12 52l14-4"/><path d="M50 40v14M43 47h14" stroke="#e2453c"/></svg></div><div class="nm">Draw your own</div><div class="sub">${RELAY ? 'Lux3D builds it live in about 3 minutes' : 'Live Lux3D forge: runs with your own Aholo key'}</div>`;
   draw.onclick = () => { initAudio(); sfx.ui(); openForge(); };
-  box.appendChild(draw);
+  box.appendChild(draw); }
   if (!FIGHTERS.some((f) => f.id === pick[0])) pick[0] = FIGHTERS[0]?.id;
   if (!FIGHTERS.some((f) => f.id === pick[1])) pick[1] = FIGHTERS[1]?.id;
   refreshRoster();
@@ -328,7 +331,7 @@ function newRound() {
   state.fighters.forEach((f, i) => { const [x, z] = SPAWNS[i]; f.reset(new THREE.Vector3(x, 0, z), Math.atan2(-x, -z)); });
   resetHazards(hazards); pickups.reset(state.fighters);
   state.phase = 'countdown'; state.phaseT = 0; updatePlates();
-  banner(`Round ${state.round}`, state.round === 1 && !DEMO ? 'Hold J to charge a big slap' : state.round === 2 ? 'Grab the items that drop in!' : 'Shove them off the desk!');
+  banner(`Round ${state.round}`, state.round === 1 && !DEMO ? (matchMedia('(pointer: coarse)').matches ? 'Drag the stick · hold SHOVE to charge' : 'Hold J to charge a big slap') : state.round === 2 ? 'Grab the items that drop in!' : 'Shove them off the desk!');
 }
 function banner(txt, sub = '') { const b = $('#banner'); b.innerHTML = txt + (sub ? `<small>${sub}</small>` : ''); b.classList.add('on'); clearTimeout(banner.t); banner.t = setTimeout(() => b.classList.remove('on'), 1100); }
 function buildPlates() {
@@ -563,7 +566,8 @@ function updateCamera(dt) {
   if (hot) c.lerp(new THREE.Vector3(hot.holder.position.x * 0.8, 0, hot.holder.position.z * 0.8 + 0.6), 0.7);
   camTarget.lerp(c, 1 - Math.exp(-(hot ? 2.5 : 4) * dt));
   const aspectK = Math.max(1, 1.5 / camera.aspect);
-  const want = (hot ? 8.5 : Math.min(17, Math.max(10.5, 8.2 + spread * 1.05))) * aspectK;
+  // recordings (?video) frame the fight closer so the toys read on a small screen
+  const want = (hot ? 8.5 : Math.min(17, Math.max(10.5, 8.2 + spread * 1.05))) * aspectK * (VIDEO ? (hot ? 0.9 : 0.8) : 1);
   camDist += (want - camDist) * (1 - Math.exp(-2.5 * dt));
   const sx = (Math.random() - 0.5) * shake, sy = (Math.random() - 0.5) * shake;
   camera.position.set(camTarget.x * 0.9 + sx, camDist * 0.66 + sy, camTarget.z + camDist * 0.86);
@@ -603,7 +607,9 @@ function frame() {
     printReady(rec) { const def = FIGHTERS.find((f) => f.id === rec.id); if (def) def.print = { mf: rec.mf ? URL.createObjectURL(rec.mf) : null, stl: rec.stl ? URL.createObjectURL(rec.stl) : null }; },
     fight(id) { pick[0] = id; setMode(1); state.forging = false; fstage.group.visible = false; fstage.clear(); startMatch(); },
     toast,
+    def: (id) => FIGHTERS.find((f) => f.id === id),
   });
+  $('#drawBtn').onclick = () => { initAudio(); sfx.ui(); openForge(); };
   $('#loading').classList.remove('show');
   renderer.setAnimationLoop(frame);
   window.__doodle = { state, scene, camera, FIGHTERS, PROPS, hazards, Bot, get hazardsList() { return hazards; }, get pickupsList() { return pickups.list; }, get pickups() { return pickups; }, endMatch: (i = 0) => endMatch(state.fighters[i]), fstage };

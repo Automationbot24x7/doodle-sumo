@@ -1,5 +1,5 @@
 {
-  "built": "2026-11-13T14:37:07.562Z",
+  "built": "2026-11-13T16:01:22.003Z",
   "tasks": [
     {
       "t": "2026-11-12T20:12:41.870Z",
@@ -594,6 +594,22 @@
       "ok": true,
       "secs": 106,
       "version": "G1-Turbo"
+    },
+    {
+      "t": "2026-11-13T16:00:05.946Z",
+      "kind": "export",
+      "label": "whiskers:print",
+      "taskId": 7143419,
+      "ok": true,
+      "secs": 26
+    },
+    {
+      "t": "2026-11-13T16:00:41.149Z",
+      "kind": "export",
+      "label": "spike:print",
+      "taskId": 7143598,
+      "ok": true,
+      "secs": 26
     }
   ],
   "prompts": [
@@ -1013,6 +1029,12 @@
       "taskId": 7123410,
       "prompt": "A chunky toy dumbbell, short purple handle with two big round dark grey weights, rounded cartoon shapes, simple clean colours, single object",
       "version": "G1-Turbo"
+    },
+    {
+      "taskId": 7143419
+    },
+    {
+      "taskId": 7143598
     }
   ]
 }

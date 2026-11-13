@@ -14,6 +14,9 @@ id = "5580b2557e0844ccb4ae68be466547fe"
 
 [vars]
 PER_DAY = "10"
-TOTAL = "40"
+TOTAL = "20"
+JUDGE_PER_DAY = "20"
+JUDGE_TOTAL = "30"
+JUDGE_PER_VISITOR = "6"
 PER_VISITOR = "2"
 ORIGINS = "https://automationbot24x7.github.io"
