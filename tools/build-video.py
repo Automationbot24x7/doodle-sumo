@@ -5,6 +5,7 @@ import json, subprocess, os, sys
 ROOT = 'C:/Hackathon/forge'
 WROOT = '/mnt/c/Hackathon/forge'
 XF = 0.35  # crossfade seconds
+FPS = 60   # the recordings are 60 fps; keep every frame
 END = sys.argv[1] if len(sys.argv) > 1 else 'end4'      # end2 = "draw your own" end card, end3 = plain
 ENDVO = 'e1'
 
@@ -83,11 +84,13 @@ for i, s in enumerate(SEG):
 total = t
 print('total', round(total, 2))
 
-# 1) per-segment video (30 fps CFR) and game audio
-for i, (cap, ss, dur, aud, hold, _, speed) in enumerate(SEG):
+# 1) per-segment video and game audio
+RESUME = os.environ.get('RESUME') == '1'   # reuse the finished segment clips; redo the joining, sound and assembly
+for i, (cap, ss, dur, aud, hold, _, speed) in enumerate([] if RESUME else SEG):
     d = f'{WROOT}/video/cap/{cap}'
     pad = f',tpad=stop_mode=clone:stop_duration={hold}' if hold else ''
-    sh(f'cd {d} && ffmpeg -y -v error -f concat -safe 0 -i list.txt -vf "trim=start={ss}:duration={dur:.3f},setpts=(PTS-STARTPTS)/{speed},fps=30,scale=1920:1080:flags=lanczos,setsar=1{pad},format=yuv420p" -t {out_dur[i]:.3f} -c:v libx264 -preset medium -crf 17 -an {B}/v{i}.mp4')
+    # evenly timed frames straight from the screencast timestamps (see tools/seqpipe.py), FPS frames per second
+    sh(f'python3 {WROOT}/tools/seqpipe.py {d} {ss} {dur} {speed} {FPS} | ffmpeg -y -v error -f image2pipe -framerate {FPS} -c:v mjpeg -i - -vf "scale=1920:1080:flags=lanczos,setsar=1{pad},format=yuv420p" -t {out_dur[i]:.3f} -c:v libx264 -preset medium -crf 17 -an {B}/v{i}.mp4')
     if aud:
         tempo = f'atempo={speed},' if speed != 1 else ''
         sh(f'cd {d} && ffmpeg -y -v error -i audio.webm -ss {ss} -t {dur} -af "{tempo}aresample=48000,apad=whole_dur={out_dur[i]:.3f}" -ac 2 {B}/a{i}.wav')
