@@ -11,7 +11,7 @@ const SPOT = new THREE.Vector3(1.3, 0, -0.1);   // where the model and the finis
 export function createForgeStage({ scene, world, loader, gltfs, shrinkTextures, stars, confetti, sfx }) {
   const group = new THREE.Group(); group.position.set(0, 0, 0.5); group.visible = false; world.add(group);
   const texLoader = new THREE.TextureLoader().setCrossOrigin('anonymous');
-  let items = {}, tweens = [], t = 0;
+  let items = {}, tweens = [], t = 0, timing = { skel: SKEL_SECS, show: READY_SHOW };
   const at = (v) => v.clone().add(group.position);
   const popIn = (o) => { o.userData.s = o.scale.x; o.scale.setScalar(0.001); tweens.push({ o, t: 0 }); };
 
@@ -21,7 +21,8 @@ export function createForgeStage({ scene, world, loader, gltfs, shrinkTextures, 
     items = {}; tweens = []; t = 0;
   }
 
-  async function show(kind, data) {
+  // opts (optional, for the video intro): { at: [x, y, z] stage-local spot, skel: seconds of skeleton, show: [[t, role]...], scale }
+  async function show(kind, data, opts = {}) {
     const it = items;
     try {
       if (kind === 'reset') return clear();
@@ -61,8 +62,10 @@ export function createForgeStage({ scene, world, loader, gltfs, shrinkTextures, 
       if (kind === 'ready') {                 // the finished fighter: a flash of its skeleton, then its moves
         if (it.model?.isObject3D) group.remove(it.model);
         const f = new Fighter(data, gltfs[data.id], { marker: false });
-        f.won = true; f.pos.copy(SPOT); f.facing = 0.15; f.mixer.stopAllAction();
-        f.group.scale.setScalar(1.2); group.add(f.group); it.fighter = f; it.model = null; t = 0; it.shown = -1;
+        const spot = opts.at ? new THREE.Vector3(...opts.at) : SPOT; it.spot = spot;
+        timing = { skel: opts.skel ?? SKEL_SECS, show: opts.show || READY_SHOW };
+        f.won = true; f.pos.copy(spot); f.facing = opts.facing ?? 0.15; f.mixer.stopAllAction();
+        f.group.scale.setScalar(opts.scale || 1.2); group.add(f.group); it.fighter = f; it.model = null; t = 0; it.shown = -1;
         f.model.traverse((o) => { if (o.isMesh) { o.userData.m = o.material; o.material = new THREE.MeshBasicMaterial({ color: '#7fa8ee', transparent: true, opacity: 0.42, depthWrite: false }); } });
         // the Lux3D skeleton, drawn boldly: a red ball on every joint and a red bar along every bone
         const bones = []; f.model.traverse((o) => { if (o.isBone) bones.push(o); });
@@ -74,7 +77,7 @@ export function createForgeStage({ scene, world, loader, gltfs, shrinkTextures, 
           let bar = null; if (b.parent?.isBone) { bar = new THREE.Mesh(barGeo, red); bar.renderOrder = 5; it.skel.add(bar); }
           return { b, ball, bar };
         });
-        stars(at(new THREE.Vector3(SPOT.x, 2.3, 0)), 12, 4.5, 0.45);
+        stars(at(new THREE.Vector3(spot.x, 2.3, spot.z + 0.1)), 12, 4.5, 0.45); sfx.boing?.();
       }
     } catch (e) { console.warn('forge stage', kind, e); }
   }
@@ -90,13 +93,14 @@ export function createForgeStage({ scene, world, loader, gltfs, shrinkTextures, 
     if (it.model?.isObject3D) it.model.rotation.y += dt * 0.9;
     if (it.fighter) {
       const f = it.fighter; t += dt;
-      if (it.skel && t > SKEL_SECS) {
+      if (it.skel && t > timing.skel) {
         scene.remove(it.skel); it.skel = null; it.bones = null;
         f.model.traverse((o) => { if (o.isMesh && o.userData.m) { o.material.dispose(); o.material = o.userData.m; } });
       }
-      const idx = READY_SHOW.findLastIndex(([when]) => t >= when);
-      if (idx !== it.shown) { it.shown = idx; f.play(READY_SHOW[idx][1], 0.15, 1); if (idx === READY_SHOW.length - 1) sfx.win?.(); }
-      if (idx === READY_SHOW.length - 1 && Math.random() < dt * 9) confetti(at(new THREE.Vector3(SPOT.x + (Math.random() - 0.5) * 4, 3.2 + Math.random(), 0.2 + (Math.random() - 0.5) * 2.4)));
+      const S = timing.show, sp = it.spot || SPOT;
+      const idx = S.findLastIndex(([when]) => t >= when);
+      if (idx !== it.shown) { it.shown = idx; f.play(S[idx][1], 0.15, 1); if (idx === S.length - 1) sfx.win?.(); }
+      if (idx === S.length - 1 && Math.random() < dt * 9) confetti(at(new THREE.Vector3(sp.x + (Math.random() - 0.5) * 4, 3.2 + Math.random(), sp.z + 0.3 + (Math.random() - 0.5) * 2.4)));
       f.update(dt);
       if (it.bones) {
         f.group.updateMatrixWorld(true); const r = f.height * 0.022;

@@ -12,10 +12,14 @@ for i in range(len(lst) - 1):
     if lst[i].startswith('file') and lst[i + 1].startswith('duration'):
         starts.append(t); files.append(lst[i][6:-1]); t += float(lst[i + 1].split()[1])
 n = max(1, round(dur / speed * fps))
+# a clip recorded well below the output rate is shown at an even half rate (each frame twice) instead of with irregular repeats
+inside = sum(1 for x in starts if ss <= x < ss + dur)
+step = 2 if dur > 0.5 and inside / dur * speed < 0.92 * fps else 1   # recorded frames per output frame below ~1
+sys.stderr.write('seqpipe %s %s+%s: %.0f fps recorded, cadence %d' % (d.split('/')[-1], ss, dur, inside / max(dur, 1e-6), step) + chr(10))
 out = sys.stdout.buffer
 cache = {}
 for k in range(n):
-    at = ss + k * speed / fps
+    at = ss + (k - k % step) * speed / fps
     j = max(0, bisect.bisect_right(starts, at) - 1)
     f = files[j]
     if f not in cache:

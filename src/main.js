@@ -532,6 +532,8 @@ function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.ad
 // ---------- camera
 const camTarget = new THREE.Vector3(); let camDist = 15, menuT = 0;
 function updateCamera(dt) {
+  // the video intro drives the camera itself: window.__introCam = { p: [x, y, z], t: [x, y, z] }
+  if (window.__introCam) { const c = window.__introCam; camera.position.set(...c.p); camera.lookAt(...c.t); return; }
   const F = state.fighters.filter((f) => f.alive && (!f.falling || f.y > -3));
   if (state.forging) {     // close on the middle of the desk, where the forge results appear
     menuT += dt; const wide = innerWidth >= 1100;
@@ -612,5 +614,19 @@ function frame() {
   $('#drawBtn').onclick = () => { initAudio(); sfx.ui(); openForge(); };
   $('#loading').classList.remove('show');
   renderer.setAnimationLoop(frame);
-  window.__doodle = { state, scene, camera, FIGHTERS, PROPS, hazards, Bot, get hazardsList() { return hazards; }, get pickupsList() { return pickups.list; }, get pickups() { return pickups; }, endMatch: (i = 0) => endMatch(state.fighters[i]), fstage };
+  // video intro: load a forged toy straight from its Lux3D file (it does not join the roster)
+  // video intro: a clean sheet of notebook paper under the doodle (the arena sheet with its writing is hidden)
+  const introSetup = () => {
+    ring.visible = false;
+    const c = document.createElement('canvas'); c.width = 1024; c.height = 800; const g = c.getContext('2d');
+    g.fillStyle = '#fbf8f1'; g.fillRect(0, 0, 1024, 800);
+    g.strokeStyle = '#c9daf2'; g.lineWidth = 3; for (let y = 60; y < 800; y += 44) { g.beginPath(); g.moveTo(0, y); g.lineTo(1024, y); g.stroke(); }
+    g.strokeStyle = 'rgba(226,69,60,.45)'; g.lineWidth = 4; g.beginPath(); g.moveTo(110, 0); g.lineTo(110, 800); g.stroke();
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8;
+    const sheet = new THREE.Mesh(new THREE.PlaneGeometry(4.6, 3.6), new THREE.MeshStandardMaterial({ map: t, roughness: 0.95 }));
+    sheet.rotation.set(-Math.PI / 2, 0, 0.05); sheet.position.set(-0.75, 0.008, 1.15); sheet.receiveShadow = true; world.add(sheet);
+  };
+  const loadDemoFighter = async (id, url, title) => { const g = await loader.loadAsync(url); shrinkTextures(g.scene); gltfs[id] = g;
+    return { id, title, mass: 1.1, speed: 1, power: 1, anims: ['Idle_Loop', 'Crouch_Idle_Loop', 'Jog_Fwd_Loop', 'Sprint_Loop', 'Punch_Cross', 'Punch_Jab', 'Roll', 'Swim_Fwd_Loop', 'Dance_Loop', 'Yes'] }; };
+  window.__doodle = { introSetup, loadDemoFighter, state, scene, camera, FIGHTERS, PROPS, hazards, Bot, get hazardsList() { return hazards; }, get pickupsList() { return pickups.list; }, get pickups() { return pickups; }, endMatch: (i = 0) => endMatch(state.fighters[i]), fstage };
 })();

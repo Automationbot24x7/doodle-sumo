@@ -11,8 +11,8 @@ ENDVO = 'e1'
 
 # (capture, start, duration of source, use game audio, hold-last-frame seconds, [(vo id, offset in segment)], speed)
 SEG = [
-    ('forge3', 216.2,  3.0, True,  0.0, [], 1),                       # hook: the doodle on the pad, its toy card, the live cat dancing
-    ('match46', 13.9,  1.1, True,  0.0, [('h1', 0.25)], 0.5),        # HOME RUN in slow motion
+    ('intro2',   0.9,  3.35, True, 0.0, [], 1),                       # intro, one continuous shot: the doodle on a clean sheet...
+    ('intro2',   3.9,  5.1, True,  0.0, [('h1', 2.8)], 1),            # ...the real 3D toy rises out of it, skeleton flash, dances: title
     ('forge3',   3.6, 10.8, False, 0.0, [('d1', 0.75)], 2.5),         # drawing on the in-game pad (2.5x)
     ('forge3',  14.3,  3.2, True,  0.0, [('d2a', 0.8)], 1),           # "Bring it to life": the doodle lands on the desk, the clock starts
     ('forge3',  66.5,  3.3, True,  0.0, [], 1),                       # Lux3D toy concept image lands
@@ -33,8 +33,7 @@ SEG = [
 ]
 # (overlay png, segment index, offset in segment (output seconds), duration)
 OVER = [
-    ('v4-hook', 0, 0.3, 2.6),
-    ('v4-logo', 1, 0.3, 1.8),
+    ('i-a', 0, 0.25, 2.5), ('i-b', 1, 0.1, 2.3), ('i-c', 1, 2.5, 2.5),
     ('v4-pad', 2, 0.4, 3.6), ('v4-note-draw', 2, 0.2, 4.0),
     ('v4-note-wait', 3, 0.3, 2.8), ('v4-note-wait', 4, 0.1, 3.0), ('v4-note-wait', 5, 0.1, 3.1), ('v4-note-wait', 6, 0.1, 3.4), ('v4-note-wait', 7, 0.1, 5.6),
     ('v4-toy', 4, 0.6, 2.6), ('v4-model', 5, 0.7, 2.6), ('v4-rig', 6, 1.1, 2.4), ('v4-moves', 7, 0.3, 3.6),
@@ -51,8 +50,8 @@ OUTNAME, BUILD = 'doodle-sumo-demo.mp4', 'build'
 if len(sys.argv) > 2 and sys.argv[2] == 'x':   # 28-second cut for X: muted autoplay, so captions carry it, music and game sound only
     OUTNAME, BUILD = 'doodle-sumo-x.mp4', 'build-x'
     SEG = [
-        ('forge3', 216.2,  2.8, True,  0.0, [], 1),
-        ('match46', 13.9,  1.1, True,  0.0, [('h1', 0.3)], 0.5),
+        ('intro2',   0.9,  3.35, True, 0.0, [], 1),
+        ('intro2',   3.9,  5.1, True,  0.0, [('h1', 2.8)], 1),
         ('forge3',   3.6, 10.8, False, 0.0, [], 3.6),
         ('forge3',  66.6,  2.2, True,  0.0, [], 1),
         ('forge3', 132.6,  2.4, True,  0.0, [], 1),
@@ -63,7 +62,7 @@ if len(sys.argv) > 2 and sys.argv[2] == 'x':   # 28-second cut for X: muted auto
         (END,        0.0,  0.03, False, 3.4, [], 1),
     ]
     OVER = [
-        ('v4-hook', 0, 0.2, 2.5), ('v4-logo', 1, 0.2, 1.8),
+        ('i-a', 0, 0.25, 2.5), ('i-b', 1, 0.1, 2.3), ('i-c', 1, 2.5, 2.5),
         ('v4-note-draw', 2, 0.1, 2.8), ('v4-note-wait', 3, 0.1, 2.0), ('v4-note-wait', 4, 0.1, 2.2), ('v4-note-wait', 5, 0.1, 4.4),
         ('v4-toy', 3, 0.2, 1.9), ('v4-model', 4, 0.2, 2.1), ('v4-rig', 5, 0.3, 2.0), ('v4-moves', 5, 2.4, 2.1),
         ('v4-pick', 6, 1.6, 2.4), ('v4-note-play', 6, 0.1, 4.0), ('v4-jack', 7, 0.3, 2.4), ('v4-print', 8, 0.6, 2.5),

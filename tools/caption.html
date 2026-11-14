@@ -10,6 +10,9 @@
   .big{position:absolute;left:0;right:0;top:72%;text-align:center;font:700 112px Gaegu,cursive;color:#fff;-webkit-text-stroke:5px #2b2b33;paint-order:stroke fill;text-shadow:8px 9px 0 #2b2b33;line-height:1}
   .big small{display:block;font:800 40px Nunito,sans-serif;-webkit-text-stroke:0;text-shadow:3px 3px 0 #2b2b33,-2px -2px 0 #2b2b33,2px -2px 0 #2b2b33,-2px 2px 0 #2b2b33;margin-top:10px}
   .big small.zh{font:700 34px "Microsoft YaHei","PingFang SC",sans-serif;margin-top:6px}
+  .logo{position:absolute;left:0;right:0;text-align:center;font:700 200px Gaegu,cursive;line-height:.9;-webkit-text-stroke:7px #2b2b33;paint-order:stroke fill;text-shadow:9px 10px 0 #2b2b33}
+  .logo .w1{color:#3d7be0;display:inline-block;transform:rotate(-4deg)} .logo .w2{color:#e2453c;display:inline-block;transform:rotate(3deg)}
+  .logo small{display:block;font:800 40px Nunito,sans-serif;color:#fff;-webkit-text-stroke:0;text-shadow:3px 3px 0 #2b2b33,-2px -2px 0 #2b2b33,2px -2px 0 #2b2b33,-2px 2px 0 #2b2b33;margin-top:22px}
   .note{position:absolute;right:36px;top:30px;background:rgba(43,43,51,.82);color:#fff;font:800 22px Nunito,sans-serif;padding:8px 16px;border-radius:10px;text-align:right;line-height:1.3}
   .note .zh{font:700 19px "Microsoft YaHei","PingFang SC",sans-serif;opacity:.85}
 </style></head><body>
@@ -17,6 +20,7 @@
 const q = new URLSearchParams(location.search);
 const esc = (s) => String(s || '').replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 if (q.get('big')) document.body.innerHTML = `<div class="big" style="font-size:${q.get('fs') || 112}px;top:${q.get('top') || 72}%;left:${q.get('left') || 0}%;right:${q.get('right') || 0}%">${esc(q.get('big'))}${q.get('sub') ? `<small>${esc(q.get('sub'))}</small>` : ''}${q.get('zh') ? `<small class="zh">${esc(q.get('zh'))}</small>` : ''}</div>`;
+else if (q.get('logo')) document.body.innerHTML = `<div class="logo" style="top:${q.get('top') || 5}%"><span class="w1">Doodle</span> <span class="w2">Sumo</span>${q.get('sub') ? `<small>${esc(q.get('sub'))}</small>` : ''}</div>`;
 else if (q.get('note')) document.body.innerHTML = `<div class="note">${esc(q.get('note'))}${q.get('zh') ? `<div class="zh">${esc(q.get('zh'))}</div>` : ''}</div>`;
 else document.body.innerHTML = `<div class="lt"><div class="row"><span class="chip">${esc(q.get('chip') || 'LUX3D')}</span><span class="txt">${esc(q.get('t'))}</span></div>${q.get('zh') ? `<div class="zh">${esc(q.get('zh'))}</div>` : ''}</div>`;
 document.fonts.ready.then(() => setTimeout(() => (window.done = true), 300));
