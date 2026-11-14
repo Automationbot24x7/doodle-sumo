@@ -12,36 +12,36 @@ ENDVO = 'e1'
 # (capture, start, duration of source, use game audio, hold-last-frame seconds, [(vo id, offset in segment)], speed)
 SEG = [
     ('forge3', 216.2,  3.0, True,  0.0, [], 1),                       # hook: the doodle on the pad, its toy card, the live cat dancing
-    ('match46', 13.9,  1.1, True,  0.0, [('h1', 0.4)], 0.5),         # HOME RUN in slow motion
-    ('forge3',   3.6, 10.8, False, 0.0, [('d1', 0.5)], 2.5),          # drawing on the in-game pad (2.5x)
-    ('forge3',  14.3,  3.2, True,  0.0, [('d2a', 0.6)], 1),           # "Bring it to life": the doodle lands on the desk, the clock starts
+    ('match46', 13.9,  1.1, True,  0.0, [('h1', 0.25)], 0.5),        # HOME RUN in slow motion
+    ('forge3',   3.6, 10.8, False, 0.0, [('d1', 0.75)], 2.5),         # drawing on the in-game pad (2.5x)
+    ('forge3',  14.3,  3.2, True,  0.0, [('d2a', 0.8)], 1),           # "Bring it to life": the doodle lands on the desk, the clock starts
     ('forge3',  66.5,  3.3, True,  0.0, [], 1),                       # Lux3D toy concept image lands
     ('forge3', 132.3,  3.4, True,  0.0, [('d2b', 0.7)], 1),           # Lux3D 3D model lands on the turntable
     ('forge3', 206.9,  3.7, True,  0.0, [('d2c', 1.2)], 1),           # skeleton
-    ('forge3', 210.6,  5.6, True,  0.0, [('d2d', 0.1), ('d2e', 2.0)], 1),  # ten moves
-    ('forge3', 219.5,  4.4, True,  0.0, [('d3', 0.4)], 1),            # its roster card
-    ('match46',  7.5,  1.6, True,  0.0, [('fx1', 0.3)], 1),           # Hakkeyoi!
-    ('match46',  9.7,  4.2, True,  0.0, [], 1),                       # bat drops in, SLUGGER, KA-SLAP, OUT (HOME RUN already in the open)
-    ('match46', 15.6,  3.5, True,  0.0, [('t1', 0.2)], 1),            # fan gust (trap cam)
-    ('match46', 20.9,  3.5, True,  0.0, [], 1),                       # jack-in-the-box fires
-    ('match46', 25.5,  3.5, True,  0.0, [], 1),                       # stapler warns and snaps
+    ('forge3', 210.6,  6.0, True,  0.0, [('d2d', 0.1), ('d2e', 2.4)], 1),  # ten moves
+    ('forge3', 219.5,  4.4, True,  0.0, [('d3', 0.6)], 1),            # its roster card
+    ('match46',  7.4,  2.0, True,  0.0, [('fx1', 0.3)], 1),           # Hakkeyoi!
+    ('match46',  9.7,  6.0, True,  0.0, [], 1),                       # bat drops in, SLUGGER, KA-SLAP, OUT, HOME RUN in real time
+    ('match46', 15.6,  4.0, True,  0.0, [('t1', 1.9)], 1),            # fan gust (trap cam)
+    ('match46', 20.9,  4.0, True,  0.0, [], 1),                       # jack-in-the-box fires
+    ('match46', 25.0,  4.0, True,  0.0, [], 1),                       # stapler warns and snaps
     ('match46', 29.0,  4.4, True,  0.0, [], 1),                       # Volt with the dumbbell knocks the cat off: round lost
     ('match46', 61.0,  5.0, True,  0.0, [], 1),                       # comeback: round 4, "Mittens! wins the round"
     ('match46', 67.4,  6.6, True,  0.0, [('w1', 0.8)], 1),            # champion dance, results card, print link
     ('lab3',     0.9,  7.7, False, 2.0, [('l1', 0.4)], 1),            # Lab: joint slider, skeleton, task log
-    (END,        0.0,  0.03, False, 5.6, [(ENDVO, 0.5)], 1),
+    (END,        0.0,  0.03, False, 6.0, [(ENDVO, 0.5)], 1),
 ]
 # (overlay png, segment index, offset in segment (output seconds), duration)
 OVER = [
     ('v4-hook', 0, 0.3, 2.6),
     ('v4-logo', 1, 0.3, 1.8),
     ('v4-pad', 2, 0.4, 3.6), ('v4-note-draw', 2, 0.2, 4.0),
-    ('v4-note-wait', 3, 0.3, 2.8), ('v4-note-wait', 4, 0.1, 3.0), ('v4-note-wait', 5, 0.1, 3.1), ('v4-note-wait', 6, 0.1, 3.4), ('v4-note-wait', 7, 0.1, 5.2),
-    ('v4-toy', 4, 0.6, 2.6), ('v4-model', 5, 0.7, 2.6), ('v4-rig', 6, 1.1, 2.4), ('v4-moves', 7, 0.3, 3.4),
+    ('v4-note-wait', 3, 0.3, 2.8), ('v4-note-wait', 4, 0.1, 3.0), ('v4-note-wait', 5, 0.1, 3.1), ('v4-note-wait', 6, 0.1, 3.4), ('v4-note-wait', 7, 0.1, 5.6),
+    ('v4-toy', 4, 0.6, 2.6), ('v4-model', 5, 0.7, 2.6), ('v4-rig', 6, 1.1, 2.4), ('v4-moves', 7, 0.3, 3.6),
     ('v4-roster', 8, 1.2, 2.8),
-    ('v4-note-play', 9, 0.1, 1.3), ('v4-note-play', 10, 0.1, 3.9), ('v4-note-play', 14, 0.1, 4.1), ('v4-note-play', 15, 0.1, 4.7),
+    ('v4-note-play', 9, 0.1, 1.7), ('v4-note-play', 10, 0.1, 5.7), ('v4-note-play', 14, 0.1, 4.1), ('v4-note-play', 15, 0.1, 4.7),
     ('v4-pick', 10, 1.8, 2.3),
-    ('v4-fan', 11, 0.4, 2.8), ('v4-jack', 12, 0.4, 2.8), ('v4-stapler', 13, 0.4, 2.8),
+    ('v4-fan', 11, 0.4, 3.1), ('v4-jack', 12, 0.4, 3.1), ('v4-stapler', 13, 0.6, 3.1),
     ('v4-flail', 14, 2.4, 1.9),
     ('v4-print', 16, 3.0, 3.4),
     ('v4-lab', 17, 7.7, 2.0),
@@ -86,7 +86,9 @@ print('total', round(total, 2))
 
 # 1) per-segment video and game audio
 RESUME = os.environ.get('RESUME') == '1'   # reuse the finished segment clips; redo the joining, sound and assembly
+ONLY = {int(x) for x in os.environ.get('ONLY', '').split(',') if x}   # rebuild just these segment clips
 for i, (cap, ss, dur, aud, hold, _, speed) in enumerate([] if RESUME else SEG):
+    if ONLY and i not in ONLY: continue
     d = f'{WROOT}/video/cap/{cap}'
     pad = f',tpad=stop_mode=clone:stop_duration={hold}' if hold else ''
     # evenly timed frames straight from the screencast timestamps (see tools/seqpipe.py), FPS frames per second
